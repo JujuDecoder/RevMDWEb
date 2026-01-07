@@ -1,11 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import "./index.css";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // 👇 PUT IT RIGHT HERE
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -22,7 +27,9 @@ export default function Login() {
       if (!res.ok) throw new Error(data.message || "Login failed");
 
       localStorage.setItem("token", data.token);
-      alert("Login successful!");
+
+      // 👉 REDIRECT TO DASHBOARD (HOME)
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message);
     }
