@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import "./index.css";
 
-export default function Login() {
+export default function Login({ setToken }) {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ export default function Login() {
       const res = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
@@ -27,8 +27,7 @@ export default function Login() {
       if (!res.ok) throw new Error(data.message || "Login failed");
 
       localStorage.setItem("token", data.token);
-
-      // 👉 REDIRECT TO DASHBOARD (HOME)
+      setToken(data.token);
       navigate("/dashboard");
     } catch (err) {
       setError(err.message);
@@ -39,12 +38,11 @@ export default function Login() {
     <div style={pageStyle}>
       {/* MODAL */}
       <div style={modalStyle}>
-        
         {/* LEFT SIDE */}
         <div style={leftSide}>
           <h1 style={{ marginBottom: 12 }}>RevMD</h1>
           <p style={{ opacity: 0.8 }}>
-            Welcome back.  
+            Welcome back.
             <br />
             Please login to continue.
           </p>
@@ -80,7 +78,6 @@ export default function Login() {
 
           {error && <p style={errorStyle}>{error}</p>}
         </div>
-
       </div>
     </div>
   );
@@ -103,18 +100,18 @@ const modalStyle = {
   borderRadius: 16,
   overflow: "hidden",
   background: "#f8fafc",
-  boxShadow: "0 30px 80px rgba(0,0,0,0.85)"
+  boxShadow: "0 30px 80px rgba(0,0,0,0.85)",
 };
 
 const leftSide = {
   flex: 1,
   padding: 40,
-    background: "linear-gradient(135deg, #020617, #0f172a)",
+  background: "linear-gradient(135deg, #020617, #0f172a)",
 
   color: "#fff",
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center"
+  justifyContent: "center",
 };
 
 const rightSide = {
@@ -122,7 +119,7 @@ const rightSide = {
   padding: 40,
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center"
+  justifyContent: "center",
 };
 
 const inputStyle = {
@@ -131,7 +128,7 @@ const inputStyle = {
   marginBottom: 14,
   borderRadius: 8,
   border: "1px solid #cbd5f5",
-  fontSize: 14
+  fontSize: 14,
 };
 
 const buttonStyle = {
@@ -142,11 +139,11 @@ const buttonStyle = {
   background: "#0f172a",
   color: "#fff",
   fontWeight: "bold",
-  cursor: "pointer"
+  cursor: "pointer",
 };
 
 const errorStyle = {
   marginTop: 12,
   color: "#dc2626",
-  fontSize: 14
+  fontSize: 14,
 };
