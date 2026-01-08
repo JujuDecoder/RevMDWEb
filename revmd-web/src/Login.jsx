@@ -10,7 +10,6 @@ export default function Login({ setToken }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // 👇 PUT IT RIGHT HERE
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
