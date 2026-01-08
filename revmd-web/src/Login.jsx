@@ -35,9 +35,7 @@ export default function Login({ setToken }) {
 
   return (
     <div style={pageStyle}>
-      {/* MODAL */}
       <div style={modalStyle}>
-        {/* LEFT SIDE */}
         <div style={leftSide}>
           <h1 style={{ marginBottom: 12 }}>RevMD</h1>
           <p style={{ opacity: 0.8 }}>
@@ -47,7 +45,6 @@ export default function Login({ setToken }) {
           </p>
         </div>
 
-        {/* RIGHT SIDE */}
         <div style={rightSide}>
           <h2 style={{ marginBottom: 20 }}>Login</h2>
 
