@@ -3,30 +3,40 @@ import { useState } from "react";
 export default function AdminReports() {
   const [searchQuery, setSearchQuery] = useState(""); // To store the search input
   const [selectedStatus, setSelectedStatus] = useState(""); // To store the selected status filter
+  const [selectedCase, setSelectedCase] = useState(null); // To store the selected case for the modal
   const [reports] = useState([
     {
       id: "4001",
       mechanic: "Mario Santos",
       status: "Investigating",
-      date: "2025-10-08 01:55:48 AM"
+      date: "2025-10-08 01:55:48 AM",
+      report: "Hi, I’d like to report a mechanic I recently talked through the app...\nThe mechanic, Mark Dela Cruz, arrived late by almost 2 hours and seemed unprepared for the repair. He didn’t bring the proper tools and ended up leaving the job unfinished. I also noticed that the service charge was different from what we agreed upon in the chat.\nPlease look into this issue. I just want to make sure that other users won’t experience the same problem. I’ve attached a few screenshots of our conversation and a photo of the unfinished work.",
+      files: [
+        { name: "Chat Screenshot.png", size: "465 KB" },
+        { name: "screenshot3.png", size: "938 KB" },
+        { name: "unfinished.photo.jpg", size: "1.02 MB" }
+      ]
     },
     {
       id: "4002",
       mechanic: "Maria Santos",
       status: "To Review",
-      date: "2025-10-07 04:09:30 PM"
+      date: "2025-10-07 04:09:30 PM",
+      report: "Another issue with a mechanic arriving late and leaving the job unfinished..."
     },
     {
       id: "4003",
       mechanic: "Roberto Reyes",
       status: "To Review",
-      date: "2025-10-06 09:12:11 AM"
+      date: "2025-10-06 09:12:11 AM",
+      report: "The mechanic did not bring proper tools and was not very professional."
     },
     {
       id: "4004",
       mechanic: "Mark Dela Cruz",
       status: "Resolved",
-      date: "2025-10-05 08:56:24 PM"
+      date: "2025-10-05 08:56:24 PM",
+      report: "The mechanic completed the work but was delayed by a few hours."
     }
   ]);
 
@@ -36,6 +46,15 @@ export default function AdminReports() {
     const matchesStatus = selectedStatus ? r.status === selectedStatus : true; // Apply status filter if selected
     return matchesSearch && matchesStatus;
   });
+
+  const openModal = (caseId) => {
+    const caseData = reports.find((report) => report.id === caseId);
+    setSelectedCase(caseData);
+  };
+
+  const closeModal = () => {
+    setSelectedCase(null);
+  };
 
   return (
     <div style={styles.app}>
@@ -66,7 +85,6 @@ export default function AdminReports() {
               </svg>
             </div>
           </div>
-          <div style={styles.icons}>🔔 👤</div>
         </div>
 
         {/* PAGE */}
@@ -101,7 +119,7 @@ export default function AdminReports() {
             </thead>
             <tbody>
               {filteredReports.map((r) => (
-                <tr key={r.id} style={styles.tr}>
+                <tr key={r.id} style={styles.tr} onClick={() => openModal(r.id)}>
                   <td style={styles.td}>{r.id}</td>
                   <td style={styles.td}>{r.mechanic}</td>
                   <td style={styles.td}>
@@ -118,6 +136,36 @@ export default function AdminReports() {
           </div>
         </div>
       </main>
+
+      {/* MODAL */}
+      {selectedCase && (
+        <div style={styles.modal}>
+          <div style={styles.modalContent}>
+            {/* CASE ID HEADER */}
+            <div style={styles.modalHeader}>
+              <h2 style={styles.caseId}>CASE ID {selectedCase.id}</h2>
+            </div>
+            <p style={styles.reportText}>{selectedCase.report}</p>
+
+            {/* FILES */}
+            <div style={styles.files}>
+              {selectedCase.files && selectedCase.files.map((file, index) => (
+                <div key={index} style={styles.fileItem}>
+                  <span style={styles.fileName}>{file.name}</span>
+                  <span style={styles.fileSize}>{file.size}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={styles.modalButtons}>
+              <button style={styles.modalButton} onClick={closeModal}>Close</button>
+              <button style={styles.modalButton}>Message User</button>
+              <button style={styles.modalButton}>View User</button>
+              <button style={styles.modalButton}>Update Status</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -168,10 +216,6 @@ const styles = {
     fontSize: 18
   },
 
-  icons: {
-    fontSize: 18
-  },
-
   title: {
     fontSize: 26,
     marginBottom: 20
@@ -209,7 +253,8 @@ const styles = {
     fontSize: 13
   },
   tr: {
-    borderTop: "1px solid #1e293b"
+    borderTop: "1px solid #1e293b",
+    cursor: "pointer"
   },
   td: {
     padding: 14,
@@ -220,6 +265,79 @@ const styles = {
     padding: 14,
     color: "#94a3b8",
     fontSize: 13
+  },
+
+  /* MODAL */
+  modal: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalContent: {
+    background: "#1e293b",
+    padding: "20px",
+    borderRadius: "10px",
+    width: "1000px",
+    color: "#e5e7eb",
+    fontSize: "30px"
+  },
+  modalHeader: {
+    background: "#34495e",  // Dark background for the header
+    padding: "15px",
+    borderRadius: "10x 10px 0 0",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%"
+  },
+  caseId: {
+    fontSize: "20px",
+    color: "#ffffff",
+    fontWeight: "bold",
+    margin: 0
+  },
+  reportText: {
+    fontSize: "14px",
+    color: "#e5e7eb",
+    lineHeight: "1.5",
+    marginTop: "15px"
+  },
+  files: {
+    marginTop: "20px",
+  },
+  fileItem: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: "10px",
+    color: "#e5e7eb"
+  },
+  fileName: {
+    fontSize: "14px",
+    color: "#ffffff"
+  },
+  fileSize: {
+    fontSize: "12px",
+    color: "#94a3b8"
+  },
+  modalButtons: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: "20px",
+  },
+  modalButton: {
+    background: "#4CAF50",
+    color: "#fff",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
+    width: "23%",
   }
 };
 
