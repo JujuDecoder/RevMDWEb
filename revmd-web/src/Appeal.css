@@ -1,0 +1,147 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: rgba(27, 36, 51, 0.9); /* Dark background with transparency */
+}
+
+/* PAGE CONTAINER */
+.appeals-container {
+  margin: 24px;
+  padding: 0;
+  background: transparent; /* Remove card background */
+  box-shadow: none;
+}
+
+/* HEADER */
+.appeals-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9); /* White text with slight transparency */
+  margin-bottom: 20px;
+}
+
+/* SEARCH AND SORT BAR */
+.search-sort-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  width: 200px;
+  background: rgba(52, 152, 219, 0.15); /* Transparent blue */
+  color: rgba(255, 255, 255, 0.9); /* White text with transparency */
+}
+
+.sort-select {
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(52, 152, 219, 0.15); /* Transparent blue */
+  color: rgba(255, 255, 255, 0.9); /* White text with transparency */
+}
+
+/* TABLE WRAPPER */
+.appeals-table {
+  margin-top: 10px;
+  overflow-x: auto;
+  background: transparent; /* Remove background from wrapper */
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent; /* Remove data grid background */
+}
+
+/* HEADER ROW */
+table th {
+  padding: 16px 24px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9); /* White text with slight transparency */
+  background: rgba(42, 53, 80, 0.7); /* Dark background with slight transparency */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ROWS */
+table td {
+  padding: 16px 24px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9); /* White text with slight transparency */
+  background: rgba(52, 152, 219, 0); /* Transparent background for rows */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ROW HOVER */
+tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.1); /* Light hover effect */
+}
+
+/* STATUS BADGES */
+.status-investigating {
+  display: inline-block;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  background: rgba(52, 152, 219, 0.7); /* Blue for Investigating with transparency */
+  color: rgba(255, 255, 255, 0.9); /* White text with transparency */
+}
+
+.status-to-review {
+  display: inline-block;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  background: rgba(243, 156, 18, 0.7); /* Yellow for To Review with transparency */
+  color: rgba(255, 255, 255, 0.9); /* White text with transparency */
+}
+
+.status-resolved {
+  display: inline-block;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  background: rgba(39, 174, 96, 0.7); /* Green for Resolved with transparency */
+  color: rgba(255, 255, 255, 0.9); /* White text with transparency */
+}
+.status-declined {
+  display: inline-block;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  background: rgba(174, 39, 39, 0.7); /* Green for Resolved with transparency */
+  color: rgba(255, 255, 255, 0.9); /* White text with transparency */
+}
+
+/* BUTTONS */
+.buttons-container {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+button:hover {
+  opacity: 0.9;
+}
