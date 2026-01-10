@@ -150,9 +150,6 @@ export default function Appeals() {
             </tbody>
           </table>
 
-          <div style={styles.footer}>
-            Showing {filteredReports.length} of {reports.length} results
-          </div>
         </div>
 
         <button style={styles.archivePageButton} onClick={toggleModal}>
