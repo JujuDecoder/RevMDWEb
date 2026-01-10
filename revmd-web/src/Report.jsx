@@ -590,7 +590,7 @@ const statusStyle = (status) => ({
       ? "linear-gradient(180deg, #2563eb, #1e3a8a)" // Blue
       : status === "Resolved"
       ? "linear-gradient(180deg, #065f46, #064e3b)" // Green
-      : "linear-gradient(180deg, #3f3f46, #262626)", // To Review (Gray)
+      : "linear-gradient(180deg, #3f3f46, #262626)", 
   color:
     status === "To Review" ? "#facc15" : "#ffffff" // Yellow text for To Review
 });
