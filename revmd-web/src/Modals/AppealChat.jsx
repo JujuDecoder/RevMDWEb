@@ -19,51 +19,45 @@ const AppealChat = ({ appeal, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#1e293b] bg-opacity-80 flex justify-center items-center z-50">
-      <div className="bg-gray-800 p-6 rounded-lg w-96 max-h-[500px] flex flex-col">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-white text-lg">{appeal.mechanic}</h2>
-          <button
-            className="text-white text-xl"
-            onClick={onClose} // Close the modal
-          >
-            &times;
-          </button>
+    <div style={styles.modal}>
+      <div style={styles.modalContent}>
+        {/* CASE ID HEADER */}
+        <div style={styles.modalHeader}>
+          <h2 style={styles.caseId}>{appeal.mechanic}</h2>
+          <button style={styles.closeButton} onClick={onClose}>&times;</button>
         </div>
 
         {/* Chat History */}
         <div
-          className="bg-gray-700 p-4 mb-4 rounded-lg flex-grow overflow-y-auto"
+          style={styles.chatContainer}
           ref={chatContainerRef}
         >
           {chatHistory.map((chat, index) => (
             <div
               key={index}
-              className={`mb-2 text-sm ${chat.sender === 'You' ? 'text-blue-300 self-end' : 'text-gray-300 self-start'}`}
+              style={{
+                ...styles.chatBubble,
+                alignSelf: chat.sender === 'You' ? 'flex-end' : 'flex-start',
+                backgroundColor: chat.sender === 'You' ? '#3B82F6' : '#374151',
+                color: chat.sender === 'You' ? '#fff' : '#d1d5db'
+              }}
             >
-              <div className={`inline-block p-3 rounded-lg ${chat.sender === 'You' ? 'bg-blue-500' : 'bg-gray-600'}`}>
-                <strong>{chat.sender}: </strong>{chat.text}
-              </div>
+              <strong>{chat.sender}: </strong>{chat.text}
             </div>
           ))}
         </div>
 
         {/* Message Input */}
-        <div className="flex items-center space-x-4 mt-2">
+        <div style={styles.inputContainer}>
           <textarea
-            className="px-4 py-2 bg-gray-600 text-white rounded-lg w-full"
+            style={styles.textArea}
             placeholder="Type your message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            autoFocus // Keeps focus on the input
+            autoFocus
             rows="3"
           />
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-            onClick={handleSendMessage}
-          >
-            Send
-          </button>
+          <button style={styles.sendButton} onClick={handleSendMessage}>Send</button>
         </div>
       </div>
     </div>
@@ -71,3 +65,91 @@ const AppealChat = ({ appeal, onClose }) => {
 };
 
 export default AppealChat;
+
+const styles = {
+  modal: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContent: {
+    background: '#1e293b',
+    padding: '20px',
+    borderRadius: '10px',
+    width: '100%',
+    maxWidth: '600px',
+    height: '500px', // Fixed height for the modal
+    display: 'flex',
+    flexDirection: 'column',
+    color: '#e5e7eb',
+    fontSize: '16px',
+  },
+  modalHeader: {
+    background: '#34495e',
+    padding: '10px 20px',
+    borderRadius: '10px 10px 0 0',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '93%',
+  },
+  caseId: {
+    fontSize: '20px',
+    color: '#ffffff',
+    fontWeight: 'bold',
+    margin: 0,
+  },
+  closeButton: {
+    background: 'none',
+    border: 'none',
+    color: '#ffffff',
+    fontSize: '24px',
+    cursor: 'pointer',
+  },
+  chatContainer: {
+    backgroundColor: '#2d3748',
+    padding: '10px',
+    borderRadius: '8px',
+    marginTop: '15px',
+    flexGrow: 1, // Allow chat container to grow
+    overflowY: 'auto',
+    marginBottom: '15px',
+  },
+  chatBubble: {
+    maxWidth: '100%',
+    padding: '8px 15px',
+    borderRadius: '15px',
+    marginBottom: '8px',
+    fontSize: '14px',
+  },
+  inputContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    marginTop: '10px',
+  },
+  textArea: {
+    background: '#374151',
+    border: 'none',
+    padding: '10px 14px',
+    borderRadius: '10px',
+    color: '#ffffff',
+    width: '100%',
+    resize: 'none',
+  },
+  sendButton: {
+    background: '#3B82F6',
+    color: '#fff',
+    padding: '10px 20px',
+    borderRadius: '10px',
+    border: 'none',
+    cursor: 'pointer',
+    flexShrink: 0,
+  }
+};
