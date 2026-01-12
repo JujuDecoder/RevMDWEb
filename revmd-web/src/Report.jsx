@@ -535,7 +535,7 @@ const styles = {
     padding: "10px 22px"
   },
 
-  /* UPDATE STATUS  */
+  /* UPDATE STATUS (OLD) */
   updateStatusCard: {
     width: 520,
     background: "linear-gradient(180deg,#1e293b,#020617)",
