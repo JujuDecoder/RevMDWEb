@@ -1,100 +1,259 @@
-import { useState } from 'react';
+import React, { useState } from "react";
 
 export default function Accounts() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
-  const [accounts] = useState([
-    { id: '10001', fullName: 'Juan Dela Cruz', status: 'Active', lastUpdated: '2025-10-08 01:55:48 AM' },
-    { id: '10002', fullName: 'Maria Santos', status: 'Suspended', lastUpdated: '2025-10-07 04:09:30 PM' },
-    { id: '10003', fullName: 'Roberto Reyes', status: 'Suspended', lastUpdated: '2025-10-06 09:12:11 AM' },
-  ]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredAccounts = accounts.filter((r) => {
-    const matchesSearch = r.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || r.id.includes(searchQuery);
-    const matchesStatus = selectedStatus ? r.status === selectedStatus : true;
-    return matchesSearch && matchesStatus;
-  });
+  const mechanics = [
+    {
+      id: "10001",
+      name: "Juan Dela Cruz",
+      status: "Active",
+      date: "2025-10-08 01:55:48 AM"
+    },
+    {
+      id: "10002",
+      name: "Maria Santos",
+      status: "Suspended",
+      date: "2025-10-07 04:09:30 PM"
+    },
+    {
+      id: "10003",
+      name: "Roberto Reyes",
+      status: "Suspended",
+      date: "2025-10-06 09:12:11 AM"
+    }
+  ];
+
+  const filteredMechanics = mechanics.filter(
+    (m) =>
+      m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      m.id.includes(searchQuery)
+  );
 
   return (
-    <div className="flex min-h-screen bg-[#020617] text-white font-inter">
-      <main className="flex-1 p-6">
-        {/* Top Bar */}
-        <div className="flex justify-between mb-6">
-          <div className="relative flex items-center w-[260px]">
+    <div style={styles.app}>
+      <main style={styles.main}>
+        <h1 style={styles.title}>Mechanic Accounts</h1>
+
+        {/* TOP BAR */}
+        <div style={styles.topBar}>
+          <div style={styles.searchWrapper}>
             <input
               placeholder="Search"
-              className="bg-[#1e293b] text-white p-2 rounded-xl w-full focus:outline-none"
+              style={styles.search}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#94a3b8]">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#94a3b8" strokeWidth="2">
+            <div style={styles.searchIcon}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="#94a3b8"
+                strokeWidth="2"
+              >
                 <circle cx="11" cy="11" r="8" />
                 <line x1="16" y1="16" x2="20" y2="20" />
               </svg>
             </div>
           </div>
-          <div className="text-xl">🔔 👤</div>
+
+          <button style={styles.createButton}>Create Account</button>
         </div>
 
-        {/* Title */}
-        <h1 className="text-3xl mb-5">Mechanic Accounts</h1>
-
-        {/* Filters */}
-        <div className="flex gap-3 mb-5">
-          <select
-            className="bg-[#1e293b] text-[#e5e7eb] p-3 rounded-xl"
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-          >
-            <option value="">All Status</option>
-            <option value="Active">Active</option>
-            <option value="Suspended">Suspended</option>
-          </select>
-          <input type="date" className="bg-[#1e293b] text-[#e5e7eb] p-3 rounded-xl" />
-          <input type="date" className="bg-[#1e293b] text-[#e5e7eb] p-3 rounded-xl" />
-        </div>
-
-        {/* Table */}
-        <div className="overflow-auto bg-[#020617] rounded-xl border border-[#1e293b]">
-          <table className="w-full table-auto">
+        {/* TABLE */}
+        <div style={styles.tableWrap}>
+          <table style={styles.table}>
             <thead>
               <tr>
-                <th className="py-4 px-6 text-left text-sm font-semibold text-[#94a3b8] bg-[#020617] border-b border-[#1e293b]">Mechanic ID</th>
-                <th className="py-4 px-6 text-left text-sm font-semibold text-[#94a3b8] bg-[#020617] border-b border-[#1e293b]">Full Name</th>
-                <th className="py-4 px-6 text-left text-sm font-semibold text-[#94a3b8] bg-[#020617] border-b border-[#1e293b]">Status</th>
-                <th className="py-4 px-6 text-left text-sm font-semibold text-[#94a3b8] bg-[#020617] border-b border-[#1e293b]">Last Updated</th>
+                <th style={styles.th}>Mechanic ID</th>
+                <th style={styles.th}>Full Name</th>
+                <th style={styles.th}>Status</th>
+                <th style={styles.th}>Last Updated</th>
+                <th style={styles.th}>Actions</th>
               </tr>
             </thead>
+
             <tbody>
-              {filteredAccounts.map((account) => (
-                <tr key={account.id} className="border-t border-[#1e293b]">
-                  <td className="py-4 px-6 text-sm">{account.id}</td>
-                  <td className="py-4 px-6 text-sm">{account.fullName}</td>
-                  <td className="py-4 px-6 text-sm">
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs ${statusClass(account.status)}`}>{account.status}</span>
+              {filteredMechanics.map((m) => (
+                <tr key={m.id} style={styles.tr}>
+                  <td style={styles.td}>{m.id}</td>
+                  <td style={styles.td}>{m.name}</td>
+                  <td style={styles.td}>
+                    <span style={statusStyle(m.status)}>{m.status}</span>
                   </td>
-                  <td className="py-4 px-6 text-sm">{account.lastUpdated}</td>
+                  <td style={styles.td}>{m.date}</td>
+                  <td style={styles.td}>
+                    <div style={styles.actionGroup}>
+                      <button style={styles.updateButton}>Update</button>
+                      <button style={styles.archiveButton}>Archive</button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="p-4 text-sm text-[#94a3b8]">
-            Showing {filteredAccounts.length} of {accounts.length} results
-          </div>
+        </div>
+
+        {/* BELOW TABLE */}
+        <div style={styles.bottomActions}>
+          <button style={styles.archivePageButton}>
+            View Archived Accounts
+          </button>
         </div>
       </main>
     </div>
   );
 }
 
-const statusClass = (status) => {
-  switch (status) {
-    case 'Active':
-      return 'bg-green-700 text-green-200';
-    case 'Suspended':
-      return 'bg-yellow-500 text-yellow-900';
-    default:
-      return 'bg-gray-500 text-gray-200';
+/* ===== STYLES ===== */
+
+const styles = {
+  app: {
+    minHeight: "100vh",
+    background: "#020617",
+    color: "#e5e7eb",
+    fontFamily: "Inter, sans-serif"
+  },
+
+  main: {
+    padding: 24
+  },
+
+  title: {
+    fontSize: 26,
+    marginBottom: 20
+  },
+
+  topBar: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 24
+  },
+
+  searchWrapper: {
+    display: "flex",
+    alignItems: "center",
+    position: "relative",
+    width: 260
+  },
+
+  search: {
+    background: "#1e293b",
+    border: "none",
+    padding: "10px 14px",
+    borderRadius: 10,
+    color: "#fff",
+    width: "100%"
+  },
+
+  searchIcon: {
+    position: "absolute",
+    right: 12,
+    top: "50%",
+    transform: "translateY(-50%)"
+  },
+
+  createButton: {
+    background: "#f97316",
+    border: "none",
+    padding: "10px 16px",
+    color: "#fff",
+    borderRadius: 10,
+    cursor: "pointer",
+    fontSize: 14
+  },
+
+  tableWrap: {
+    background: "#020617",
+    borderRadius: 14,
+    border: "1px solid #1e293b",
+    overflow: "hidden"
+  },
+
+  table: {
+    width: "100%",
+    borderCollapse: "collapse"
+  },
+
+  th: {
+    background: "#020617",
+    padding: 14,
+    textAlign: "left",
+    color: "#94a3b8",
+    fontSize: 13
+  },
+
+  tr: {
+    borderTop: "1px solid #1e293b"
+  },
+
+  td: {
+    padding: 14,
+    fontSize: 14
+  },
+
+  actionGroup: {
+    display: "flex",
+    gap: 8
+  },
+
+  updateButton: {
+    background: "#f97316",
+    border: "none",
+    padding: "6px 12px",
+    color: "#fff",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 13
+  },
+
+  archiveButton: {
+    background: "#ef4444",
+    border: "none",
+    padding: "6px 12px",
+    color: "#fff",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 13
+  },
+
+  bottomActions: {
+    marginTop: 20,
+    display: "flex",
+    justifyContent: "flex-end"
+  },
+
+  archivePageButton: {
+    background: "#6ee7b7",
+    border: "none",
+    padding: "10px 16px",
+    borderRadius: 10,
+    cursor: "pointer",
+    fontSize: 14,
+    color: "#022c22"
   }
 };
+
+/* ===== STATUS BADGES ===== */
+
+const statusStyle = (status) => ({
+  padding: "4px 12px",
+  borderRadius: 999,
+  fontSize: 12,
+  background:
+    status === "Active"
+      ? "#064e3b"
+      : status === "Suspended"
+      ? "#713f12"
+      : "#3f3f46",
+  color:
+    status === "Active"
+      ? "#6ee7b7"
+      : status === "Suspended"
+      ? "#fde68a"
+      : "#e5e7eb"
+});
