@@ -3,12 +3,20 @@ import { useNavigate } from "react-router-dom";
 
 import "./index.css";
 
+// 👁️ ICONS
+import showIcon from "./show.png";
+import hideIcon from "./hide.png";
+import revLogo from "./rev-logo.png";
+
 export default function Login({ setToken }) {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  // 👁️ SHOW / HIDE PASSWORD
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -37,8 +45,28 @@ export default function Login({ setToken }) {
     <div style={pageStyle}>
       <div style={modalStyle}>
         <div style={leftSide}>
-          <h1 style={{ marginBottom: 12 }}>RevMD</h1>
-          <p style={{ opacity: 0.8 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,          // logo ↔ text spacing (unchanged)
+              marginBottom: 1, // ✅ reduced gap BELOW logo
+            }}
+          >
+            <img
+              src={revLogo}
+              alt="RevMD logo"
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: "50%",
+              }}
+            />
+            <h1 style={{ margin: 0 }}>RevMD</h1>
+          </div>
+
+          <p style={{ opacity: 0.8, marginTop: 4 }}>
+
             Welcome back.
             <br />
             Please login to continue.
@@ -58,14 +86,47 @@ export default function Login({ setToken }) {
               style={inputStyle}
             />
 
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={inputStyle}
-            />
+            {/* PASSWORD WITH EYE ICON */}
+            <div
+              style={{
+                position: "relative",
+                width: "110%",
+                marginBottom: 14,
+              }}
+            >
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{
+                  ...inputStyle,
+                  marginBottom: 0,
+                  paddingRight: 52,
+                  boxSizing: "border-box",
+                }}
+              />
+
+              <img
+                src={showPassword ? hideIcon : showIcon}
+                alt="Toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  right: 16,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: 18,
+                  height: 18,
+                  cursor: "pointer",
+                  opacity: 1,
+                  backgroundColor: "#f8fafc",
+                  padding: 6,
+                  borderRadius: 8,
+                }}
+              />
+            </div>
 
             <button type="submit" style={buttonStyle}>
               Login
@@ -86,7 +147,11 @@ const pageStyle = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  background: "linear-gradient(135deg, #020617, #1e293b)",
+  background: `
+    radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 55%),
+    linear-gradient(135deg, #020617 0%, #1E293B 60%, #475569 100%)
+  `,
+  filter: "contrast(1.05) saturate(1.05)",
 };
 
 const modalStyle = {
@@ -102,8 +167,7 @@ const modalStyle = {
 const leftSide = {
   flex: 1,
   padding: 40,
-  background: "linear-gradient(135deg, #020617, #0f172a)",
-
+  background: "linear-gradient(135deg, #020617 0%, #0F172A 100%)",
   color: "#fff",
   display: "flex",
   flexDirection: "column",
