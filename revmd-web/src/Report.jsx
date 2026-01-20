@@ -5,10 +5,57 @@ export default function AdminReports() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedCase, setSelectedCase] = useState(null);
   const [showUserProfile, setShowUserProfile] = useState(false);
+  
+
 
   // ✅ ADDED (ONLY)
   const [showUpdateStatus, setShowUpdateStatus] = useState(false);
   const [newStatus, setNewStatus] = useState("");
+  const [showMessageUser, setShowMessageUser] = useState(false);
+  const [messages, setMessages] = useState([
+  {
+    id: 1,
+    sender: "admin",
+    text:
+      "Hi, Mario. I've reviewed your report and appreciate you bringing this issue to our attention.",
+    time: "11:10 AM"
+  },
+  {
+    id: 2,
+    sender: "user",
+    text:
+      "Thank you for looking into this. I appreciate the quick response.",
+    time: "11:14 AM"
+  },
+  {
+    id: 3,
+    sender: "admin",
+    text:
+      "You’re welcome. If you have any further questions, feel free to reach out anytime.",
+    time: "11:17 AM"
+  }
+]);
+
+const [messageInput, setMessageInput] = useState("");
+const handleSendMessage = () => {
+  if (!messageInput.trim()) return;
+
+  setMessages((prev) => [
+    ...prev,
+    {
+      id: Date.now(),
+      sender: "admin",
+      text: messageInput,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    }
+  ]);
+
+  setMessageInput("");
+};
+
 
   const [reports, setReports] = useState([
 
@@ -156,14 +203,16 @@ He didn’t bring the proper tools and ended up leaving the job unfinished.`,
 
             <div style={styles.modalFooter}>
   <button
-    style={{
-      ...styles.grayBtn,
-      background: "linear-gradient(180deg, #3b82f6, #2563eb)",
-      color: "#ffffff"
-    }}
-  >
-    Message User
-  </button>
+  style={{
+    ...styles.grayBtn,
+    background: "linear-gradient(180deg, #3b82f6, #2563eb)",
+    color: "#ffffff"
+  }}
+  onClick={() => setShowMessageUser(true)}
+>
+  Message User
+</button>
+
 
   <button
     style={{
@@ -192,6 +241,77 @@ He didn’t bring the proper tools and ended up leaving the job unfinished.`,
           </div>
         </div>
       )}
+      {/* MESSAGE USER CHAT MODAL */}
+{showMessageUser && (
+  <div
+    style={styles.chatOverlay}
+    onClick={() => setShowMessageUser(false)}
+  >
+    <div
+      style={styles.chatCard}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div style={styles.chatHeader}>
+        <span>Chat with Mario Santos</span>
+        <button
+          style={styles.closeBtn}
+          onClick={() => setShowMessageUser(false)}
+        >
+          ✕
+        </button>
+      </div>
+
+      <div style={styles.chatUserRow}>
+        <img
+          src="https://i.pravatar.cc/80?img=12"
+          alt="User"
+          style={styles.chatAvatar}
+        />
+        <div>
+          <strong>Mario Santos</strong>
+          <div style={styles.onlineStatus}>
+            <span style={styles.onlineDot} /> Online
+          </div>
+        </div>
+      </div>
+
+      <div style={styles.chatBody}>
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            style={
+              msg.sender === "admin"
+                ? styles.chatBubbleRight
+                : styles.chatBubbleLeft
+            }
+          >
+            {msg.text}
+            <div style={styles.chatTime}>{msg.time}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={styles.chatInputRow}>
+        <input
+          placeholder="Type a message..."
+          style={styles.chatInput}
+          value={messageInput}
+          onChange={(e) => setMessageInput(e.target.value)}
+          onKeyDown={(e) =>
+            e.key === "Enter" && handleSendMessage()
+          }
+        />
+        <button
+          style={styles.sendBtn}
+          onClick={handleSendMessage}
+        >
+          ➤
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       {/* ✅ USER PROFILE MODAL — UNCHANGED */}
       {showUserProfile && (
@@ -256,7 +376,13 @@ He didn’t bring the proper tools and ended up leaving the job unfinished.`,
 
             <div style={styles.userProfileFooter}>
               <button style={styles.suspendBtn}>Suspend Account</button>
-              <button style={styles.messageBtn}>Message User</button>
+              <button
+  style={styles.messageBtn}
+  onClick={() => setShowMessageUser(true)}
+>
+  Message User
+</button>
+
             </div>
           </div>
         </div>
@@ -341,6 +467,7 @@ He didn’t bring the proper tools and ended up leaving the job unfinished.`,
     </div>
   );
 }
+
 
 /* ================= STYLES ================= */
 
@@ -576,7 +703,124 @@ const styles = {
     display: "flex",
     gap: 12,
     alignItems: "center"
-  }
+  },
+  /* CHAT UI */
+chatCard: {
+  width: 520,
+  height: 620,
+  background: "linear-gradient(180deg,#1e293b,#020617)",
+  borderRadius: 20,
+  display: "flex",
+  flexDirection: "column"
+},
+
+chatHeader: {
+  background: "#2b3a67",
+  padding: 14,
+  display: "flex",
+  justifyContent: "space-between",
+  borderTopLeftRadius: 20,
+  borderTopRightRadius: 20
+},
+
+chatUserRow: {
+  display: "flex",
+  gap: 12,
+  padding: 16,
+  alignItems: "center",
+  borderBottom: "1px solid #334155"
+},
+
+chatAvatar: {
+  width: 44,
+  height: 44,
+  borderRadius: 10
+},
+
+onlineStatus: {
+  fontSize: 12,
+  color: "#94a3b8",
+  display: "flex",
+  alignItems: "center",
+  gap: 6
+},
+
+onlineDot: {
+  width: 8,
+  height: 8,
+  background: "#22c55e",
+  borderRadius: "50%"
+},
+
+chatBody: {
+  flex: 1,
+  padding: 16,
+  display: "flex",
+  flexDirection: "column",
+  gap: 12,
+  overflowY: "auto"
+},
+
+chatBubbleLeft: {
+  alignSelf: "flex-start",
+  background: "#1e293b",
+  padding: "10px 14px",
+  borderRadius: 14,
+  maxWidth: "75%",
+  fontSize: 14
+},
+
+chatBubbleRight: {
+  alignSelf: "flex-end",
+  background: "#2563eb",
+  padding: "10px 14px",
+  borderRadius: 14,
+  maxWidth: "75%",
+  fontSize: 14
+},
+
+chatTime: {
+  fontSize: 11,
+  color: "#94a3b8",
+  marginTop: 6,
+  textAlign: "right"
+},
+
+chatInputRow: {
+  padding: 14,
+  display: "flex",
+  gap: 10,
+  borderTop: "1px solid #334155"
+},
+
+chatInput: {
+  flex: 1,
+  background: "#020617",
+  border: "1px solid #334155",
+  color: "#fff",
+  padding: "10px 14px",
+  borderRadius: 999
+},
+
+sendBtn: {
+  background: "#2563eb",
+  color: "#fff",
+  border: "none",
+  borderRadius: "50%",
+  width: 42,
+  height: 42,
+  cursor: "pointer"
+},
+chatOverlay: {
+  position: "fixed",
+  inset: 0,
+  background: "rgba(2,6,23,0.75)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 50
+}
+
 };
 
 const statusStyle = (status) => ({
@@ -594,4 +838,3 @@ const statusStyle = (status) => ({
   color:
     status === "To Review" ? "#facc15" : "#ffffff" 
 });
-
