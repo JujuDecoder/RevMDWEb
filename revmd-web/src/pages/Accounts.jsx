@@ -1,4 +1,12 @@
 import React, { useState } from "react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "../components/ui/table";
 
 export default function Accounts() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -8,20 +16,20 @@ export default function Accounts() {
       id: "10001",
       name: "Juan Dela Cruz",
       status: "Active",
-      date: "2025-10-08 01:55:48 AM"
+      date: "2025-10-08 01:55:48 AM",
     },
     {
       id: "10002",
       name: "Maria Santos",
       status: "Suspended",
-      date: "2025-10-07 04:09:30 PM"
+      date: "2025-10-07 04:09:30 PM",
     },
     {
       id: "10003",
       name: "Roberto Reyes",
       status: "Suspended",
-      date: "2025-10-06 09:12:11 AM"
-    }
+      date: "2025-10-06 09:12:11 AM",
+    },
   ];
 
   const filteredMechanics = mechanics.filter(
@@ -65,36 +73,35 @@ export default function Accounts() {
 
         {/* TABLE */}
         <div style={styles.tableWrap}>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th style={styles.th}>Mechanic ID</th>
-                <th style={styles.th}>Full Name</th>
-                <th style={styles.th}>Status</th>
-                <th style={styles.th}>Last Updated</th>
-                <th style={styles.th}>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Mechanic ID</TableHead>
+                <TableHead>Full Name</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Last Updated</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {filteredMechanics.map((m) => (
-                <tr key={m.id} style={styles.tr}>
-                  <td style={styles.td}>{m.id}</td>
-                  <td style={styles.td}>{m.name}</td>
-                  <td style={styles.td}>
+                <TableRow key={m.id}>
+                  <TableCell>{m.id}</TableCell>
+                  <TableCell>{m.name}</TableCell>
+                  <TableCell>
                     <span style={statusStyle(m.status)}>{m.status}</span>
-                  </td>
-                  <td style={styles.td}>{m.date}</td>
-                  <td style={styles.td}>
+                  </TableCell>
+                  <TableCell>{m.date}</TableCell>
+                  <TableCell>
                     <div style={styles.actionGroup}>
                       <button style={styles.updateButton}>Update</button>
                       <button style={styles.archiveButton}>Archive</button>
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
 
         {/* BELOW TABLE */}
@@ -115,30 +122,30 @@ const styles = {
     minHeight: "100vh",
     background: "#020617",
     color: "#e5e7eb",
-    fontFamily: "Inter, sans-serif"
+    fontFamily: "Inter, sans-serif",
   },
 
   main: {
-    padding: 24
+    padding: 24,
   },
 
   title: {
     fontSize: 26,
-    marginBottom: 20
+    marginBottom: 20,
   },
 
   topBar: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 24
+    marginBottom: 24,
   },
 
   searchWrapper: {
     display: "flex",
     alignItems: "center",
     position: "relative",
-    width: 260
+    width: 260,
   },
 
   search: {
@@ -147,14 +154,14 @@ const styles = {
     padding: "10px 14px",
     borderRadius: 10,
     color: "#fff",
-    width: "100%"
+    width: "100%",
   },
 
   searchIcon: {
     position: "absolute",
     right: 12,
     top: "50%",
-    transform: "translateY(-50%)"
+    transform: "translateY(-50%)",
   },
 
   createButton: {
@@ -164,41 +171,19 @@ const styles = {
     color: "#fff",
     borderRadius: 10,
     cursor: "pointer",
-    fontSize: 14
+    fontSize: 14,
   },
 
   tableWrap: {
     background: "#020617",
     borderRadius: 14,
     border: "1px solid #1e293b",
-    overflow: "hidden"
-  },
-
-  table: {
-    width: "100%",
-    borderCollapse: "collapse"
-  },
-
-  th: {
-    background: "#020617",
-    padding: 14,
-    textAlign: "left",
-    color: "#94a3b8",
-    fontSize: 13
-  },
-
-  tr: {
-    borderTop: "1px solid #1e293b"
-  },
-
-  td: {
-    padding: 14,
-    fontSize: 14
+    overflow: "hidden",
   },
 
   actionGroup: {
     display: "flex",
-    gap: 8
+    gap: 8,
   },
 
   updateButton: {
@@ -208,7 +193,7 @@ const styles = {
     color: "#fff",
     borderRadius: 8,
     cursor: "pointer",
-    fontSize: 13
+    fontSize: 13,
   },
 
   archiveButton: {
@@ -218,13 +203,13 @@ const styles = {
     color: "#fff",
     borderRadius: 8,
     cursor: "pointer",
-    fontSize: 13
+    fontSize: 13,
   },
 
   bottomActions: {
     marginTop: 20,
     display: "flex",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
 
   archivePageButton: {
@@ -234,8 +219,8 @@ const styles = {
     borderRadius: 10,
     cursor: "pointer",
     fontSize: 14,
-    color: "#022c22"
-  }
+    color: "#022c22",
+  },
 };
 
 /* ===== STATUS BADGES ===== */
@@ -255,5 +240,6 @@ const statusStyle = (status) => ({
       ? "#6ee7b7"
       : status === "Suspended"
       ? "#fde68a"
-      : "#e5e7eb"
+      : "#e5e7eb",
 });
+

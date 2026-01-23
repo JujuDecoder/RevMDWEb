@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import "./index.css";
-
 // 👁️ ICONS
-import showIcon from "./show.png";
-import hideIcon from "./hide.png";
-import revLogo from "./rev-logo.png";
+import showIcon from "../show.png";
+import hideIcon from "../hide.png";
+import revLogo from "../rev-logo.png";
 
 export default function Login({ setToken }) {
   const navigate = useNavigate();
@@ -49,8 +47,8 @@ export default function Login({ setToken }) {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 6,          // logo ↔ text spacing (unchanged)
-              marginBottom: 1, // ✅ reduced gap BELOW logo
+              gap: 6, // logo ↔ text spacing (unchanged)
+              marginBottom: 1, // reduced gap BELOW logo
             }}
           >
             <img
@@ -66,7 +64,6 @@ export default function Login({ setToken }) {
           </div>
 
           <p style={{ opacity: 0.8, marginTop: 4 }}>
-
             Welcome back.
             <br />
             Please login to continue.
@@ -85,48 +82,44 @@ export default function Login({ setToken }) {
               required
               style={inputStyle}
             />
+{/* PASSWORD WITH EYE ICON */}
+<div
+  style={{
+    position: "relative",
+    width: "100%",
+    marginBottom: 14,
+  }}
+>
+  <input
+    type={showPassword ? "text" : "password"}
+    placeholder="Password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    required
+    style={{
+      ...inputStyle,
+      marginBottom: 0,
+      paddingRight: 44, // space for icon
+      boxSizing: "border-box",
+    }}
+  />
 
-            {/* PASSWORD WITH EYE ICON */}
-            <div
-              style={{
-                position: "relative",
-                width: "110%",
-                marginBottom: 14,
-              }}
-            >
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                style={{
-                  ...inputStyle,
-                  marginBottom: 0,
-                  paddingRight: 52,
-                  boxSizing: "border-box",
-                }}
-              />
-
-              <img
-                src={showPassword ? hideIcon : showIcon}
-                alt="Toggle password visibility"
-                onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: "absolute",
-                  right: 16,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  width: 18,
-                  height: 18,
-                  cursor: "pointer",
-                  opacity: 1,
-                  backgroundColor: "#f8fafc",
-                  padding: 6,
-                  borderRadius: 8,
-                }}
-              />
-            </div>
+  <img
+    src={showPassword ? hideIcon : showIcon}
+    alt="Toggle password visibility"
+    onClick={() => setShowPassword(!showPassword)}
+    style={{
+      position: "absolute",
+      right: 12,
+      top: "50%",
+      transform: "translateY(-50%)",
+      width: 18,
+      height: 18,
+      cursor: "pointer",
+      opacity: 0.8,
+    }}
+  />
+</div>
 
             <button type="submit" style={buttonStyle}>
               Login
@@ -207,3 +200,4 @@ const errorStyle = {
   color: "#dc2626",
   fontSize: 14,
 };
+
