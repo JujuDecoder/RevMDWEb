@@ -75,3 +75,4 @@ const logoutButton = {
   fontWeight: 600,
   cursor: "pointer",
 };
+

@@ -1,4 +1,12 @@
-import React from 'react';
+import React from "react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "../components/ui/table";
 
 const Archive = ({ archivedReports, onClose }) => {
   return (
@@ -7,7 +15,9 @@ const Archive = ({ archivedReports, onClose }) => {
         {/* Header with title and close button */}
         <div style={styles.headerContainer}>
           <h2 style={styles.modalTitle}>Archived Appeals</h2>
-          <button style={styles.closeButton} onClick={onClose}>X</button>
+          <button style={styles.closeButton} onClick={onClose}>
+            X
+          </button>
         </div>
 
         {/* Modal Body */}
@@ -16,24 +26,24 @@ const Archive = ({ archivedReports, onClose }) => {
             <p>No appeals archived yet.</p>
           ) : (
             <div style={styles.dataGrid}>
-              <table style={styles.table}>
-                <thead>
-                  <tr>
-                    <th style={styles.tableHeader}>Appeal ID</th>
-                    <th style={styles.tableHeader}>Mechanic</th>
-                    <th style={styles.tableHeader}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Appeal ID</TableHead>
+                    <TableHead>Mechanic</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {archivedReports.map((r) => (
-                    <tr key={r.id} style={styles.tableRow}>
-                      <td style={styles.tableCell}>{r.id}</td>
-                      <td style={styles.tableCell}>{r.mechanic}</td>
-                      <td style={styles.tableCell}>{r.status}</td>
-                    </tr>
+                    <TableRow key={r.id}>
+                      <TableCell>{r.id}</TableCell>
+                      <TableCell>{r.mechanic}</TableCell>
+                      <TableCell>{r.status}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           )}
         </div>
@@ -92,25 +102,6 @@ const styles = {
   dataGrid: {
     overflowY: 'auto', // Ensure the table scrolls if there are too many items
     height: '100%', // Allow table to take full height within modal
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    color: '#e5e7eb',
-  },
-  tableHeader: {
-    background: '#2d3748',
-    padding: '10px',
-    textAlign: 'left',
-    fontSize: '14px',
-  },
-  tableRow: {
-    borderTop: '1px solid #1e293b',
-  },
-  tableCell: {
-    padding: '10px',
-    textAlign: 'left',
-    fontSize: '14px',
   },
 };
 

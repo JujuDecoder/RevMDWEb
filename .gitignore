@@ -1,0 +1,27 @@
+## Node modules
+node_modules/
+revmd-web/node_modules/
+server/node_modules/
+
+## Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+## Build output
+revmd-web/dist/
+server/dist/
+
+## Environment files
+.env
+server/.env
+
+## IDE/editor
+.vscode/
+.DS_Store
+
+## Service account / secrets
+server/src/config/serviceAccountKey.json
+
+server/src/config/serviceAccountKey.json
