@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase.js";
 
 // 👁️ ICONS
 import showIcon from "../show.png";
@@ -16,28 +18,27 @@ export default function Login({ setToken }) {
   // 👁️ SHOW / HIDE PASSWORD
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
+ const handleLogin = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    try {
-      const res = await fetch("http://localhost:5000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
-      const data = await res.json();
+    const token = await userCredential.user.getIdToken();
 
-      if (!res.ok) throw new Error(data.message || "Login failed");
+    localStorage.setItem("token", token);
+    setToken(token);
 
-      localStorage.setItem("token", data.token);
-      setToken(data.token);
-      navigate("/dashboard");
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+    navigate("/dashboard");
+  } catch (err) {
+    setError("Invalid email or password");
+  }
+};
 
   return (
     <div style={pageStyle}>
