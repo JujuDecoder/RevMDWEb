@@ -26,3 +26,7 @@ server/src/config/serviceAccountKey.json
 
 server/src/config/serviceAccountKey.json
 server/src/config/serviceAccountKey.js
+# Secrets
+server/serviceAccountKey.json
+server/src/config/serviceAccountKey.js
+.env
