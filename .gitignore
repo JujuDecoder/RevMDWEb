@@ -25,3 +25,4 @@ server/.env
 server/src/config/serviceAccountKey.json
 
 server/src/config/serviceAccountKey.json
+server/src/config/serviceAccountKey.js
