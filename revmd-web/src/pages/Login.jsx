@@ -18,11 +18,12 @@ export default function Login({ setToken }) {
   // 👁️ SHOW / HIDE PASSWORD
   const [showPassword, setShowPassword] = useState(false);
 
- const handleLogin = async (e) => {
+const handleLogin = async (e) => {
   e.preventDefault();
   setError("");
 
   try {
+    // 1️⃣ Firebase login
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
@@ -30,15 +31,36 @@ export default function Login({ setToken }) {
     );
 
     const token = await userCredential.user.getIdToken();
-
     localStorage.setItem("token", token);
     setToken(token);
 
+    // 2️⃣ CHECK ROLE WITH BACKEND (ADMINS ONLY)
+    const res = await fetch("http://localhost:5000/api/dashboard", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.status === 403) {
+      // ❌ NOT ADMIN
+      setError("Access denied. Admins only.");
+      localStorage.removeItem("token");
+      return;
+    }
+
+    if (!res.ok) {
+      throw new Error("Authorization failed");
+    }
+
+    // ✅ ADMIN → ALLOW ACCESS
     navigate("/dashboard");
+
   } catch (err) {
+    console.error(err);
     setError("Invalid email or password");
   }
 };
+
 
   return (
     <div style={pageStyle}>
