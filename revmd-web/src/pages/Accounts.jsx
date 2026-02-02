@@ -10,27 +10,73 @@ import {
 
 export default function Accounts() {
   const [searchQuery, setSearchQuery] = useState("");
-
-  const mechanics = [
+  const [mechanics, setMechanics] = useState([
     {
       id: "10001",
       name: "Juan Dela Cruz",
       status: "Active",
       date: "2025-10-08 01:55:48 AM",
+      expertise: "Engine Tuning",
     },
     {
       id: "10002",
       name: "Maria Santos",
       status: "Suspended",
       date: "2025-10-07 04:09:30 PM",
+      expertise: "Exhaust Systems",
     },
     {
       id: "10003",
       name: "Roberto Reyes",
       status: "Suspended",
       date: "2025-10-06 09:12:11 AM",
+      expertise: "Brake Systems",
     },
-  ];
+  ]);
+
+  // Modal + form state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [form, setForm] = useState({
+    lastName: "",
+    firstName: "",
+    email: "",
+    expertise: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+
+  const resetForm = () =>
+    setForm({ lastName: "", firstName: "", email: "", expertise: "", password: "" });
+
+  const openModal = () => {
+    resetForm();
+    setIsModalOpen(true);
+  };
+  const closeModal = () => setIsModalOpen(false);
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+    // simple validation
+    if (
+      !form.lastName.trim() ||
+      !form.firstName.trim() ||
+      !form.email.trim() ||
+      !form.password.trim()
+    ) {
+      alert("Please fill in required fields.");
+      return;
+    }
+    const newId = (Math.floor(10000 + Math.random() * 90000)).toString();
+    const newMechanic = {
+      id: newId,
+      name: `${form.firstName.trim()} ${form.lastName.trim()}`,
+      status: "Active",
+      date: new Date().toLocaleString(),
+      expertise: form.expertise.trim(),
+    };
+    setMechanics((prev) => [newMechanic, ...prev]);
+    closeModal();
+  };
 
   const filteredMechanics = mechanics.filter(
     (m) =>
@@ -68,7 +114,9 @@ export default function Accounts() {
             </div>
           </div>
 
-          <button style={styles.createButton}>Create Account</button>
+          <button style={styles.createButton} onClick={openModal}>
+            Create Account
+          </button>
         </div>
 
         {/* TABLE */}
@@ -94,8 +142,41 @@ export default function Accounts() {
                   <TableCell>{m.date}</TableCell>
                   <TableCell>
                     <div style={styles.actionGroup}>
-                      <button style={styles.updateButton}>Update</button>
-                      <button style={styles.archiveButton}>Archive</button>
+                      <button
+                        type="button"
+                        title="Edit mechanic"
+                        aria-label="Edit mechanic"
+                        style={{ ...styles.iconButton, ...styles.editIconButton }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="18"
+                          height="18"
+                          fill="#ffffff"
+                          style={styles.iconSvg}
+                        >
+                          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41L18.37 3.29a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                        </svg>
+                      </button>
+
+                      <button
+                        type="button"
+                        title="Archive mechanic"
+                        aria-label="Archive mechanic"
+                        style={{ ...styles.iconButton, ...styles.archiveIconButton }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="18"
+                          height="18"
+                          fill="#ef4444"
+                          style={styles.iconSvg}
+                        >
+                          <path d="M9 3h6a1 1 0 0 1 1 1v1h3v2H4V5h3V4a1 1 0 0 1 1-1zm-3 7h12l-1 9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2l-1-9zM10 11v6h2v-6h-2z" />
+                        </svg>
+                      </button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -106,11 +187,96 @@ export default function Accounts() {
 
         {/* BELOW TABLE */}
         <div style={styles.bottomActions}>
-          <button style={styles.archivePageButton}>
-            View Archived Accounts
-          </button>
+          <button style={styles.archivePageButton}>View Archived Accounts</button>
         </div>
       </main>
+
+      {/* CREATE ACCOUNT MODAL */}
+      {isModalOpen && (
+        <div style={styles.modalOverlay} onMouseDown={closeModal}>
+          <div
+            style={styles.modal}
+            onMouseDown={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Create Mechanic Account"
+          >
+            <h2 style={styles.modalTitle}>Create Mechanic Account</h2>
+            <form onSubmit={handleCreate}>
+              <div style={styles.formRow}>
+                <label style={styles.label}>Last Name</label>
+                <input
+                  style={styles.input}
+                  placeholder="Enter last name"
+                  value={form.lastName}
+                  onChange={(e) => setForm((s) => ({ ...s, lastName: e.target.value }))}
+                />
+              </div>
+
+              <div style={styles.formRow}>
+                <label style={styles.label}>First Name</label>
+                <input
+                  style={styles.input}
+                  placeholder="Enter first name"
+                  value={form.firstName}
+                  onChange={(e) => setForm((s) => ({ ...s, firstName: e.target.value }))}
+                />
+              </div>
+
+              <div style={styles.formRow}>
+                <label style={styles.label}>Email</label>
+                <input
+                  style={styles.input}
+                  type="email"
+                  placeholder="Enter email address"
+                  value={form.email}
+                  onChange={(e) => setForm((s) => ({ ...s, email: e.target.value }))}
+                />
+              </div>
+
+              <div style={styles.formRow}>
+                <label style={styles.label}>Expertise</label>
+                <input
+                  style={styles.input}
+                  placeholder="Type mechanic type (e.g., Engine Tuning)"
+                  value={form.expertise}
+                  onChange={(e) => setForm((s) => ({ ...s, expertise: e.target.value }))}
+                />
+              </div>
+
+              <div style={styles.formRow}>
+                <label style={styles.label}>Password</label>
+                <div style={{ position: "relative" }}>
+                  <input
+                    style={styles.input}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter password"
+                    value={form.password}
+                    onChange={(e) => setForm((s) => ({ ...s, password: e.target.value }))}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((s) => !s)}
+                    style={styles.eyeButton}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </button>
+                </div>
+              </div>
+
+              <div style={styles.modalActions}>
+                <button type="button" style={styles.cancelButton} onClick={closeModal}>
+                  Cancel
+                </button>
+                <button type="submit" style={styles.createSubmitButton}>
+                  Create Account
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -186,6 +352,31 @@ const styles = {
     gap: 8,
   },
 
+  iconButton: {
+    background: "transparent",
+    border: "none",
+    padding: 8,
+    borderRadius: 8,
+    cursor: "pointer",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 36,
+    height: 36,
+  },
+
+  editIconButton: {
+    // subtle hover
+  },
+
+  archiveIconButton: {
+    // subtle hover
+  },
+
+  iconSvg: {
+    display: "block",
+  },
+
   updateButton: {
     background: "#f97316",
     border: "none",
@@ -221,6 +412,106 @@ const styles = {
     fontSize: 14,
     color: "#022c22",
   },
+
+  /* Modal styles */
+  modalOverlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(2,6,23,0.7)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 2000,
+  },
+
+  modal: {
+    width: 520,
+    padding: 24,
+    background: "#0f172a",
+    borderRadius: 12,
+    border: "1px solid rgba(255,255,255,0.04)",
+    boxShadow: "0 10px 30px rgba(2,6,23,0.9)",
+  },
+
+  modalTitle: {
+    textAlign: "center",
+    margin: "0 0 18px 0",
+    fontSize: 20,
+  },
+
+  formRow: {
+    marginBottom: 12,
+  },
+
+  label: {
+    display: "block",
+    marginBottom: 6,
+    color: "#e6e9ed",
+    fontSize: 13,
+  },
+
+  input: {
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: 8,
+    border: "1px solid rgba(255,255,255,0.03)",
+    background: "#1e293b",
+    color: "#e5e7eb",
+    outline: "none",
+  },
+
+  select: {
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: 8,
+    border: "1px solid rgba(255,255,255,0.03)",
+    background: "#0b1220",
+    color: "#e6eef8",
+    minHeight: 44,
+  },
+
+  smallHint: {
+    marginTop: 6,
+    fontSize: 12,
+    color: "#9ca3af",
+  },
+
+  eyeButton: {
+    position: "absolute",
+    right: 8,
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: "transparent",
+    border: "none",
+    color: "#cbd5e1",
+    cursor: "pointer",
+    fontSize: 16,
+  },
+
+  modalActions: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: 12,
+    marginTop: 18,
+  },
+
+  cancelButton: {
+    background: "#0f1724",
+    border: "1px solid rgba(255,255,255,0.04)",
+    padding: "8px 14px",
+    borderRadius: 8,
+    color: "#cbd5e1",
+    cursor: "pointer",
+  },
+
+  createSubmitButton: {
+    background: "#f97316",
+    border: "none",
+    padding: "8px 14px",
+    borderRadius: 8,
+    color: "#fff",
+    cursor: "pointer",
+  },
 };
 
 /* ===== STATUS BADGES ===== */
@@ -242,4 +533,3 @@ const statusStyle = (status) => ({
       ? "#fde68a"
       : "#e5e7eb",
 });
-
