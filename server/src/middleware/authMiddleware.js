@@ -11,16 +11,21 @@ export const verifyToken = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    
+    // 1️⃣ Verify Firebase Auth token
     const decoded = await admin.auth().verifyIdToken(token);
     req.user = decoded;
 
-    const adminDoc = await db.collection("admins").doc(decoded.uid).get();
+    // 2️⃣ ADMIN CHECK — UID BASED
+    const adminDoc = await db
+      .collection("admins")
+      .doc(decoded.uid)
+      .get();
 
     if (!adminDoc.exists) {
-      return res.status(403).json({ message: "Not an admin" });
+      return res.status(403).json({ message: "Admins only" });
     }
 
+    // 3️⃣ Passed all checks
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid token" });
