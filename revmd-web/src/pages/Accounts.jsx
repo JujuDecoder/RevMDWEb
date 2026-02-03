@@ -1,284 +1,295 @@
-import React, { useState, useEffect } from "react"; 
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/table"; 
-import ArchivedAccounts from './ArchiveAccount'; 
+import React, { useState, useEffect } from "react";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/table";
+import { useNavigate } from "react-router-dom";
 
-export default function Accounts() { 
-  const [searchQuery, setSearchQuery] = useState(""); 
-  const [mechanics, setMechanics] = useState([]); 
-  const [isLoading, setIsLoading] = useState(true); 
 
-  useEffect(() => { 
-    const fetchMechanics = async () => { 
-      try { 
-        const res = await fetch("http://localhost:5000/api/mechanics"); 
-        const data = await res.json(); 
-        setMechanics( 
-          data.map((m) => ({ 
-            id: m.id, 
-            name: `${m.firstName} ${m.lastName}`, 
-            status: m.status || "Active", 
-            date: m.date, 
-            expertise: m.expertise || "", 
-          })) 
-        ); 
-        setIsLoading(false); 
-      } catch (err) { 
-        console.error(err); 
-        setIsLoading(false); 
-      } 
-    }; 
-    fetchMechanics(); 
-  }, []); 
+
+export default function Accounts() {
+  const navigate = useNavigate();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [mechanics, setMechanics] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMechanics = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/mechanics");
+        const data = await res.json();
+        setMechanics(
+          data.map((m) => ({
+            id: m.id,
+            name: `${m.firstName} ${m.lastName}`,
+            status: m.status || "Active",
+            date: m.date,
+            expertise: m.expertise || "",
+          }))
+        );
+        setIsLoading(false);
+      } catch (err) {
+        console.error(err);
+        setIsLoading(false);
+      }
+    };
+    fetchMechanics();
+  }, []);
 
   // Modal + form state 
-  const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [form, setForm] = useState({ 
-    lastName: "", 
-    firstName: "", 
-    email: "", 
-    expertise: "", 
-    password: "", 
-  }); 
-  const [showPassword, setShowPassword] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [form, setForm] = useState({
+    lastName: "",
+    firstName: "",
+    email: "",
+    expertise: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
 
-  const resetForm = () => setForm({ 
-    lastName: "", 
-    firstName: "", 
-    email: "", 
-    expertise: "", 
-    password: "", 
-  }); 
+  const resetForm = () => setForm({
+    lastName: "",
+    firstName: "",
+    email: "",
+    expertise: "",
+    password: "",
+  });
 
-  const openModal = () => { 
-    resetForm(); 
-    setIsModalOpen(true); 
-  }; 
+  const openModal = () => {
+    resetForm();
+    setIsModalOpen(true);
+  };
 
-  const closeModal = () => setIsModalOpen(false); 
+  const closeModal = () => setIsModalOpen(false);
 
-  const handleCreate = async (e) => { 
-    e.preventDefault(); 
-    if ( 
-      !form.lastName.trim() || 
-      !form.firstName.trim() || 
-      !form.email.trim() || 
-      !form.password.trim() 
-    ) { 
-      alert("Please fill in required fields."); 
-      return; 
-    } 
-    try { 
-      const res = await fetch("http://localhost:5000/api/mechanics/create", { 
-        method: "POST", 
-        headers: { "Content-Type": "application/json" }, 
-        body: JSON.stringify({ 
-          firstName: form.firstName, 
-          lastName: form.lastName, 
-          email: form.email, 
-          password: form.password, 
-          expertise: form.expertise, 
-        }), 
-      }); 
-      const data = await res.json(); 
-      if (!res.ok) { 
-        alert(data.message); 
-        return; 
-      } 
-      setMechanics((prev) => [ 
-        { 
-          id: data.id, 
-          name: `${form.firstName} ${form.lastName}`, 
-          status: "Active", 
-          date: new Date().toLocaleString(), 
-          expertise: form.expertise, 
-        }, 
-        ...prev, 
-      ]); 
-      closeModal(); 
-    } catch (err) { 
-      console.error(err); 
-      alert("Failed to create account"); 
-    } 
-  }; 
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    if (
+      !form.lastName.trim() ||
+      !form.firstName.trim() ||
+      !form.email.trim() ||
+      !form.password.trim()
+    ) {
+      alert("Please fill in required fields.");
+      return;
+    }
+    try {
+      const res = await fetch("http://localhost:5000/api/mechanics/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          password: form.password,
+          expertise: form.expertise,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.message);
+        return;
+      }
+      setMechanics((prev) => [
+        {
+          id: data.id,
+          name: `${form.firstName} ${form.lastName}`,
+          status: "Active",
+          date: new Date().toLocaleString(),
+          expertise: form.expertise,
+        },
+        ...prev,
+      ]);
+      closeModal();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create account");
+    }
+  };
 
-  const handleDelete = async (id) => { 
-    const confirmDelete = window.confirm("Are you sure you want to delete this mechanic?"); 
-    if (!confirmDelete) return; 
-    try { 
-      const res = await fetch(`http://localhost:5000/api/mechanics/archive/${id}`, { 
-        method: "POST", 
-        headers: { "Content-Type": "application/json" }, 
-      }); 
-      if (!res.ok) { 
-        throw new Error("Failed to archive mechanic"); 
-      } 
-      setMechanics((prev) => prev.filter((mechanic) => mechanic.id !== id)); 
-    } catch (err) { 
-      console.error(err); 
-      alert("Failed to delete mechanic"); 
-    } 
-    console.log("Deleting mechanic with ID:", id); 
-  }; 
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this mechanic?");
+    if (!confirmDelete) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/mechanics/archive/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) {
+        throw new Error("Failed to archive mechanic");
+      }
+      setMechanics((prev) => prev.filter((mechanic) => mechanic.id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete mechanic");
+    }
+    console.log("Deleting mechanic with ID:", id);
+  };
 
-  const filteredMechanics = mechanics.filter( 
-    (m) => 
-      m.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      m.id.includes(searchQuery) 
-  ); 
+  const filteredMechanics = mechanics.filter(
+    (m) =>
+      m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      m.id.includes(searchQuery)
+  );
 
-  return ( 
-    <div style={styles.app}> 
-      <main style={styles.main}> 
-        <h1 style={styles.title}>Mechanic Accounts</h1> 
-        {/* TOP BAR */} 
-        <div style={styles.topBar}> 
-          <div style={styles.searchWrapper}> 
-            <input 
-              placeholder="Search" 
-              style={styles.search} 
-              value={searchQuery} 
-              onChange={(e) => setSearchQuery(e.target.value)} 
-            /> 
-            <div style={styles.searchIcon}> 
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#94a3b8" strokeWidth="2"> 
-                <circle cx="11" cy="11" r="8" /> 
-                <line x1="16" y1="16" x2="20" y2="20" /> 
-              </svg> 
-            </div> 
-          </div> 
-          <button style={styles.createButton} onClick={openModal}> Create Account </button> 
-        </div> 
-        {/* TABLE */} 
-        <div style={styles.tableWrap}> 
-          <Table> 
-            <TableHeader> 
-              <TableRow> 
-                <TableHead>Mechanic ID</TableHead> 
-                <TableHead>Full Name</TableHead> 
-                <TableHead>Status</TableHead> 
-                <TableHead>Last Updated</TableHead> 
-                <TableHead>Actions</TableHead> 
-              </TableRow> 
-            </TableHeader> 
-            <TableBody> 
-              {filteredMechanics.map((m) => ( 
-                <TableRow key={m.id}> 
-                  <TableCell>{m.id}</TableCell> 
-                  <TableCell>{m.name}</TableCell> 
-                  <TableCell> 
-                    <span style={statusStyle(m.status)}>{m.status}</span> 
-                  </TableCell> 
-                  <TableCell>{m.date}</TableCell> 
-                  <TableCell> 
-                    <div style={styles.actionGroup}> 
-                      {/* Edit Button */} 
-                      <button 
-                        type="button" 
-                        title="Edit mechanic" 
-                        aria-label="Edit mechanic" 
-                        style={{ ...styles.iconButton, ...styles.editIconButton }} 
-                      > 
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="#ffffff" style={styles.iconSvg}> 
-                          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41L18.37 3.29a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" /> 
-                        </svg> 
-                      </button> 
-                      {/* Delete Button */} 
-                      <button 
-                        type="button" 
-                        title="Delete mechanic" 
-                        style={{ ...styles.iconButton, ...styles.deleteIconButton }} 
-                        onClick={() => handleDelete(m.id)} 
-                      > 
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="#ef4444" style={styles.iconSvg}> 
-                          <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-3h8v-9H9v9zM16 2H8a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2z" /> 
-                        </svg> 
-                      </button> 
-                    </div> 
-                  </TableCell> 
-                </TableRow> 
-              ))} 
-            </TableBody> 
-          </Table> 
-        </div> 
-        {/* BELOW TABLE */} 
-        <div style={styles.bottomActions}> 
-          <button style={styles.archivePageButton}> View Archived Accounts </button> 
-        </div> 
-      </main> 
+  return (
+    <div style={styles.app}>
+      <main style={styles.main}>
+        <h1 style={styles.title}>Mechanic Accounts</h1>
+        {/* TOP BAR */}
+        <div style={styles.topBar}>
+          <div style={styles.searchWrapper}>
+            <input
+              placeholder="Search"
+              style={styles.search}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <div style={styles.searchIcon}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#94a3b8" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="16" y1="16" x2="20" y2="20" />
+              </svg>
+            </div>
+          </div>
+          <button style={styles.createButton} onClick={openModal}> Create Account </button>
+        </div>
+        {/* TABLE */}
+        <div style={styles.tableWrap}>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Mechanic ID</TableHead>
+                <TableHead>Full Name</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Last Updated</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredMechanics.map((m) => (
+                <TableRow key={m.id}>
+                  <TableCell>{m.id}</TableCell>
+                  <TableCell>{m.name}</TableCell>
+                  <TableCell>
+                    <span style={statusStyle(m.status)}>{m.status}</span>
+                  </TableCell>
+                  <TableCell>{m.date}</TableCell>
+                  <TableCell>
+                    <div style={styles.actionGroup}>
+                      {/* Edit Button */}
+                      <button
+                        type="button"
+                        title="Edit mechanic"
+                        aria-label="Edit mechanic"
+                        style={{ ...styles.iconButton, ...styles.editIconButton }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="#ffffff" style={styles.iconSvg}>
+                          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41L18.37 3.29a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                        </svg>
+                      </button>
+                      {/* Delete Button */}
+                      <button
+                        type="button"
+                        title="Delete mechanic"
+                        style={{ ...styles.iconButton, ...styles.deleteIconButton }}
+                        onClick={() => handleDelete(m.id)}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="#ef4444" style={styles.iconSvg}>
+                          <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-3h8v-9H9v9zM16 2H8a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        {/* BELOW TABLE */}
+        {/* This is archive button */}
+        <div style={styles.bottomActions}>
+          <button
+            style={styles.archivePageButton}
+            onClick={() => navigate("/dashboard/archive-accounts")}
+          >
+            View Archived Accounts
+          </button>
 
-      {/* CREATE ACCOUNT MODAL */} 
-      {isModalOpen && ( 
-        <div style={styles.modalOverlay} onMouseDown={closeModal}> 
-          <div style={styles.modal} onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Create Mechanic Account"> 
-            <h2 style={styles.modalTitle}>Create Mechanic Account</h2> 
-            <form onSubmit={handleCreate}> 
-              <div style={styles.formRow}> 
-                <label style={styles.label}>Last Name</label> 
-                <input 
-                  style={styles.input} 
-                  placeholder="Enter last name" 
-                  value={form.lastName} 
-                  onChange={(e) => setForm((s) => ({ ...s, lastName: e.target.value }))} 
-                /> 
-              </div> 
-              <div style={styles.formRow}> 
-                <label style={styles.label}>First Name</label> 
-                <input 
-                  style={styles.input} 
-                  placeholder="Enter first name" 
-                  value={form.firstName} 
-                  onChange={(e) => setForm((s) => ({ ...s, firstName: e.target.value }))} 
-                /> 
-              </div> 
-              <div style={styles.formRow}> 
-                <label style={styles.label}>Email</label> 
-                <input 
-                  style={styles.input} 
-                  type="email" 
-                  placeholder="Enter email address" 
-                  value={form.email} 
-                  onChange={(e) => setForm((s) => ({ ...s, email: e.target.value }))} 
-                /> 
-              </div> 
-              <div style={styles.formRow}> 
-                <label style={styles.label}>Expertise</label> 
-                <input 
-                  style={styles.input} 
-                  placeholder="Type mechanic type (e.g., Engine Tuning)" 
-                  value={form.expertise} 
-                  onChange={(e) => setForm((s) => ({ ...s, expertise: e.target.value }))} 
-                /> 
-              </div> 
-              <div style={styles.formRow}> 
-                <label style={styles.label}>Password</label> 
-                <div style={{ position: "relative" }}> 
-                  <input 
-                    style={styles.input} 
-                    type={showPassword ? "text" : "password"} 
-                    placeholder="Enter password" 
-                    value={form.password} 
-                    onChange={(e) => setForm((s) => ({ ...s, password: e.target.value }))} 
-                  /> 
-                  <button 
-                    type="button" 
-                    onClick={() => setShowPassword((s) => !s)} 
-                    style={styles.eyeButton} 
+        </div>
+      </main>
+
+      {/* CREATE ACCOUNT MODAL */}
+      {isModalOpen && (
+        <div style={styles.modalOverlay} onMouseDown={closeModal}>
+          <div style={styles.modal} onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Create Mechanic Account">
+            <h2 style={styles.modalTitle}>Create Mechanic Account</h2>
+            <form onSubmit={handleCreate}>
+              <div style={styles.formRow}>
+                <label style={styles.label}>Last Name</label>
+                <input
+                  style={styles.input}
+                  placeholder="Enter last name"
+                  value={form.lastName}
+                  onChange={(e) => setForm((s) => ({ ...s, lastName: e.target.value }))}
+                />
+              </div>
+              <div style={styles.formRow}>
+                <label style={styles.label}>First Name</label>
+                <input
+                  style={styles.input}
+                  placeholder="Enter first name"
+                  value={form.firstName}
+                  onChange={(e) => setForm((s) => ({ ...s, firstName: e.target.value }))}
+                />
+              </div>
+              <div style={styles.formRow}>
+                <label style={styles.label}>Email</label>
+                <input
+                  style={styles.input}
+                  type="email"
+                  placeholder="Enter email address"
+                  value={form.email}
+                  onChange={(e) => setForm((s) => ({ ...s, email: e.target.value }))}
+                />
+              </div>
+              <div style={styles.formRow}>
+                <label style={styles.label}>Expertise</label>
+                <input
+                  style={styles.input}
+                  placeholder="Type mechanic type (e.g., Engine Tuning)"
+                  value={form.expertise}
+                  onChange={(e) => setForm((s) => ({ ...s, expertise: e.target.value }))}
+                />
+              </div>
+              <div style={styles.formRow}>
+                <label style={styles.label}>Password</label>
+                <div style={{ position: "relative" }}>
+                  <input
+                    style={styles.input}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter password"
+                    value={form.password}
+                    onChange={(e) => setForm((s) => ({ ...s, password: e.target.value }))}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((s) => !s)}
+                    style={styles.eyeButton}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                  > 
-                    {showPassword ? "🙈" : "👁️"} 
-                  </button> 
-                </div> 
-              </div> 
-              <div style={styles.modalActions}> 
-                <button type="button" style={styles.cancelButton} onClick={closeModal}> Cancel </button> 
-                <button type="submit" style={styles.createSubmitButton}> Create Account </button> 
-              </div> 
-            </form> 
-          </div> 
-        </div> 
-      )} 
-    </div> 
-  ); 
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </button>
+                </div>
+              </div>
+              <div style={styles.modalActions}>
+                <button type="button" style={styles.cancelButton} onClick={closeModal}> Cancel </button>
+                <button type="submit" style={styles.createSubmitButton}> Create Account </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 const styles = {
@@ -492,12 +503,12 @@ const statusStyle = (status) => ({
     status === "Active"
       ? "#064e3b"
       : status === "Suspended"
-      ? "#713f12"
-      : "#3f3f46",
+        ? "#713f12"
+        : "#3f3f46",
   color:
     status === "Active"
       ? "#6ee7b7"
       : status === "Suspended"
-      ? "#fde68a"
-      : "#e5e7eb",
+        ? "#fde68a"
+        : "#e5e7eb",
 });

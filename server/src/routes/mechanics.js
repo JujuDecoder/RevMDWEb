@@ -107,7 +107,26 @@ router.delete('/delete/:id', async (req, res) => {
   }
 });
 
-// Get archived mechanics
+router.get("/archive", async (req, res) => {
+  try {
+    const snapshot = await db
+      .collection("archive")
+      .orderBy("createdAt", "desc")
+      .get();
 
+    const archivedMechanics = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+      date: doc.data().createdAt
+        ? doc.data().createdAt.toDate().toLocaleString()
+        : "",
+    }));
+
+    res.status(200).json(archivedMechanics);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 export default router;
