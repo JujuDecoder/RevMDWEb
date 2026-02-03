@@ -88,7 +88,7 @@ He didn’t bring the proper tools and ended up leaving the job unfinished.`,
       id: "4003",
       mechanic: "Roberto Reyes",
       status: "To Review",
-      date: "2025-10-06 09:12:11 AM",
+      date: "2025-10-06 09:12:11 AM", 
       report: "The mechanic did not bring proper tools.",
     },
     {
@@ -140,6 +140,7 @@ He didn’t bring the proper tools and ended up leaving the job unfinished.`,
                 <TableHead>Case ID</TableHead>
                 <TableHead>Reported Mechanic</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Verdict</TableHead>
                 <TableHead>Sent</TableHead>
               </TableRow>
             </TableHeader>
@@ -151,6 +152,7 @@ He didn’t bring the proper tools and ended up leaving the job unfinished.`,
                   <TableCell>
                     <span style={statusStyle(r.status)}>{r.status}</span>
                   </TableCell>
+                  <TableCell></TableCell>
                   <TableCell>{r.date}</TableCell>
                 </TableRow>
               ))}
