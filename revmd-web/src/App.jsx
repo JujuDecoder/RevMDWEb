@@ -6,7 +6,8 @@ import Reports from "./pages/Report";
 import Appeal from "./pages/Appeal";
 import Accounts from "./pages/Accounts";
 import AdminLayout from "./components/AdminLayout";
-import ArchivedAccounts from "./pages/ArchiveAccount";
+import ArchiveAccount from "./pages/ArchiveAccount";
+
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -25,8 +26,8 @@ export default function App() {
         <Route path="reports" element={<Reports />} />
         <Route path="appeal" element={<Appeal />} />
         <Route path="accounts" element={<Accounts />} />
-        {/* Route for archived accounts */}
-        <Route path="archived-accounts" element={<ArchivedAccounts />} />
+        <Route path="archive-accounts" element={<ArchiveAccount />} />
+
       </Route>
     </Routes>
   );
