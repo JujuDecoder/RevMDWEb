@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -10,29 +10,32 @@ import {
 
 export default function Accounts() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [mechanics, setMechanics] = useState([
-    {
-      id: "10001",
-      name: "Juan Dela Cruz",
-      status: "Active",
-      date: "2025-10-08 01:55:48 AM",
-      expertise: "Engine Tuning",
-    },
-    {
-      id: "10002",
-      name: "Maria Santos",
-      status: "Suspended",
-      date: "2025-10-07 04:09:30 PM",
-      expertise: "Exhaust Systems",
-    },
-    {
-      id: "10003",
-      name: "Roberto Reyes",
-      status: "Suspended",
-      date: "2025-10-06 09:12:11 AM",
-      expertise: "Brake Systems",
-    },
-  ]);
+  const [mechanics, setMechanics] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // optional for loading state
+
+  useEffect(() => {
+    const fetchMechanics = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/mechanics");
+        const data = await res.json();
+        setMechanics(
+          data.map((m) => ({
+            id: m.id,
+            name: `${m.firstName} ${m.lastName}`,
+            status: m.status || "Active",
+            date: m.date,
+            expertise: m.expertise || "",
+          })),
+        );
+        setIsLoading(false);
+      } catch (err) {
+        console.error(err);
+        setIsLoading(false);
+      }
+    };
+
+    fetchMechanics();
+  }, []);
 
   // Modal + form state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,7 +49,13 @@ export default function Accounts() {
   const [showPassword, setShowPassword] = useState(false);
 
   const resetForm = () =>
-    setForm({ lastName: "", firstName: "", email: "", expertise: "", password: "" });
+    setForm({
+      lastName: "",
+      firstName: "",
+      email: "",
+      expertise: "",
+      password: "",
+    });
 
   const openModal = () => {
     resetForm();
@@ -54,9 +63,9 @@ export default function Accounts() {
   };
   const closeModal = () => setIsModalOpen(false);
 
-  const handleCreate = (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
-    // simple validation
+
     if (
       !form.lastName.trim() ||
       !form.firstName.trim() ||
@@ -66,22 +75,52 @@ export default function Accounts() {
       alert("Please fill in required fields.");
       return;
     }
-    const newId = (Math.floor(10000 + Math.random() * 90000)).toString();
-    const newMechanic = {
-      id: newId,
-      name: `${form.firstName.trim()} ${form.lastName.trim()}`,
-      status: "Active",
-      date: new Date().toLocaleString(),
-      expertise: form.expertise.trim(),
-    };
-    setMechanics((prev) => [newMechanic, ...prev]);
-    closeModal();
+
+    try {
+      const res = await fetch("http://localhost:5000/api/mechanics/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          password: form.password,
+          expertise: form.expertise,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message);
+        return;
+      }
+
+      // OPTIONAL: update UI immediately
+      setMechanics((prev) => [
+        {
+          id: data.id,
+          name: `${form.firstName} ${form.lastName}`,
+          status: "Active",
+          date: new Date().toLocaleString(),
+          expertise: form.expertise,
+        },
+        ...prev,
+      ]);
+
+      closeModal();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create account");
+    }
   };
 
   const filteredMechanics = mechanics.filter(
     (m) =>
       m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.id.includes(searchQuery)
+      m.id.includes(searchQuery),
   );
 
   return (
@@ -146,7 +185,10 @@ export default function Accounts() {
                         type="button"
                         title="Edit mechanic"
                         aria-label="Edit mechanic"
-                        style={{ ...styles.iconButton, ...styles.editIconButton }}
+                        style={{
+                          ...styles.iconButton,
+                          ...styles.editIconButton,
+                        }}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -164,7 +206,10 @@ export default function Accounts() {
                         type="button"
                         title="Archive mechanic"
                         aria-label="Archive mechanic"
-                        style={{ ...styles.iconButton, ...styles.archiveIconButton }}
+                        style={{
+                          ...styles.iconButton,
+                          ...styles.archiveIconButton,
+                        }}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +232,9 @@ export default function Accounts() {
 
         {/* BELOW TABLE */}
         <div style={styles.bottomActions}>
-          <button style={styles.archivePageButton}>View Archived Accounts</button>
+          <button style={styles.archivePageButton}>
+            View Archived Accounts
+          </button>
         </div>
       </main>
 
@@ -209,7 +256,9 @@ export default function Accounts() {
                   style={styles.input}
                   placeholder="Enter last name"
                   value={form.lastName}
-                  onChange={(e) => setForm((s) => ({ ...s, lastName: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, lastName: e.target.value }))
+                  }
                 />
               </div>
 
@@ -219,7 +268,9 @@ export default function Accounts() {
                   style={styles.input}
                   placeholder="Enter first name"
                   value={form.firstName}
-                  onChange={(e) => setForm((s) => ({ ...s, firstName: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, firstName: e.target.value }))
+                  }
                 />
               </div>
 
@@ -230,7 +281,9 @@ export default function Accounts() {
                   type="email"
                   placeholder="Enter email address"
                   value={form.email}
-                  onChange={(e) => setForm((s) => ({ ...s, email: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, email: e.target.value }))
+                  }
                 />
               </div>
 
@@ -240,7 +293,9 @@ export default function Accounts() {
                   style={styles.input}
                   placeholder="Type mechanic type (e.g., Engine Tuning)"
                   value={form.expertise}
-                  onChange={(e) => setForm((s) => ({ ...s, expertise: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, expertise: e.target.value }))
+                  }
                 />
               </div>
 
@@ -252,13 +307,17 @@ export default function Accounts() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter password"
                     value={form.password}
-                    onChange={(e) => setForm((s) => ({ ...s, password: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, password: e.target.value }))
+                    }
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((s) => !s)}
                     style={styles.eyeButton}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showPassword ? "🙈" : "👁️"}
                   </button>
@@ -266,7 +325,11 @@ export default function Accounts() {
               </div>
 
               <div style={styles.modalActions}>
-                <button type="button" style={styles.cancelButton} onClick={closeModal}>
+                <button
+                  type="button"
+                  style={styles.cancelButton}
+                  onClick={closeModal}
+                >
                   Cancel
                 </button>
                 <button type="submit" style={styles.createSubmitButton}>
@@ -524,12 +587,12 @@ const statusStyle = (status) => ({
     status === "Active"
       ? "#064e3b"
       : status === "Suspended"
-      ? "#713f12"
-      : "#3f3f46",
+        ? "#713f12"
+        : "#3f3f46",
   color:
     status === "Active"
       ? "#6ee7b7"
       : status === "Suspended"
-      ? "#fde68a"
-      : "#e5e7eb",
+        ? "#fde68a"
+        : "#e5e7eb",
 });
