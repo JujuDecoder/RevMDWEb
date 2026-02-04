@@ -80,14 +80,20 @@ export default function Appeals() {
     <div style={styles.app}>
       <main style={styles.main}>
         <h1 style={styles.title}>Appeals</h1>
-
-        <input
-          placeholder="Search by Case ID or Mechanic"
-          style={styles.search}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-
+        <div style={styles.searchRow}>
+          <input
+            placeholder="Search by Case ID or Mechanic"
+            style={styles.search}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button
+            style={styles.viewArchiveBtn}
+            onClick={() => setShowArchiveList(true)}
+          >
+            Archived Appeals
+          </button>
+        </div>
         <div style={styles.tableWrap}>
           <Table>
             <TableHeader>
@@ -106,7 +112,7 @@ export default function Appeals() {
                     r.mechanic
                       .toLowerCase()
                       .includes(searchQuery.toLowerCase()) ||
-                    r.id.includes(searchQuery)
+                    r.id.includes(searchQuery),
                 )
                 .map((r) => (
                   <TableRow
@@ -139,13 +145,6 @@ export default function Appeals() {
             </TableBody>
           </Table>
         </div>
-
-        <button
-          style={styles.viewArchiveBtn}
-          onClick={() => setShowArchiveList(true)}
-        >
-          View Archived Appeals
-        </button>
       </main>
 
       {/* 💬 MESSAGE BOX MODAL */}
@@ -154,10 +153,7 @@ export default function Appeals() {
           style={styles.chatOverlay}
           onClick={() => setShowMessageUser(false)}
         >
-          <div
-            style={styles.chatCard}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div style={styles.chatCard} onClick={(e) => e.stopPropagation()}>
             <div style={styles.chatHeader}>
               <span>Case #{selectedAppeal.id}</span>
               <button
@@ -203,9 +199,7 @@ export default function Appeals() {
                 style={styles.chatInput}
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
-                onKeyDown={(e) =>
-                  e.key === "Enter" && handleSendMessage()
-                }
+                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
               />
               <button
                 style={styles.sendBtn}
@@ -215,8 +209,8 @@ export default function Appeals() {
                     prev.map((r) =>
                       r.id === selectedAppeal.id
                         ? { ...r, status: newStatus }
-                        : r
-                    )
+                        : r,
+                    ),
                   );
                 }}
               >
@@ -233,10 +227,7 @@ export default function Appeals() {
           style={styles.chatOverlay}
           onClick={() => setShowArchiveList(false)}
         >
-          <div
-            style={styles.archiveCard}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div style={styles.archiveCard} onClick={(e) => e.stopPropagation()}>
             <div style={styles.chatHeader}>
               <span>Archived Appeals</span>
               <button
@@ -283,6 +274,14 @@ const styles = {
     color: "#e5e7eb",
     fontFamily: "Inter, sans-serif",
   },
+  searchRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+    gap: 12, // space between input and button
+  },
+
   main: { padding: 24 },
   title: { fontSize: 26, marginBottom: 16 },
 
@@ -312,13 +311,15 @@ const styles = {
   },
 
   viewArchiveBtn: {
-    marginTop: 20,
-    background: "#2563eb",
-    color: "#fff",
-    border: "none",
-    borderRadius: 999,
-    padding: "10px 20px",
+    background: "transparent",
+    border: "1px solid #f8f8f872",
+    color: "#ffffff",
+    fontWeight: "bold",
+    padding: "6px 12px",
+    borderRadius: 6,
     cursor: "pointer",
+    fontSize: 13,
+    lineHeight: 1.2,
   },
 
   chatOverlay: {
@@ -448,8 +449,7 @@ const statusStyle = (status) => ({
     status === "Investigating"
       ? "linear-gradient(180deg,#2563eb,#1e3a8a)"
       : status === "Resolved"
-      ? "linear-gradient(180deg,#065f46,#064e3b)"
-      : "linear-gradient(180deg,#3f3f46,#262626)",
+        ? "linear-gradient(180deg,#065f46,#064e3b)"
+        : "linear-gradient(180deg,#3f3f46,#262626)",
   color: "#fff",
 });
-
