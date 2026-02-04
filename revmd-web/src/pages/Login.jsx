@@ -78,12 +78,17 @@ const handleLogin = async (e) => {
               src={revLogo}
               alt="RevMD logo"
               style={{
-                width: 100,
-                height: 100,
+                width: 180,
+                height: 180,
                 borderRadius: "50%",
               }}
             />
-            <h1 style={{ margin: 0 }}>RevMD</h1>
+            <h1 style={{
+             margin: 0, 
+             fontSize: '36px', 
+            '@media (max-width: 768px)': { fontSize: '28px' }, 
+            '@media (max-width: 480px)': { fontSize: '20px' }
+            }}>RevMD</h1>
           </div>
 
           <p style={{ opacity: 0.8, marginTop: 4 }}>
