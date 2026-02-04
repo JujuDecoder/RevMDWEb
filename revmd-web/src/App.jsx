@@ -7,7 +7,7 @@ import Appeal from "./pages/Appeal";
 import Accounts from "./pages/Accounts";
 import AdminLayout from "./components/AdminLayout";
 import ArchiveAccount from "./pages/ArchiveAccount";
-
+import User from "./pages/User"; // adjust the path to where your component is
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -26,8 +26,8 @@ export default function App() {
         <Route path="reports" element={<Reports />} />
         <Route path="appeal" element={<Appeal />} />
         <Route path="accounts" element={<Accounts />} />
+        <Route path="users" element={<User />} /> {/* 👈 NEW */}
         <Route path="archive-accounts" element={<ArchiveAccount />} />
-
       </Route>
     </Routes>
   );

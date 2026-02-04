@@ -9,8 +9,8 @@ import {
 } from "../components/ui/table";
 import { useNavigate } from "react-router-dom";
 
-export default function Accounts() {
-  const [accountType, setAccountType] = useState("Mechanic");
+export default function Users() {
+  const [accountType, setAccountType] = useState("User");
 
   const navigate = useNavigate();
   const hoverTimerRef = React.useRef(null);
@@ -30,18 +30,20 @@ export default function Accounts() {
     setHoveredBtn(null);
   };
 
+  const [users, setUsers] = useState([]);
+
   useEffect(() => {
-    const fetchMechanics = async () => {
+    const fetchUsers = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/mechanics");
+        const res = await fetch("http://localhost:5000/api/users"); // new endpoint
         const data = await res.json();
-        setMechanics(
-          data.map((m) => ({
-            id: m.id,
-            name: `${m.firstName} ${m.lastName}`,
-            status: m.status || "Active",
-            date: m.date,
-            expertise: m.expertise || "",
+        setUsers(
+          data.map((u) => ({
+            id: u.id,
+            name: `${u.firstName} ${u.lastName}`,
+            status: u.status || "Active",
+            date: u.date,
+            email: u.email,
           })),
         );
         setIsLoading(false);
@@ -50,7 +52,7 @@ export default function Accounts() {
         setIsLoading(false);
       }
     };
-    fetchMechanics();
+    fetchUsers();
   }, []);
 
   // Modal + form state
@@ -158,7 +160,7 @@ export default function Accounts() {
   return (
     <div style={styles.app}>
       <main style={styles.main}>
-        <h1 style={styles.title}>Mechanic Accounts</h1>
+        <h1 style={styles.title}>User Accounts</h1>
         {/* TOP BAR */}
         <div style={styles.topBar}>
           <div style={styles.searchWrapper}>
@@ -191,11 +193,17 @@ export default function Accounts() {
                   const value = e.target.value;
                   setAccountType(value);
 
-                  if (value === "User") {
+                  if (
+                    value === "User" &&
+                    window.location.pathname !== "/dashboard/users"
+                  ) {
                     navigate("/dashboard/users");
                   }
 
-                  if (value === "Mechanic") {
+                  if (
+                    value === "Mechanic" &&
+                    window.location.pathname !== "/dashboard/accounts"
+                  ) {
                     navigate("/dashboard/accounts");
                   }
                 }}
@@ -225,31 +233,6 @@ export default function Accounts() {
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </div>
-            {/* CREATE */}
-            <button
-              style={{
-                ...styles.outlineButton,
-                ...(hoveredBtn === "create" ? styles.outlineButtonHover : {}),
-              }}
-              onMouseEnter={() => handleMouseEnter("create")}
-              onMouseLeave={handleMouseLeave}
-              onClick={openModal}
-            >
-              Create Account
-            </button>
-
-            {/* ARCHIVE */}
-            <button
-              style={{
-                ...styles.outlineButton,
-                ...(hoveredBtn === "archive" ? styles.outlineButtonHover : {}),
-              }}
-              onMouseEnter={() => handleMouseEnter("archive")}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate("/dashboard/archive-accounts")}
-            >
-              Archive
-            </button>
           </div>
         </div>
         {/* TABLE */}
@@ -257,44 +240,35 @@ export default function Accounts() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Mechanic ID</TableHead>
+                <TableHead>User ID</TableHead>
                 <TableHead>Full Name</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Last Updated</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
-              {filteredMechanics.map((m) => (
-                <TableRow key={m.id}>
-                  <TableCell>{m.id}</TableCell>
-                  <TableCell>{m.name}</TableCell>
+              {users.map((u) => (
+                <TableRow key={u.id}>
+                  <TableCell>{u.id}</TableCell>
+                  <TableCell>{u.name}</TableCell>
+                  <TableCell>{u.email}</TableCell>
                   <TableCell>
-                    <span style={statusStyle(m.status)}>{m.status}</span>
+                    <span style={statusStyle(u.status)}>{u.status}</span>
                   </TableCell>
-                  <TableCell>{m.date}</TableCell>
+                  <TableCell>{u.date}</TableCell>
                   <TableCell>
                     <div style={styles.actionGroup}>
-                      {/* Delete Button */}
                       <button
-                        type="button"
-                        title="Delete mechanic"
                         style={{
                           ...styles.iconButton,
                           ...styles.deleteIconButton,
                         }}
-                        onClick={() => handleDelete(m.id)}
+                        onClick={() => handleDelete(u.id)}
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          width="18"
-                          height="18"
-                          fill="#ef4444"
-                          style={styles.iconSvg}
-                        >
-                          <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-3h8v-9H9v9zM16 2H8a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2z" />
-                        </svg>
+                        Delete
                       </button>
                     </div>
                   </TableCell>

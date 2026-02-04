@@ -74,20 +74,19 @@ router.get("/", async (req, res) => {
   }
 });
 
-
 // Move mechanic to archive
-router.post('/archive/:id', async (req, res) => {
+router.post("/archive/:id", async (req, res) => {
   const mechanicId = req.params.id;
 
   try {
-    const mechanic = await db.collection('mechanics').doc(mechanicId).get();
+    const mechanic = await db.collection("mechanics").doc(mechanicId).get();
     if (!mechanic.exists) {
       return res.status(404).json({ message: "Mechanic not found" });
     }
 
     // Move the mechanic to the archive collection
-    await db.collection('archive').doc(mechanicId).set(mechanic.data());
-    await db.collection('mechanics').doc(mechanicId).delete();
+    await db.collection("archive").doc(mechanicId).set(mechanic.data());
+    await db.collection("mechanics").doc(mechanicId).delete();
 
     res.status(200).json({ message: "Mechanic archived successfully" });
   } catch (err) {
@@ -96,11 +95,11 @@ router.post('/archive/:id', async (req, res) => {
 });
 
 // Delete mechanic
-router.delete('/delete/:id', async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
   const mechanicId = req.params.id;
 
   try {
-    await db.collection('mechanics').doc(mechanicId).delete();
+    await db.collection("mechanics").doc(mechanicId).delete();
     res.status(200).json({ message: "Mechanic deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -123,6 +122,28 @@ router.get("/archive", async (req, res) => {
     }));
 
     res.status(200).json(archivedMechanics);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const snapshot = await db
+      .collection("users")
+      .orderBy("createdAt", "desc") // optional
+      .get();
+
+    const users = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+      date: doc.data().createdAt
+        ? doc.data().createdAt.toDate().toLocaleString()
+        : "",
+    }));
+
+    res.status(200).json(users);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
