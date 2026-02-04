@@ -115,7 +115,7 @@ function StatCard({ title, left, right, rightLabel = "All", icon, tileGradient }
           borderRadius: 14,
           border: "1px solid rgba(43, 107, 214, 0.4)",
           boxShadow: "inset 0 1px 0 rgba(255,255,255,0.02), 0 14px 40px rgba(2,6,23,0.6), 0 0 20px rgba(43, 107, 214, 0.25)",
-          padding: 18,
+          padding: 30,
           display: "flex",
           flexDirection: "column",
           gap: 12,
@@ -250,16 +250,13 @@ function StatCard({ title, left, right, rightLabel = "All", icon, tileGradient }
         </div>
 
         <div style={{ display: "flex", alignItems: "center", paddingTop: 6 }}>
-          {/* left big purple number */}
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 40, fontWeight: 700, color: "#c47bff", lineHeight: 1 }}>{formatNumber(left)}</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", marginTop: 8 }}>Active Premium Users</div>
           </div>
 
-          {/* divider */}
           <div style={{ width: 1, height: 48, background: "rgba(255,255,255,0.04)", margin: "0 22px" }} />
 
-          {/* right number */}
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 28, fontWeight: 700, color: "#e6eef8", lineHeight: 1 }}>{formatNumber(right)}</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", marginTop: 8 }}>{rightLabel}</div>
@@ -468,7 +465,6 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
         border: "1px solid rgba(255,255,255,0.03)",
         boxShadow: "inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 28px rgba(3,8,20,0.6)",
         padding: 18,
-        cursor: "default",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -550,176 +546,202 @@ function Sparkline({ points = [], stroke = "#7dd3fc", strokeWidth = "2.6" }) {
   );
 }
 
-/* ---------- Icons (accurate gradients, tiled background) ---------- */
+  /* ---------- Icons (accurate gradients, tiled background) ---------- */
 
-function IconUser() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <defs>
-        <linearGradient id="gUserDash" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0" stopColor="#7dd3fc" />
-          <stop offset="1" stopColor="#2b6bd6" />
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="24" height="24" rx="6" fill="url(#gUserDash)" opacity="0.14" />
-      <circle cx="12" cy="9" r="3.5" fill="#fff" fillOpacity="0.96" />
-      <path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7" fill="#fff" fillOpacity="0.90" />
-    </svg>
-  );
+  function IconUser() {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <defs>
+          <linearGradient id="gUserDash" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stopColor="#7dd3fc" />
+            <stop offset="1" stopColor="#2b6bd6" />
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="24" height="24" rx="6" fill="url(#gUserDash)" opacity="0.14" />
+        <circle cx="12" cy="9" r="3.5" fill="#fff" fillOpacity="0.96" />
+        <path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7" fill="#fff" fillOpacity="0.90" />
+      </svg>
+    );
+  }
+
+  function IconWrench({ size = 24 }) {
+    // force the SVG to fill its parent tile and let the image occupy the full viewBox
+    const pad = 0;
+    return (
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="gWrenchDash" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#9ae6b4" />
+            <stop offset="100%" stopColor="#2fa86b" />
+          </linearGradient>
+        </defs>
+
+
+        {/* IMAGE ICON - fills the SVG area (uses slice so it covers edges) */}
+        <image
+          href="/icon/wrench.png"
+          x={pad}
+          y={pad}
+          width={24}
+          height={24}
+          preserveAspectRatio="xMidYMid slice"
+        />
+      </svg>
+    );
+  }
+
+
+
+
+  function IconCrown() {
+    return (
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="gCrownDash" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#d8b4fe" />
+            <stop offset="100%" stopColor="#7c3aed" />
+          </linearGradient>
+        </defs>
+
+      
+
+        {/* CROWN IMAGE */}
+        <image
+          x="3"
+          y="3"
+          width="18"
+          height="18"
+          xlinkHref="/icon/diamond.png"
+          preserveAspectRatio="xMidYMid meet"
+        />
+      </svg>
+    );
+  }
+
+  function IconFlag() {
+    return (
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="gFlagDash" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#ffd08a" />
+            <stop offset="100%" stopColor="#ff9f43" />
+          </linearGradient>
+        </defs>
+
+
+        {/* BIGGER FLAG */}
+        <image
+          x="2"
+          y="2"
+          width="20"
+          height="20"
+          xlinkHref="/icon/flag.png"
+          preserveAspectRatio="xMidYMid meet"
+        />
+      </svg>
+    );
+  }
+
+  function IconChart() {
+    return (
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        aria-hidden
+      >
+        <defs>
+          <linearGradient id="gChartDash" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stopColor="#ff9966" />
+            <stop offset="100%" stopColor="#d45a42" />
+          </linearGradient>
+        </defs>
+
+      
+        {/* Embedded chart image */}
+        <image
+          href="icon/report.png"   // <-- place image in public/chart.png
+          x="2"
+          y="2"
+          width="20"
+          height="20"
+          preserveAspectRatio="xMidYMid meet"
+        />
+      </svg>
+    );
+  }
+// Media Query for responsive layout
+const mediaQuery = `
+@media (max-width: 1200px) {
+  .container {
+    padding: 20px;
+  }
+
+  .card {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-function IconWrench({ size = 24 }) {
-  // force the SVG to fill its parent tile and let the image occupy the full viewBox
-  const pad = 0;
-  return (
-    <svg
-      width="100%"
-      height="100%"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id="gWrenchDash" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#9ae6b4" />
-          <stop offset="100%" stopColor="#2fa86b" />
-        </linearGradient>
-      </defs>
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
 
+  .card {
+    grid-template-columns: 1fr;
+  }
 
-      {/* IMAGE ICON - fills the SVG area (uses slice so it covers edges) */}
-      <image
-        href="/icon/wrench.png"
-        x={pad}
-        y={pad}
-        width={24}
-        height={24}
-        preserveAspectRatio="xMidYMid slice"
-      />
-    </svg>
-  );
+  .header {
+    flex-direction: column;
+    align-items: center;
+  }
 }
+`;
+document.head.insertAdjacentHTML("beforeend", `<style>${mediaQuery}</style>`);
 
+  /* ---------- Helpers & sample data ---------- */
 
+  const formatNumber = (n) => (typeof n === "number" ? n.toLocaleString("en-US") : n ?? "—");
 
+  const totalColor = (gradient) => {
+    // choose a readable highlight color based on gradient argument
+    if (!gradient) return "#9fd6ff";
+    if (gradient.includes("#ff")) return "#ffb84d";
+    if (gradient.includes("#8a48db") || gradient.includes("#7c3aed")) return "#d5a6ff";
+    if (gradient.includes("#2fa86b")) return "#7ee29b";
+    return "#9fd6ff";
+  };
 
-function IconCrown() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id="gCrownDash" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#d8b4fe" />
-          <stop offset="100%" stopColor="#7c3aed" />
-        </linearGradient>
-      </defs>
-
-     
-
-      {/* CROWN IMAGE */}
-      <image
-        x="3"
-        y="3"
-        width="18"
-        height="18"
-        xlinkHref="/icon/diamond.png"
-        preserveAspectRatio="xMidYMid meet"
-      />
-    </svg>
-  );
-}
-
-function IconFlag() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id="gFlagDash" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ffd08a" />
-          <stop offset="100%" stopColor="#ff9f43" />
-        </linearGradient>
-      </defs>
-
-
-      {/* BIGGER FLAG */}
-      <image
-        x="2"
-        y="2"
-        width="20"
-        height="20"
-        xlinkHref="/icon/flag.png"
-        preserveAspectRatio="xMidYMid meet"
-      />
-    </svg>
-  );
-}
-
-function IconChart() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 24 24"
-      aria-hidden
-    >
-      <defs>
-        <linearGradient id="gChartDash" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stopColor="#ff9966" />
-          <stop offset="100%" stopColor="#d45a42" />
-        </linearGradient>
-      </defs>
-
-     
-      {/* Embedded chart image */}
-      <image
-        href="icon/report.png"   // <-- place image in public/chart.png
-        x="2"
-        y="2"
-        width="20"
-        height="20"
-        preserveAspectRatio="xMidYMid meet"
-      />
-    </svg>
-  );
-}
-
-
-
-/* ---------- Helpers & sample data ---------- */
-
-const formatNumber = (n) => (typeof n === "number" ? n.toLocaleString("en-US") : n ?? "—");
-
-const totalColor = (gradient) => {
-  // choose a readable highlight color based on gradient argument
-  if (!gradient) return "#9fd6ff";
-  if (gradient.includes("#ff")) return "#ffb84d";
-  if (gradient.includes("#8a48db") || gradient.includes("#7c3aed")) return "#d5a6ff";
-  if (gradient.includes("#2fa86b")) return "#7ee29b";
-  return "#9fd6ff";
-};
-
-const sampleData = {
-  user: "Admin",
-  usersActive: 1250,
-  usersAll: 5320,
-  mechanicsActive: 420,
-  mechanicsAll: 1140,
-  premiumActive: 980,
-  premiumAll: 2310,
-  appeals: 73,
-  appealsChange: "+3",
-  appealsSparkline: [6, 8, 7, 8, 9, 10, 12],
-  reports: 285,
-  reportsChange: "+7",
-  reportsSparkline: [4, 6, 5, 7, 8, 9, 11],
-};
+  const sampleData = {
+    user: "Admin",
+    usersActive: 1250,
+    usersAll: 5320,
+    mechanicsActive: 420,
+    mechanicsAll: 1140,
+    premiumActive: 980,
+    premiumAll: 2310,
+    appeals: 73,
+    appealsChange: "+3",
+    appealsSparkline: [6, 8, 7, 8, 9, 10, 12],
+    reports: 285,
+    reportsChange: "+7",
+    reportsSparkline: [4, 6, 5, 7, 8, 9, 11],
+  };
