@@ -131,13 +131,27 @@ export default function Appeals() {
                     <TableCell>{r.date}</TableCell>
                     <TableCell>
                       <button
-                        style={styles.archiveBtn}
+                        type="button"
+                        title="Archive appeal"
+                        style={{
+                          ...styles.iconButton,
+                          ...styles.deleteIconButton,
+                        }}
                         onClick={(e) => {
                           e.stopPropagation(); // prevent opening chat
                           archiveAppeal(r);
                         }}
                       >
-                        Archive
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="18"
+                          height="18"
+                          fill="#ef4444"
+                          style={styles.iconSvg}
+                        >
+                          <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-3h8v-9H9v9zM16 2H8a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2z" />
+                        </svg>
                       </button>
                     </TableCell>
                   </TableRow>
@@ -308,6 +322,25 @@ const styles = {
     borderRadius: 999,
     padding: "6px 16px",
     cursor: "pointer",
+  },
+
+  iconButton: {
+    background: "transparent",
+    borderRadius: 8,
+    padding: 6,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "background 0.2s ease, transform 0.15s ease",
+  },
+
+  deleteIconButton: {
+    borderColor: "#7f1d1d",
+  },
+
+  iconSvg: {
+    display: "block",
   },
 
   viewArchiveBtn: {
