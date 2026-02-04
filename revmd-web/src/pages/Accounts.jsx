@@ -1,15 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "../components/ui/table";
 import { useNavigate } from "react-router-dom";
-
-
 
 export default function Accounts() {
   const navigate = useNavigate();
-
+  const hoverTimerRef = React.useRef(null);
+  const [hoveredBtn, setHoveredBtn] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [mechanics, setMechanics] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const handleMouseEnter = (btn) => {
+    hoverTimerRef.current = setTimeout(() => {
+      setHoveredBtn(btn);
+    }, 300); // 👈 delay in ms (change to 200–500 if you want)
+  };
+
+  const handleMouseLeave = () => {
+    clearTimeout(hoverTimerRef.current);
+    hoverTimerRef.current = null;
+    setHoveredBtn(null);
+  };
 
   useEffect(() => {
     const fetchMechanics = async () => {
@@ -23,7 +40,7 @@ export default function Accounts() {
             status: m.status || "Active",
             date: m.date,
             expertise: m.expertise || "",
-          }))
+          })),
         );
         setIsLoading(false);
       } catch (err) {
@@ -34,7 +51,7 @@ export default function Accounts() {
     fetchMechanics();
   }, []);
 
-  // Modal + form state 
+  // Modal + form state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({
     lastName: "",
@@ -45,13 +62,14 @@ export default function Accounts() {
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const resetForm = () => setForm({
-    lastName: "",
-    firstName: "",
-    email: "",
-    expertise: "",
-    password: "",
-  });
+  const resetForm = () =>
+    setForm({
+      lastName: "",
+      firstName: "",
+      email: "",
+      expertise: "",
+      password: "",
+    });
 
   const openModal = () => {
     resetForm();
@@ -106,13 +124,18 @@ export default function Accounts() {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this mechanic?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this mechanic?",
+    );
     if (!confirmDelete) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/mechanics/archive/${id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/mechanics/archive/${id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        },
+      );
       if (!res.ok) {
         throw new Error("Failed to archive mechanic");
       }
@@ -127,7 +150,7 @@ export default function Accounts() {
   const filteredMechanics = mechanics.filter(
     (m) =>
       m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.id.includes(searchQuery)
+      m.id.includes(searchQuery),
   );
 
   return (
@@ -144,13 +167,45 @@ export default function Accounts() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <div style={styles.searchIcon}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#94a3b8" strokeWidth="2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="#94a3b8"
+                strokeWidth="2"
+              >
                 <circle cx="11" cy="11" r="8" />
                 <line x1="16" y1="16" x2="20" y2="20" />
               </svg>
             </div>
           </div>
-          <button style={styles.createButton} onClick={openModal}> Create Account </button>
+          <div style={styles.buttonGroup}>
+            <button
+              style={{
+                ...styles.outlineButton,
+                ...(hoveredBtn === "create" ? styles.outlineButtonHover : {}),
+              }}
+              onMouseEnter={() => handleMouseEnter("create")}
+              onMouseLeave={handleMouseLeave}
+              onClick={openModal}
+            >
+              Create Account
+            </button>
+
+            <button
+              style={{
+                ...styles.outlineButton,
+                ...(hoveredBtn === "archive" ? styles.outlineButtonHover : {}),
+              }}
+              onMouseEnter={() => handleMouseEnter("archive")}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate("/dashboard/archive-accounts")}
+            >
+              Archive
+            </button>
+          </div>
         </div>
         {/* TABLE */}
         <div style={styles.tableWrap}>
@@ -180,9 +235,19 @@ export default function Accounts() {
                         type="button"
                         title="Edit mechanic"
                         aria-label="Edit mechanic"
-                        style={{ ...styles.iconButton, ...styles.editIconButton }}
+                        style={{
+                          ...styles.iconButton,
+                          ...styles.editIconButton,
+                        }}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="#ffffff" style={styles.iconSvg}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="18"
+                          height="18"
+                          fill="#ffffff"
+                          style={styles.iconSvg}
+                        >
                           <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41L18.37 3.29a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                         </svg>
                       </button>
@@ -190,10 +255,20 @@ export default function Accounts() {
                       <button
                         type="button"
                         title="Delete mechanic"
-                        style={{ ...styles.iconButton, ...styles.deleteIconButton }}
+                        style={{
+                          ...styles.iconButton,
+                          ...styles.deleteIconButton,
+                        }}
                         onClick={() => handleDelete(m.id)}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="#ef4444" style={styles.iconSvg}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="18"
+                          height="18"
+                          fill="#ef4444"
+                          style={styles.iconSvg}
+                        >
                           <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-3h8v-9H9v9zM16 2H8a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2z" />
                         </svg>
                       </button>
@@ -206,21 +281,18 @@ export default function Accounts() {
         </div>
         {/* BELOW TABLE */}
         {/* This is archive button */}
-        <div style={styles.bottomActions}>
-          <button
-            style={styles.archivePageButton}
-            onClick={() => navigate("/dashboard/archive-accounts")}
-          >
-            View Archived Accounts
-          </button>
-
-        </div>
       </main>
 
       {/* CREATE ACCOUNT MODAL */}
       {isModalOpen && (
         <div style={styles.modalOverlay} onMouseDown={closeModal}>
-          <div style={styles.modal} onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Create Mechanic Account">
+          <div
+            style={styles.modal}
+            onMouseDown={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Create Mechanic Account"
+          >
             <h2 style={styles.modalTitle}>Create Mechanic Account</h2>
             <form onSubmit={handleCreate}>
               <div style={styles.formRow}>
@@ -229,7 +301,9 @@ export default function Accounts() {
                   style={styles.input}
                   placeholder="Enter last name"
                   value={form.lastName}
-                  onChange={(e) => setForm((s) => ({ ...s, lastName: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, lastName: e.target.value }))
+                  }
                 />
               </div>
               <div style={styles.formRow}>
@@ -238,7 +312,9 @@ export default function Accounts() {
                   style={styles.input}
                   placeholder="Enter first name"
                   value={form.firstName}
-                  onChange={(e) => setForm((s) => ({ ...s, firstName: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, firstName: e.target.value }))
+                  }
                 />
               </div>
               <div style={styles.formRow}>
@@ -248,7 +324,9 @@ export default function Accounts() {
                   type="email"
                   placeholder="Enter email address"
                   value={form.email}
-                  onChange={(e) => setForm((s) => ({ ...s, email: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, email: e.target.value }))
+                  }
                 />
               </div>
               <div style={styles.formRow}>
@@ -257,7 +335,9 @@ export default function Accounts() {
                   style={styles.input}
                   placeholder="Type mechanic type (e.g., Engine Tuning)"
                   value={form.expertise}
-                  onChange={(e) => setForm((s) => ({ ...s, expertise: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, expertise: e.target.value }))
+                  }
                 />
               </div>
               <div style={styles.formRow}>
@@ -268,21 +348,35 @@ export default function Accounts() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter password"
                     value={form.password}
-                    onChange={(e) => setForm((s) => ({ ...s, password: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, password: e.target.value }))
+                    }
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((s) => !s)}
                     style={styles.eyeButton}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showPassword ? "🙈" : "👁️"}
                   </button>
                 </div>
               </div>
               <div style={styles.modalActions}>
-                <button type="button" style={styles.cancelButton} onClick={closeModal}> Cancel </button>
-                <button type="submit" style={styles.createSubmitButton}> Create Account </button>
+                <button
+                  type="button"
+                  style={styles.cancelButton}
+                  onClick={closeModal}
+                >
+                  {" "}
+                  Cancel{" "}
+                </button>
+                <button type="submit" style={styles.createSubmitButton}>
+                  {" "}
+                  Create Account{" "}
+                </button>
               </div>
             </form>
           </div>
@@ -299,6 +393,33 @@ const styles = {
     color: "#e5e7eb",
     fontFamily: "Inter, sans-serif",
   },
+  buttonGroup: {
+    display: "flex",
+    gap: 12, // space between buttons
+    alignItems: "center",
+  },
+  outlineButton: {
+    background: "transparent",
+    border: "1px solid #f8f8f872",
+    color: "#ffffff",
+    fontWeight: "bold",
+    padding: "6px 12px",
+    borderRadius: 6,
+    cursor: "pointer",
+    fontSize: 13,
+    lineHeight: 1.2,
+
+    // 👇 THIS makes it smooth
+    transition:
+      "background 0.50s ease, color 0.50s ease, opacity 0.50s ease, transform 0.50s ease",
+  },
+
+  outlineButtonHover: {
+    background: "rgba(255, 255, 255, 0.93)",
+    color: "#000000cf",
+    fontWeight: "bold",
+  },
+
   main: {
     padding: 24,
   },

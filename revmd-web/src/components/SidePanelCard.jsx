@@ -1,7 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-
 export default function SidePanelCard() {
   const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
@@ -44,16 +43,10 @@ export default function SidePanelCard() {
             <p>Are you sure you want to log out?</p>
 
             <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
-              <button
-                onClick={() => setShowConfirm(false)}
-                style={cancelBtn}
-              >
+              <button onClick={() => setShowConfirm(false)} style={cancelBtn}>
                 Cancel
               </button>
-              <button
-                onClick={confirmLogout}
-                style={confirmBtn}
-              >
+              <button onClick={confirmLogout} style={confirmBtn}>
                 Yes, Logout
               </button>
             </div>
@@ -63,7 +56,6 @@ export default function SidePanelCard() {
     </>
   );
 }
-
 
 /* ---------- NAV ITEM ---------- */
 
@@ -96,9 +88,11 @@ const sidePanel = {
   background: "#020617",
   borderRight: "1px solid #1e293b",
   color: "#fff",
+
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
+  height: "100vh", // 👈 THIS is the key
 };
 
 const logoutButton = {
@@ -109,6 +103,7 @@ const logoutButton = {
   color: "#f87171",
   fontWeight: 600,
   cursor: "pointer",
+  marginBottom: 50,
 };
 
 const overlay = {
