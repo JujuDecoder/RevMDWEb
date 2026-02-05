@@ -61,7 +61,9 @@ export default function Accounts() {
     email: "",
     expertise: "",
     password: "",
+    workingHours: "", // 👈 NEW
   });
+
   const [showPassword, setShowPassword] = useState(false);
 
   const resetForm = () =>
@@ -71,7 +73,9 @@ export default function Accounts() {
       email: "",
       expertise: "",
       password: "",
+      workingHours: "", // 👈 NEW
     });
+
 
   const openModal = () => {
     resetForm();
@@ -96,12 +100,16 @@ export default function Accounts() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          firstName: form.firstName,
-          lastName: form.lastName,
+          firstname: form.firstName,   // 👈 match backend
+          lastname: form.lastName,     // 👈 match backend
           email: form.email,
           password: form.password,
           expertise: form.expertise,
+          workingHours: form.workingHours,
+          averageRating: 5.0,          // ⭐ auto
+          ratingCount: 120,            // ⭐ auto
         }),
+
       });
       const data = await res.json();
       if (!res.ok) {
@@ -365,6 +373,17 @@ export default function Accounts() {
                 />
               </div>
               <div style={styles.formRow}>
+                <label style={styles.label}>Working Hours</label>
+                <input
+                  style={styles.input}
+                  placeholder="e.g. Mon–Fri 9AM–6PM"
+                  value={form.workingHours}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, workingHours: e.target.value }))
+                  }
+                />
+              </div>
+              <div style={styles.formRow}>
                 <label style={styles.label}>Password</label>
                 <div style={{ position: "relative" }}>
                   <input
@@ -412,7 +431,7 @@ export default function Accounts() {
 
 const styles = {
   app: {
-    minHeight: "100vh",
+    minHeight: "80vh",
     background: "#020617",
     color: "#e5e7eb",
     fontFamily: "Inter, sans-serif",

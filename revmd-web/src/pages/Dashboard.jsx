@@ -37,7 +37,7 @@ export default function Dashboard() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        minHeight: "80vh",
         padding: 40,
         background: "radial-gradient(60% 60% at 10% 10%, rgba(40,48,80,0.18), transparent), linear-gradient(180deg,#06071a 0%, #0b1220 100%)",
         color: "#e6eef8",

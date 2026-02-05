@@ -91,7 +91,7 @@ export default function Appeals() {
             style={styles.viewArchiveBtn}
             onClick={() => setShowArchiveList(true)}
           >
-            Archived Appeals
+            Archive
           </button>
         </div>
         <div style={styles.tableWrap}>
@@ -283,7 +283,7 @@ export default function Appeals() {
 
 const styles = {
   app: {
-    minHeight: "100vh",
+    minHeight: "70vh",
     background: "#020617",
     color: "#e5e7eb",
     fontFamily: "Inter, sans-serif",

@@ -124,7 +124,7 @@ export default function Accounts() {
 
 const styles = {
     app: {
-        minHeight: "100vh",
+        minHeight: "80vh",
         background: "#020617",
         color: "#e5e7eb",
         fontFamily: "Inter, sans-serif",
