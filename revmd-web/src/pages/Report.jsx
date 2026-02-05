@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -13,6 +13,8 @@ export default function AdminReports() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedCase, setSelectedCase] = useState(null);
   const [showUserProfile, setShowUserProfile] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
 
   // Added chat / status state
   const [showUpdateStatus, setShowUpdateStatus] = useState(false);
@@ -37,7 +39,7 @@ export default function AdminReports() {
       id: 3,
       sender: "admin",
       text:
-        "You’re welcome. If you have any further questions, feel free to reach out anytime.",
+        "You're welcome. If you have any further questions, feel free to reach out anytime.",
       time: "11:17 AM",
     },
   ]);
@@ -71,7 +73,7 @@ export default function AdminReports() {
       report: `Hi, I'd like to report a mechanic I recently talked through the app.
 
 The mechanic arrived late by almost 2 hours and seemed unprepared for the repair.
-He didn’t bring the proper tools and ended up leaving the job unfinished.`,
+He didn't bring the proper tools and ended up leaving the job unfinished.`,
       files: [
         { name: "Chat Screenshot.png", size: "465 KB" },
         { name: "unfinished.photo.jpg", size: "1.02 MB" },
@@ -108,10 +110,23 @@ He didn’t bring the proper tools and ended up leaving the job unfinished.`,
     return matchesSearch && matchesStatus;
   });
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedReports = filteredReports.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  // Reset to page 1 when search/filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedStatus]);
+
   return (
     <div style={styles.app}>
       <main style={styles.main}>
-        <h1 style={styles.title}>User Reports</h1>
+        <h1 style={styles.title}>User Reports </h1>
 
         <div style={styles.filterColumn}>
           <input
@@ -133,36 +148,82 @@ He didn’t bring the proper tools and ended up leaving the job unfinished.`,
           </select>
         </div>
 
-        <div style={styles.tableWrap}>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Case ID</TableHead>
-                <TableHead>Reported Mechanic</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Verdict</TableHead>
-                <TableHead>Sent</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredReports.map((r) => (
-                <TableRow key={r.id} onClick={() => setSelectedCase(r)}>
-                  <TableCell>{r.id}</TableCell>
-                  <TableCell>{r.mechanic}</TableCell>
-                  <TableCell>
-                    <span style={statusStyle(r.status)}>{r.status}</span>
-                  </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>{r.date}</TableCell>
+        <div style={styles.tableContainer}>
+          <div style={styles.tableWrap}>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Case ID</TableHead>
+                  <TableHead>Reported Mechanic</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Verdict</TableHead>
+                  <TableHead>Sent</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {paginatedReports.map((r) => (
+                  <TableRow key={r.id} onClick={() => setSelectedCase(r)}>
+                    <TableCell>{r.id}</TableCell>
+                    <TableCell>{r.mechanic}</TableCell>
+                    <TableCell>
+                      <span style={statusStyle(r.status)}>{r.status}</span>
+                    </TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>{r.date}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
-          <div style={styles.tableFooter}>
-            <span style={styles.resultsText}>
-              Showing 1–{filteredReports.length} of {reports.length} results
-            </span>
+          {/* PAGINATION CONTROLS */}
+          <div style={styles.paginationContainer}>
+            <div style={styles.paginationInfo}>
+              Showing {startIndex + 1}–{Math.min(startIndex + itemsPerPage, filteredReports.length)} of {filteredReports.length} results
+            </div>
+
+            <div style={styles.paginationButtons}>
+              <button
+                style={{
+                  ...styles.paginationBtn,
+                  opacity: currentPage === 1 ? 0.5 : 1,
+                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                }}
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+              >
+                ← Previous
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  style={{
+                    ...styles.paginationBtn,
+                    background: currentPage === page ? "#2563eb" : "#1e293b",
+                    fontWeight: currentPage === page ? 600 : 400,
+                    border: currentPage === page ? "1px solid #3b82f6" : "1px solid #334155",
+                  }}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                style={{
+                  ...styles.paginationBtn,
+                  opacity: currentPage === totalPages ? 0.5 : 1,
+                  cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                }}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Next →
+              </button>
+            </div>
           </div>
         </div>
       </main>
@@ -478,7 +539,9 @@ const styles = {
 
   filterColumn: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     gap: 10,
     marginBottom: 20,
   },
@@ -501,20 +564,51 @@ const styles = {
     width: 200,
   },
 
+  tableContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 0,
+  },
+
   tableWrap: {
     border: "1px solid #1e293b",
-    borderRadius: 14,
+    borderRadius: "14px 14px 0 0",
     overflow: "hidden",
   },
 
-  tableFooter: {
+  paginationContainer: {
     display: "flex",
     justifyContent: "space-between",
-    padding: "14px 16px",
-    borderTop: "1px solid #1e293b",
+    alignItems: "center",
+    padding: "16px 20px",
+    background: "#1a222f",
+    borderRadius: "0 0 14px 14px",
+    border: "1px solid #1e293b",
+    borderTop: "none",
   },
 
-  resultsText: { fontSize: 13, color: "#94a3b8" },
+  paginationInfo: {
+    color: "#94a3b8",
+    fontSize: 14,
+    fontWeight: 500,
+  },
+
+  paginationButtons: {
+    display: "flex",
+    gap: 8,
+    alignItems: "center",
+  },
+
+  paginationBtn: {
+    background: "#1e293b",
+    border: "1px solid #334155",
+    color: "#fff",
+    padding: "8px 12px",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 14,
+    transition: "all 0.2s ease",
+  },
 
   modalOverlay: {
     position: "fixed",

@@ -1,4 +1,3 @@
-// ...existing code...
 import { useEffect, useState } from "react";
 import { authFetch } from "../api/api";
 
@@ -40,7 +39,7 @@ export default function Dashboard() {
       style={{
         minHeight: "100vh",
         padding: 40,
-        background: sampleStyle.pageBg,
+        background: "radial-gradient(60% 60% at 10% 10%, rgba(40,48,80,0.18), transparent), linear-gradient(180deg,#06071a 0%, #0b1220 100%)",
         color: "#e6eef8",
         fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto",
       }}
@@ -77,7 +76,7 @@ export default function Dashboard() {
         </div>
 
         {/* bottom row */}
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
           <LargeStat
             title="Number of Appeals"
             total={data.appeals}
@@ -111,7 +110,7 @@ function StatCard({ title, left, right, rightLabel = "All", icon, tileGradient }
         role="group"
         tabIndex={-1}
         style={{
-          background: "linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.008))",
+          background: "linear-gradient(135deg, rgba(59,130,246,0.014), rgba(255,255,255,0.008))",
           borderRadius: 14,
           border: "1px solid rgba(43, 107, 214, 0.4)",
           boxShadow: "inset 0 1px 0 rgba(255,255,255,0.02), 0 14px 40px rgba(2,6,23,0.6), 0 0 20px rgba(43, 107, 214, 0.25)",
