@@ -33,123 +33,31 @@ export default function Users() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+      const fetchUsers = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/users"); // new endpoint
+        const res = await fetch("http://localhost:5000/api/users");
         const data = await res.json();
+
         setUsers(
           data.map((u) => ({
             id: u.id,
             name: `${u.firstName} ${u.lastName}`,
-            status: u.status || "Active",
-            date: u.date,
             email: u.email,
-          })),
+            address: u.address || "—",
+            date: u.date,
+          }))
         );
+
         setIsLoading(false);
       } catch (err) {
         console.error(err);
         setIsLoading(false);
       }
     };
+
     fetchUsers();
   }, []);
 
-  // Modal + form state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState({
-    lastName: "",
-    firstName: "",
-    email: "",
-    expertise: "",
-    password: "",
-  });
-  const [showPassword, setShowPassword] = useState(false);
-
-  const resetForm = () =>
-    setForm({
-      lastName: "",
-      firstName: "",
-      email: "",
-      expertise: "",
-      password: "",
-    });
-
-  const openModal = () => {
-    resetForm();
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => setIsModalOpen(false);
-
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    if (
-      !form.lastName.trim() ||
-      !form.firstName.trim() ||
-      !form.email.trim() ||
-      !form.password.trim()
-    ) {
-      alert("Please fill in required fields.");
-      return;
-    }
-    try {
-      const res = await fetch("http://localhost:5000/api/mechanics/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: form.firstName,
-          lastName: form.lastName,
-          email: form.email,
-          password: form.password,
-          expertise: form.expertise,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.message);
-        return;
-      }
-      setMechanics((prev) => [
-        {
-          id: data.id,
-          name: `${form.firstName} ${form.lastName}`,
-          status: "Active",
-          date: new Date().toLocaleString(),
-          expertise: form.expertise,
-        },
-        ...prev,
-      ]);
-      closeModal();
-    } catch (err) {
-      console.error(err);
-      alert("Failed to create account");
-    }
-  };
-
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this mechanic?",
-    );
-    if (!confirmDelete) return;
-    try {
-      const res = await fetch(
-        `http://localhost:5000/api/mechanics/archive/${id}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-      if (!res.ok) {
-        throw new Error("Failed to archive mechanic");
-      }
-      setMechanics((prev) => prev.filter((mechanic) => mechanic.id !== id));
-    } catch (err) {
-      console.error(err);
-      alert("Failed to delete mechanic");
-    }
-    console.log("Deleting mechanic with ID:", id);
-  };
 
   const filteredMechanics = mechanics.filter(
     (m) =>
@@ -243,9 +151,7 @@ export default function Users() {
                 <TableHead>User ID</TableHead>
                 <TableHead>Full Name</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Updated</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>Address</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -255,23 +161,7 @@ export default function Users() {
                   <TableCell>{u.id}</TableCell>
                   <TableCell>{u.name}</TableCell>
                   <TableCell>{u.email}</TableCell>
-                  <TableCell>
-                    <span style={statusStyle(u.status)}>{u.status}</span>
-                  </TableCell>
-                  <TableCell>{u.date}</TableCell>
-                  <TableCell>
-                    <div style={styles.actionGroup}>
-                      <button
-                        style={{
-                          ...styles.iconButton,
-                          ...styles.deleteIconButton,
-                        }}
-                        onClick={() => handleDelete(u.id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </TableCell>
+                  <TableCell>{u.address}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -281,112 +171,13 @@ export default function Users() {
         {/* This is archive button */}
       </main>
 
-      {/* CREATE ACCOUNT MODAL */}
-      {isModalOpen && (
-        <div style={styles.modalOverlay} onMouseDown={closeModal}>
-          <div
-            style={styles.modal}
-            onMouseDown={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Create Mechanic Account"
-          >
-            <h2 style={styles.modalTitle}>Create Mechanic Account</h2>
-            <form onSubmit={handleCreate}>
-              <div style={styles.formRow}>
-                <label style={styles.label}>Last Name</label>
-                <input
-                  style={styles.input}
-                  placeholder="Enter last name"
-                  value={form.lastName}
-                  onChange={(e) =>
-                    setForm((s) => ({ ...s, lastName: e.target.value }))
-                  }
-                />
-              </div>
-              <div style={styles.formRow}>
-                <label style={styles.label}>First Name</label>
-                <input
-                  style={styles.input}
-                  placeholder="Enter first name"
-                  value={form.firstName}
-                  onChange={(e) =>
-                    setForm((s) => ({ ...s, firstName: e.target.value }))
-                  }
-                />
-              </div>
-              <div style={styles.formRow}>
-                <label style={styles.label}>Email</label>
-                <input
-                  style={styles.input}
-                  type="email"
-                  placeholder="Enter email address"
-                  value={form.email}
-                  onChange={(e) =>
-                    setForm((s) => ({ ...s, email: e.target.value }))
-                  }
-                />
-              </div>
-              <div style={styles.formRow}>
-                <label style={styles.label}>Expertise</label>
-                <input
-                  style={styles.input}
-                  placeholder="Type mechanic type (e.g., Engine Tuning)"
-                  value={form.expertise}
-                  onChange={(e) =>
-                    setForm((s) => ({ ...s, expertise: e.target.value }))
-                  }
-                />
-              </div>
-              <div style={styles.formRow}>
-                <label style={styles.label}>Password</label>
-                <div style={{ position: "relative" }}>
-                  <input
-                    style={styles.input}
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter password"
-                    value={form.password}
-                    onChange={(e) =>
-                      setForm((s) => ({ ...s, password: e.target.value }))
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((s) => !s)}
-                    style={styles.eyeButton}
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
-                  >
-                    {showPassword ? "🙈" : "👁️"}
-                  </button>
-                </div>
-              </div>
-              <div style={styles.modalActions}>
-                <button
-                  type="button"
-                  style={styles.cancelButton}
-                  onClick={closeModal}
-                >
-                  {" "}
-                  Cancel{" "}
-                </button>
-                <button type="submit" style={styles.createSubmitButton}>
-                  {" "}
-                  Create Account{" "}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
 const styles = {
   app: {
-    minHeight: "100vh",
+    minHeight: "80vh",
     background: "#020617",
     color: "#e5e7eb",
     fontFamily: "Inter, sans-serif",

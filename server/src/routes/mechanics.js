@@ -3,10 +3,31 @@ import admin, { db, auth } from "../config/firebaseAdmin.js";
 
 const router = express.Router();
 
-router.post("/create", async (req, res) => {
-  const { firstName, lastName, email, password, expertise } = req.body;
+router.get("/users", async (req, res) => {
+  try {
+    const snapshot = await db
+      .collection("users")  // Make sure this is the correct collection
+      .orderBy("createdAt", "desc")
+      .get();
 
-  if (!firstName || !lastName || !email || !password) {
+    const users = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(), // Include the necessary fields like address, firstName, lastName, etc.
+      date: doc.data().createdAt ? doc.data().createdAt.toDate().toLocaleString() : "",
+    }));
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+router.post("/create", async (req, res) => {
+  const { firstname, lastname, email, password, expertise, averageRating, workingHours, ratingCount } = req.body;
+
+  if (!firstname || !lastname || !email || !password) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
@@ -26,17 +47,18 @@ router.post("/create", async (req, res) => {
 
     // 3. Set the data for that document. Note we no longer need to save the 'uid' inside.
     await docRef.set({
-      // We don't need to store 'uid' inside the document anymore,
-      // because the document's ID is the UID.
-      firstName,
-      lastName,
+      firstname,
+      lastname,
       email,
       expertise: Array.isArray(expertise) ? expertise : [expertise],
+      workingHours: String(workingHours),
+      averageRating: Number(averageRating),
+      ratingCount: Number(ratingCount),
       status: "Active",
       role: "mechanic",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      // You can add other fields like averageRating: 0 here if you want.
     });
+
 
     // --- END OF FIX ---
 
@@ -149,5 +171,6 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 export default router;

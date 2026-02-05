@@ -529,7 +529,7 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
 
 const styles = {
   app: {
-    minHeight: "100vh",
+    minHeight: "80vh",
     background: "#020617",
     color: "#e5e7eb",
     fontFamily: "Inter, sans-serif",
