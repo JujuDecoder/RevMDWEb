@@ -23,7 +23,12 @@ export default function Dashboard() {
         setData(sampleData);
       });
   }, []);
-
+useEffect(() => {
+  document.body.style.overflow = "hidden";
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, []);
   if (!data) return null;
 
   const sampleStyle = {
@@ -36,17 +41,41 @@ export default function Dashboard() {
 
   return (
     <div
-      style={{
-        minHeight: "80vh",
-        padding: 40,
-        background: "radial-gradient(60% 60% at 10% 10%, rgba(40,48,80,0.18), transparent), linear-gradient(180deg,#06071a 0%, #0b1220 100%)",
-        color: "#e6eef8",
-        fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto",
-      }}
-    >
-      <div style={{ maxWidth: 1180 }}>
+  style={{
+    height: "90vh",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+    padding: "clamp(8px, 1.5vh, 18px)",
+    color: "#e6eef8",
+    fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto",
+     background: "transparent",
+  }}
+>
+
+   <div
+  style={{
+    maxWidth: 1180,
+    margin: "0 auto",
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+  }}
+>
+
+
         {/* top header row */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginBottom: 26 }}>
+<div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+    gap: 16,
+    marginBottom: 16,
+    flexShrink: 0,
+  }}
+>
+
           <StatCard
             title="Number of Users"
             left={data.usersActive}
@@ -76,7 +105,17 @@ export default function Dashboard() {
         </div>
 
         {/* bottom row */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+      <div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+    gap: 16,
+    flex: 1,          // 👈 THIS IS IMPORTANT
+    minHeight: 0,     // 👈 prevents overflow bugs
+  }}
+>
+
+
           <LargeStat
             title="Number of Appeals"
             total={data.appeals}
@@ -331,7 +370,9 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          minHeight: 300,
+          minHeight: "clamp(200px, 30vh, 260px)",
+
+
         }}
       >
         {/* Header: Icon + Title */}
@@ -373,12 +414,13 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
 
         {/* Date labels */}
         <div style={{ display: "flex", gap: 14, color: "rgba(255,255,255,0.5)", fontSize: 13, letterSpacing: "0.5px" }}>
-          <div style={{ flex: 1, textAlign: "center" }}>Th</div>
+          <div style={{ flex: 1, textAlign: "center" }}>Sun</div>
+          <div style={{ flex: 1, textAlign: "center" }}>Mon</div>
+          <div style={{ flex: 1, textAlign: "center" }}>Tue</div>
+          <div style={{ flex: 1, textAlign: "center" }}>Wed</div>
+          <div style={{ flex: 1, textAlign: "center" }}>Thu</div>
           <div style={{ flex: 1, textAlign: "center" }}>Fri</div>
           <div style={{ flex: 1, textAlign: "center" }}>Sat</div>
-          <div style={{ flex: 1, textAlign: "center" }}>Sun</div>
-          <div style={{ flex: 1, textAlign: "center" }}>Apr</div>
-          <div style={{ flex: 1, textAlign: "center" }}>Jul</div>
         </div>
       </div>
     );
@@ -400,7 +442,9 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          minHeight: 300,
+          minHeight: "clamp(200px, 30vh, 260px)",
+
+
         }}
       >
         {/* Header: Icon + Title */}
@@ -442,12 +486,13 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
 
         {/* Date labels */}
         <div style={{ display: "flex", gap: 14, color: "rgba(255,255,255,0.5)", fontSize: 13, letterSpacing: "0.5px" }}>
-          <div style={{ flex: 1, textAlign: "center" }}>Th</div>
+          <div style={{ flex: 1, textAlign: "center" }}>Sun</div>
+          <div style={{ flex: 1, textAlign: "center" }}>Mon</div>
+          <div style={{ flex: 1, textAlign: "center" }}>Tue</div>
+          <div style={{ flex: 1, textAlign: "center" }}>Wed</div>
+          <div style={{ flex: 1, textAlign: "center" }}>Thu</div>
           <div style={{ flex: 1, textAlign: "center" }}>Fri</div>
           <div style={{ flex: 1, textAlign: "center" }}>Sat</div>
-          <div style={{ flex: 1, textAlign: "center" }}>Man</div>
-          <div style={{ flex: 1, textAlign: "center" }}>Apr</div>
-          <div style={{ flex: 1, textAlign: "center" }}>Jul</div>
         </div>
       </div>
     );
@@ -687,34 +732,7 @@ function Sparkline({ points = [], stroke = "#7dd3fc", strokeWidth = "2.6" }) {
       </svg>
     );
   }
-// Media Query for responsive layout
-const mediaQuery = `
-@media (max-width: 1200px) {
-  .container {
-    padding: 20px;
-  }
 
-  .card {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 15px;
-  }
-
-  .card {
-    grid-template-columns: 1fr;
-  }
-
-  .header {
-    flex-direction: column;
-    align-items: center;
-  }
-}
-`;
-document.head.insertAdjacentHTML("beforeend", `<style>${mediaQuery}</style>`);
 
   /* ---------- Helpers & sample data ---------- */
 
