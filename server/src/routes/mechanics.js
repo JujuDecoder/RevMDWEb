@@ -6,14 +6,16 @@ const router = express.Router();
 router.get("/users", async (req, res) => {
   try {
     const snapshot = await db
-      .collection("users")  // Make sure this is the correct collection
+      .collection("users") // Make sure this is the correct collection
       .orderBy("createdAt", "desc")
       .get();
 
     const users = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(), // Include the necessary fields like address, firstName, lastName, etc.
-      date: doc.data().createdAt ? doc.data().createdAt.toDate().toLocaleString() : "",
+      date: doc.data().createdAt
+        ? doc.data().createdAt.toDate().toLocaleString()
+        : "",
     }));
 
     res.status(200).json(users);
@@ -23,9 +25,17 @@ router.get("/users", async (req, res) => {
   }
 });
 
-
 router.post("/create", async (req, res) => {
-  const { firstname, lastname, email, password, expertise, averageRating, workingHours, ratingCount } = req.body;
+  const {
+    firstname,
+    lastname,
+    email,
+    password,
+    expertise,
+    averageRating,
+    workingHours,
+    ratingCount,
+  } = req.body;
 
   if (!firstname || !lastname || !email || !password) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -58,7 +68,6 @@ router.post("/create", async (req, res) => {
       role: "mechanic",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
-
 
     // --- END OF FIX ---
 
@@ -171,6 +180,5 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 
 export default router;
