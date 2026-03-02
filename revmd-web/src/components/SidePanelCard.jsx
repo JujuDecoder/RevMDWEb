@@ -19,13 +19,15 @@ export default function SidePanelCard() {
       <div style={sidePanel}>
         {/* TOP */}
         <div>
-          <h2 style={{ 
-  marginBottom: 30,
-  fontWeight: 700,
-  color: "#1d4ed8"   // blue brand color
-}}>
-  RevMD
-</h2>
+          <h2
+            style={{
+              marginBottom: 30,
+              fontWeight: 700,
+              color: "#1d4ed8", // blue brand color
+            }}
+          >
+            RevMD
+          </h2>
 
           <nav>
             <NavItem to="/dashboard">Dashboard</NavItem>
@@ -94,8 +96,8 @@ function NavItem({ to, children }) {
 const sidePanel = {
   width: 240,
   padding: 24,
-  background: "#ffffff",            // white sidebar
-  borderRight: "1px solid #e5eaf2",  // soft border
+  background: "#ffffff", // white sidebar
+  borderRight: "1px solid #e5eaf2", // soft border
   color: "#1f2937",
 
   display: "flex",
@@ -118,7 +120,7 @@ const logoutButton = {
 const overlay = {
   position: "fixed",
   inset: 0,
-  background: "rgba(0,0,0,0.3)",  // lighter overlay
+  background: "rgba(0,0,0,0.3)", // lighter overlay
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
