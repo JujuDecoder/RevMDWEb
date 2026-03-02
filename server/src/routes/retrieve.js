@@ -17,7 +17,10 @@ router.post("/retrieve/:id", async (req, res) => {
     }
 
     // restore to mechanics
-    await db.collection("mechanics").doc(mechanicId).set(archivedDoc.data());
+    await db.collection("mechanics").doc(mechanicId).set({
+  ...archivedDoc.data(),
+  status: "Active", // 👈 force active when retrieving
+});
 
     // delete from archive
     await db.collection("archive").doc(mechanicId).delete();

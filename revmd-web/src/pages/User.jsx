@@ -85,7 +85,7 @@ export default function Users() {
                 width="20"
                 height="20"
                 fill="none"
-                stroke="#94a3b8"
+                stroke="#9ca3af"
                 strokeWidth="2"
               >
                 <circle cx="11" cy="11" r="8" />
@@ -177,11 +177,11 @@ export default function Users() {
 
 const styles = {
   app: {
-    minHeight: "80vh",
-    background: "#020617",
-    color: "#e5e7eb",
-    fontFamily: "Inter, sans-serif",
-  },
+  minHeight: "100vh",
+  background: "#f8fafc",
+  color: "#1f2937",
+  fontFamily: "Inter, sans-serif",
+},
   buttonGroup: {
     display: "flex",
     gap: 12, // space between buttons
@@ -189,26 +189,24 @@ const styles = {
   },
 
   outlineSelect: {
-    background: "transparent",
-    border: "1px solid #f8f8f872",
-    color: "#ffffff",
-    fontWeight: "bold",
-    padding: "6px 32px 6px 12px",
-
-    borderRadius: 6,
-    cursor: "pointer",
-    fontSize: 13,
-    lineHeight: 1.2,
-    appearance: "none", // remove default arrow (Chrome)
-    WebkitAppearance: "none", // Safari
-    MozAppearance: "none",
-    transition: "background 0.3s ease, color 0.3s ease, transform 0.3s ease",
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#374151",
+  fontWeight: 600,
+  padding: "6px 32px 6px 12px",
+  borderRadius: 8,
+  cursor: "pointer",
+  fontSize: 13,
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
+  transition: "all 0.2s ease",
+},
 
   outlineButton: {
     background: "transparent",
     border: "1px solid #f8f8f872",
-    color: "#ffffff",
+    color: "#6b7280",
     fontWeight: "bold",
     padding: "6px 12px",
     borderRadius: 6,
@@ -222,9 +220,9 @@ const styles = {
   },
 
   OptionS: {
-    background: "#020617",
-    color: "#ffffff",
-  },
+  background: "#ffffff",
+  color: "#111827",
+},
 
   outlineButtonHover: {
     background: "rgba(255, 255, 255, 0.93)",
@@ -250,9 +248,11 @@ const styles = {
     padding: 24,
   },
   title: {
-    fontSize: 26,
-    marginBottom: 20,
-  },
+  fontSize: 28,
+  marginBottom: 24,
+  fontWeight: 700,
+  color: "#111827",
+},
   topBar: {
     display: "flex",
     justifyContent: "space-between",
@@ -266,13 +266,13 @@ const styles = {
     width: 260,
   },
   search: {
-    background: "#1e293b",
-    border: "none",
-    padding: "10px 14px",
-    borderRadius: 10,
-    color: "#fff",
-    width: "100%",
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  padding: "10px 14px",
+  borderRadius: 10,
+  color: "#111827",
+  width: "100%",
+},
   searchIcon: {
     position: "absolute",
     right: 12,
@@ -289,11 +289,11 @@ const styles = {
     fontSize: 14,
   },
   tableWrap: {
-    background: "#020617",
-    borderRadius: 14,
-    border: "1px solid #1e293b",
-    overflow: "hidden",
-  },
+  background: "#ffffff",
+  borderRadius: 14,
+  border: "1px solid #e5e7eb",
+  overflow: "hidden",
+},
   actionGroup: {
     display: "flex",
     gap: 8,

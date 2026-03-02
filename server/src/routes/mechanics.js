@@ -116,7 +116,10 @@ router.post("/archive/:id", async (req, res) => {
     }
 
     // Move the mechanic to the archive collection
-    await db.collection("archive").doc(mechanicId).set(mechanic.data());
+    await db.collection("archive").doc(mechanicId).set({
+  ...mechanic.data(),
+  status: "Inactive", // 👈 FORCE INACTIVE WHEN ARCHIVED
+});
     await db.collection("mechanics").doc(mechanicId).delete();
 
     res.status(200).json({ message: "Mechanic archived successfully" });
