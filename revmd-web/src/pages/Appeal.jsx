@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -13,24 +13,30 @@ export default function Appeals() {
   const [selectedAppeal, setSelectedAppeal] = useState(null);
   const [showMessageUser, setShowMessageUser] = useState(false);
   const [showArchiveList, setShowArchiveList] = useState(false);
+  const fetchAppeals = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/appeals");
+      const data = await response.json();
 
-  const [reports, setReports] = useState([
-    {
-      id: "4001",
-      mechanic: "Mario Santos",
-      status: "Investigating",
-      date: "2025-10-08 01:55:48 AM",
-      report: "Arrived late and left the job unfinished.",
-    },
-    {
-      id: "4002",
-      mechanic: "Maria Santos",
-      status: "To Review",
-      date: "2025-10-07 04:09:30 PM",
-      report: "The mechanic arrived late and was not responsive.",
-    },
-  ]);
+      const formatted = data.map((item) => ({
+        id: item.id,
+        mechanic: item.appealingMechanicId,
+        status: item.status,
+        date: item.timestamp
+          ? new Date(item.timestamp._seconds * 1000).toLocaleString()
+          : "No Date",
+        report: item.reason,
+      }));
 
+      setReports(formatted);
+    } catch (error) {
+      console.error("Error fetching appeals:", error);
+    }
+  };
+  useEffect(() => {
+    fetchAppeals();
+  }, []);
+  const [reports, setReports] = useState([]);
   const [archivedReports, setArchivedReports] = useState([]);
 
   /* 💬 CHAT STATE */
@@ -283,11 +289,11 @@ export default function Appeals() {
 
 const styles = {
   app: {
-  minHeight: "100vh",
-  background: "#f8fafc",
-  color: "#1f2937",
-  fontFamily: "Inter, sans-serif",
-},
+    minHeight: "100vh",
+    background: "#f8fafc",
+    color: "#1f2937",
+    fontFamily: "Inter, sans-serif",
+  },
   searchRow: {
     display: "flex",
     justifyContent: "space-between",
@@ -298,27 +304,27 @@ const styles = {
 
   main: { padding: 24 },
   title: {
-  fontSize: 28,
-  marginBottom: 20,
-  fontWeight: 700,
-  color: "#111827",
-},
+    fontSize: 28,
+    marginBottom: 20,
+    fontWeight: 700,
+    color: "#111827",
+  },
 
   search: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  color: "#111827",
-  padding: "10px 14px",
-  borderRadius: 10,
-  width: 320,
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    color: "#111827",
+    padding: "10px 14px",
+    borderRadius: 10,
+    width: 320,
+  },
 
   tableWrap: {
-  border: "1px solid #e5e7eb",
-  borderRadius: 14,
-  overflow: "hidden",
-  background: "#ffffff",
-},
+    border: "1px solid #e5e7eb",
+    borderRadius: 14,
+    overflow: "hidden",
+    background: "#ffffff",
+  },
 
   archiveBtn: {
     background: "#7f1d1d",
@@ -349,14 +355,14 @@ const styles = {
   },
 
   viewArchiveBtn: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  color: "#374151",
-  fontWeight: 600,
-  padding: "6px 14px",
-  borderRadius: 8,
-  cursor: "pointer",
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    color: "#374151",
+    fontWeight: 600,
+    padding: "6px 14px",
+    borderRadius: 8,
+    cursor: "pointer",
+  },
 
   chatOverlay: {
     position: "fixed",
@@ -369,27 +375,27 @@ const styles = {
   },
 
   chatCard: {
-  background: "#ffffff",
-  borderRadius: 20,
-  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-  display: "flex",
-  flexDirection: "column",
-},
+    background: "#ffffff",
+    borderRadius: 20,
+    boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+    display: "flex",
+    flexDirection: "column",
+  },
 
   archiveCard: {
-  background: "#ffffff",
-  borderRadius: 20,
-  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-},
+    background: "#ffffff",
+    borderRadius: 20,
+    boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+  },
 
   chatHeader: {
-  background: "#f9fafb",
-  color: "#111827",
-  borderBottom: "1px solid #e5e7eb",
-  padding: 14,
-  display: "flex",
-  justifyContent: "space-between",
-},
+    background: "#f9fafb",
+    color: "#111827",
+    borderBottom: "1px solid #e5e7eb",
+    padding: 14,
+    display: "flex",
+    justifyContent: "space-between",
+  },
 
   caseMeta: {
     padding: 16,
@@ -416,20 +422,20 @@ const styles = {
   },
 
   chatBubbleLeft: {
-  background: "#f3f4f6",
-  color: "#111827",
-  padding: "10px 14px",
-  borderRadius: 14,
-  maxWidth: "75%",
-},
+    background: "#f3f4f6",
+    color: "#111827",
+    padding: "10px 14px",
+    borderRadius: 14,
+    maxWidth: "75%",
+  },
 
   chatBubbleRight: {
-  background: "#2563eb",
-  color: "#ffffff",
-  padding: "10px 14px",
-  borderRadius: 14,
-  maxWidth: "75%",
-},
+    background: "#2563eb",
+    color: "#ffffff",
+    padding: "10px 14px",
+    borderRadius: 14,
+    maxWidth: "75%",
+  },
 
   chatTime: {
     fontSize: 11,
@@ -446,13 +452,13 @@ const styles = {
   },
 
   chatInput: {
-  flex: 1,
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  color: "#111827",
-  padding: "10px 14px",
-  borderRadius: 999,
-},
+    flex: 1,
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    color: "#111827",
+    padding: "10px 14px",
+    borderRadius: 999,
+  },
 
   sendBtn: {
     background: "#2563eb",
@@ -465,11 +471,11 @@ const styles = {
   },
 
   archiveRow: {
-  padding: 12,
-  borderBottom: "1px solid #e5e7eb",
-  cursor: "pointer",
-  color: "#374151",
-},
+    padding: 12,
+    borderBottom: "1px solid #e5e7eb",
+    cursor: "pointer",
+    color: "#374151",
+  },
 
   closeBtn: {
     background: "transparent",
@@ -489,12 +495,12 @@ const statusStyle = (status) => ({
     status === "Investigating"
       ? "#dbeafe"
       : status === "Resolved"
-      ? "#dcfce7"
-      : "#fef9c3",
+        ? "#dcfce7"
+        : "#fef9c3",
   color:
     status === "Investigating"
       ? "#1d4ed8"
       : status === "Resolved"
-      ? "#15803d"
-      : "#ca8a04",
+        ? "#15803d"
+        : "#ca8a04",
 });

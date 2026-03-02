@@ -31,7 +31,7 @@ const main = {
   flex: 1,
   minWidth: 0,
   overflowY: "auto",
-  background: "#020617",
+  background: "#ededed",
 };
 
 const mainInner = {
@@ -39,4 +39,3 @@ const mainInner = {
   padding: 24,
   boxSizing: "border-box",
 };
-
