@@ -283,11 +283,11 @@ export default function Appeals() {
 
 const styles = {
   app: {
-    minHeight: "70vh",
-    background: "#020617",
-    color: "#e5e7eb",
-    fontFamily: "Inter, sans-serif",
-  },
+  minHeight: "100vh",
+  background: "#f8fafc",
+  color: "#1f2937",
+  fontFamily: "Inter, sans-serif",
+},
   searchRow: {
     display: "flex",
     justifyContent: "space-between",
@@ -297,23 +297,28 @@ const styles = {
   },
 
   main: { padding: 24 },
-  title: { fontSize: 26, marginBottom: 16 },
+  title: {
+  fontSize: 28,
+  marginBottom: 20,
+  fontWeight: 700,
+  color: "#111827",
+},
 
   search: {
-    background: "#1e293b",
-    border: "none",
-    padding: "10px 14px",
-    borderRadius: 10,
-    color: "#fff",
-    width: 320,
-    marginBottom: 20,
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#111827",
+  padding: "10px 14px",
+  borderRadius: 10,
+  width: 320,
+},
 
   tableWrap: {
-    border: "1px solid #1e293b",
-    borderRadius: 14,
-    overflow: "hidden",
-  },
+  border: "1px solid #e5e7eb",
+  borderRadius: 14,
+  overflow: "hidden",
+  background: "#ffffff",
+},
 
   archiveBtn: {
     background: "#7f1d1d",
@@ -344,21 +349,19 @@ const styles = {
   },
 
   viewArchiveBtn: {
-    background: "transparent",
-    border: "1px solid #f8f8f872",
-    color: "#ffffff",
-    fontWeight: "bold",
-    padding: "6px 12px",
-    borderRadius: 6,
-    cursor: "pointer",
-    fontSize: 13,
-    lineHeight: 1.2,
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#374151",
+  fontWeight: 600,
+  padding: "6px 14px",
+  borderRadius: 8,
+  cursor: "pointer",
+},
 
   chatOverlay: {
     position: "fixed",
     inset: 0,
-    background: "rgba(2,6,23,0.8)",
+    background: "rgba(0,0,0,0.35)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -366,26 +369,27 @@ const styles = {
   },
 
   chatCard: {
-    width: 520,
-    height: 640,
-    background: "linear-gradient(180deg,#1e293b,#020617)",
-    borderRadius: 20,
-    display: "flex",
-    flexDirection: "column",
-  },
+  background: "#ffffff",
+  borderRadius: 20,
+  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+  display: "flex",
+  flexDirection: "column",
+},
 
   archiveCard: {
-    width: 420,
-    background: "#020617",
-    borderRadius: 20,
-  },
+  background: "#ffffff",
+  borderRadius: 20,
+  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+},
 
   chatHeader: {
-    background: "#2b3a67",
-    padding: 14,
-    display: "flex",
-    justifyContent: "space-between",
-  },
+  background: "#f9fafb",
+  color: "#111827",
+  borderBottom: "1px solid #e5e7eb",
+  padding: 14,
+  display: "flex",
+  justifyContent: "space-between",
+},
 
   caseMeta: {
     padding: 16,
@@ -412,20 +416,20 @@ const styles = {
   },
 
   chatBubbleLeft: {
-    alignSelf: "flex-start",
-    background: "#1e293b",
-    padding: "10px 14px",
-    borderRadius: 14,
-    maxWidth: "75%",
-  },
+  background: "#f3f4f6",
+  color: "#111827",
+  padding: "10px 14px",
+  borderRadius: 14,
+  maxWidth: "75%",
+},
 
   chatBubbleRight: {
-    alignSelf: "flex-end",
-    background: "#2563eb",
-    padding: "10px 14px",
-    borderRadius: 14,
-    maxWidth: "75%",
-  },
+  background: "#2563eb",
+  color: "#ffffff",
+  padding: "10px 14px",
+  borderRadius: 14,
+  maxWidth: "75%",
+},
 
   chatTime: {
     fontSize: 11,
@@ -442,13 +446,13 @@ const styles = {
   },
 
   chatInput: {
-    flex: 1,
-    background: "#020617",
-    border: "1px solid #334155",
-    color: "#fff",
-    padding: "10px 14px",
-    borderRadius: 999,
-  },
+  flex: 1,
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#111827",
+  padding: "10px 14px",
+  borderRadius: 999,
+},
 
   sendBtn: {
     background: "#2563eb",
@@ -461,10 +465,11 @@ const styles = {
   },
 
   archiveRow: {
-    padding: 12,
-    borderBottom: "1px solid #1e293b",
-    cursor: "pointer",
-  },
+  padding: 12,
+  borderBottom: "1px solid #e5e7eb",
+  cursor: "pointer",
+  color: "#374151",
+},
 
   closeBtn: {
     background: "transparent",
@@ -478,11 +483,18 @@ const statusStyle = (status) => ({
   padding: "6px 14px",
   borderRadius: 999,
   fontSize: 12,
+  fontWeight: 600,
+  display: "inline-block",
   background:
     status === "Investigating"
-      ? "linear-gradient(180deg,#2563eb,#1e3a8a)"
+      ? "#dbeafe"
       : status === "Resolved"
-        ? "linear-gradient(180deg,#065f46,#064e3b)"
-        : "linear-gradient(180deg,#3f3f46,#262626)",
-  color: "#fff",
+      ? "#dcfce7"
+      : "#fef9c3",
+  color:
+    status === "Investigating"
+      ? "#1d4ed8"
+      : status === "Resolved"
+      ? "#15803d"
+      : "#ca8a04",
 });

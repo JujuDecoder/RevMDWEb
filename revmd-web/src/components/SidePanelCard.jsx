@@ -19,7 +19,13 @@ export default function SidePanelCard() {
       <div style={sidePanel}>
         {/* TOP */}
         <div>
-          <h2 style={{ marginBottom: 30 }}>RevMD</h2>
+          <h2 style={{ 
+  marginBottom: 30,
+  fontWeight: 700,
+  color: "#1d4ed8"   // blue brand color
+}}>
+  RevMD
+</h2>
 
           <nav>
             <NavItem to="/dashboard">Dashboard</NavItem>
@@ -67,12 +73,15 @@ function NavItem({ to, children }) {
       style={({ isActive }) => ({
         display: "block",
         padding: "12px 16px",
-        marginBottom: 6,
-        borderRadius: 8,
+        marginBottom: 8,
+        borderRadius: 10,
         textDecoration: "none",
         fontWeight: 500,
-        background: isActive ? "#1e293b" : "transparent",
-        color: isActive ? "#fff" : "#94a3b8",
+        transition: "all 0.2s ease",
+
+        background: isActive ? "#eff6ff" : "transparent",
+        color: isActive ? "#1d4ed8" : "#6b7280",
+        border: isActive ? "1px solid #dbeafe" : "1px solid transparent",
       })}
     >
       {children}
@@ -85,31 +94,31 @@ function NavItem({ to, children }) {
 const sidePanel = {
   width: 240,
   padding: 24,
-  background: "#020617",
-  borderRight: "1px solid #1e293b",
-  color: "#fff",
+  background: "#ffffff",            // white sidebar
+  borderRight: "1px solid #e5eaf2",  // soft border
+  color: "#1f2937",
 
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
-  height: "100vh", // 👈 THIS is the key
+  height: "100vh",
 };
 
 const logoutButton = {
   padding: "12px 16px",
-  borderRadius: 8,
-  border: "none",
-  background: "#1e293b",
-  color: "#f87171",
+  borderRadius: 10,
+  border: "1px solid #e5eaf2",
+  background: "#f9fafb",
+  color: "#ef4444",
   fontWeight: 600,
   cursor: "pointer",
-  marginBottom: 50,
+  marginBottom: 40,
 };
 
 const overlay = {
   position: "fixed",
   inset: 0,
-  background: "rgba(0,0,0,0.6)",
+  background: "rgba(0,0,0,0.3)",  // lighter overlay
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -117,21 +126,22 @@ const overlay = {
 };
 
 const modal = {
-  background: "#020617",
-  padding: 24,
-  borderRadius: 12,
-  width: 320,
-  color: "#fff",
-  border: "1px solid #1e293b",
+  background: "#ffffff",
+  padding: 28,
+  borderRadius: 16,
+  width: 340,
+  color: "#1f2937",
+  border: "1px solid #e5eaf2",
+  boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
 };
 
 const cancelBtn = {
   flex: 1,
   padding: "10px",
   borderRadius: 8,
-  border: "none",
-  background: "#1e293b",
-  color: "#94a3b8",
+  border: "1px solid #e5eaf2",
+  background: "#f3f4f6",
+  color: "#6b7280",
   cursor: "pointer",
 };
 

@@ -529,13 +529,18 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
 
 const styles = {
   app: {
-    minHeight: "80vh",
-    background: "#020617",
-    color: "#e5e7eb",
-    fontFamily: "Inter, sans-serif",
-  },
+  minHeight: "100vh",
+  background: "#f8fafc",
+  color: "#1f2937",
+  fontFamily: "Inter, sans-serif",
+},
   main: { padding: 24 },
-  title: { fontSize: 28, marginBottom: 12 },
+  title: {
+  fontSize: 28,
+  marginBottom: 20,
+  fontWeight: 700,
+  color: "#111827",
+},
 
   filterColumn: {
     display: "flex",
@@ -547,22 +552,22 @@ const styles = {
   },
 
   search: {
-    background: "#1e293b",
-    border: "none",
-    padding: "10px 14px",
-    borderRadius: 10,
-    color: "#fff",
-    width: 320,
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  padding: "10px 14px",
+  borderRadius: 10,
+  color: "#111827",
+  width: 320,
+},
 
   statusSelect: {
-    background: "#1e293b",
-    border: "none",
-    padding: "10px 14px",
-    borderRadius: 10,
-    color: "#fff",
-    width: 200,
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  padding: "10px 14px",
+  borderRadius: 10,
+  color: "#111827",
+  width: 200,
+},
 
   tableContainer: {
     display: "flex",
@@ -571,27 +576,28 @@ const styles = {
   },
 
   tableWrap: {
-    border: "1px solid #1e293b",
-    borderRadius: "14px 14px 0 0",
-    overflow: "hidden",
-  },
+  border: "1px solid #e5e7eb",
+  borderRadius: "14px 14px 0 0",
+  overflow: "hidden",
+  background: "#ffffff",
+},
 
   paginationContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "16px 20px",
-    background: "#1a222f",
-    borderRadius: "0 0 14px 14px",
-    border: "1px solid #1e293b",
-    borderTop: "none",
-  },
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "16px 20px",
+  background: "#ffffff",
+  borderRadius: "0 0 14px 14px",
+  border: "1px solid #e5e7eb",
+  borderTop: "none",
+},
 
   paginationInfo: {
-    color: "#94a3b8",
-    fontSize: 14,
-    fontWeight: 500,
-  },
+  color: "#6b7280",
+  fontSize: 14,
+  fontWeight: 500,
+},
 
   paginationButtons: {
     display: "flex",
@@ -600,33 +606,34 @@ const styles = {
   },
 
   paginationBtn: {
-    background: "#1e293b",
-    border: "1px solid #334155",
-    color: "#fff",
-    padding: "8px 12px",
-    borderRadius: 8,
-    cursor: "pointer",
-    fontSize: 14,
-    transition: "all 0.2s ease",
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#374151",
+  padding: "8px 12px",
+  borderRadius: 8,
+  cursor: "pointer",
+  fontSize: 14,
+  transition: "all 0.2s ease",
+},
 
   modalOverlay: {
     position: "fixed",
     inset: 0,
-    background: "rgba(2,6,23,0.85)",
+    background: "rgba(0,0,0,0.35)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
 
   modalCard: {
-    width: 720,
-    background: "#1e293b",
-    borderRadius: 24,
-  },
+  width: 720,
+  background: "#1e293b",
+  borderRadius: 24,
+},
 
   modalHeader: {
-    background: "#2b3a67",
+    background: "#f3f4f6",
+  color: "#111827",
     padding: 14,
     display: "flex",
     justifyContent: "space-between",
@@ -792,7 +799,8 @@ const styles = {
   chatCard: {
     width: 520,
     height: 620,
-    background: "linear-gradient(180deg,#1e293b,#020617)",
+    background: "#ffffff",
+  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
     borderRadius: 20,
     display: "flex",
     flexDirection: "column",
@@ -847,7 +855,8 @@ const styles = {
 
   chatBubbleLeft: {
     alignSelf: "flex-start",
-    background: "#1e293b",
+    background: "#f3f4f6",
+  color: "#111827",
     padding: "10px 14px",
     borderRadius: 14,
     maxWidth: "75%",
@@ -911,14 +920,20 @@ const statusStyle = (status) => ({
   padding: "6px 14px",
   borderRadius: 999,
   fontSize: 12,
-  fontWeight: 500,
+  fontWeight: 600,
   display: "inline-block",
   background:
     status === "Investigating"
-      ? "linear-gradient(180deg, #2563eb, #1e3a8a)"
+      ? "#dbeafe"
       : status === "Resolved"
-      ? "linear-gradient(180deg, #065f46, #064e3b)"
-      : "linear-gradient(180deg, #3f3f46, #262626)",
-  color: status === "To Review" ? "#facc15" : "#ffffff",
+      ? "#dcfce7"
+      : "#fef9c3",
+  color:
+    status === "Investigating"
+      ? "#1d4ed8"
+      : status === "Resolved"
+      ? "#15803d"
+      : "#ca8a04",
 });
+
 

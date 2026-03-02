@@ -183,7 +183,7 @@ export default function Accounts() {
                 width="20"
                 height="20"
                 fill="none"
-                stroke="#94a3b8"
+                stroke="#9ca3af"
                 strokeWidth="2"
               >
                 <circle cx="11" cy="11" r="8" />
@@ -431,9 +431,9 @@ export default function Accounts() {
 
 const styles = {
   app: {
-    minHeight: "80vh",
-    background: "#020617",
-    color: "#e5e7eb",
+     minHeight: "100vh",
+  background: "#f8fafc",
+  color: "#1f2937",
     fontFamily: "Inter, sans-serif",
   },
   buttonGroup: {
@@ -443,37 +443,31 @@ const styles = {
   },
 
   outlineSelect: {
-    background: "transparent",
-    border: "1px solid #f8f8f872",
-    color: "#ffffff",
-    fontWeight: "bold",
-    padding: "6px 32px 6px 12px",
-
-    borderRadius: 6,
-    cursor: "pointer",
-    fontSize: 13,
-    lineHeight: 1.2,
-    appearance: "none", // remove default arrow (Chrome)
-    WebkitAppearance: "none", // Safari
-    MozAppearance: "none",
-    transition: "background 0.3s ease, color 0.3s ease, transform 0.3s ease",
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#374151",
+  fontWeight: 600,
+  padding: "6px 32px 6px 12px",
+  borderRadius: 8,
+  cursor: "pointer",
+  fontSize: 13,
+  lineHeight: 1.2,
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
+  transition: "all 0.2s ease",
+},
 
   outlineButton: {
-    background: "transparent",
-    border: "1px solid #f8f8f872",
-    color: "#ffffff",
-    fontWeight: "bold",
-    padding: "6px 12px",
-    borderRadius: 6,
-    cursor: "pointer",
-    fontSize: 13,
-    lineHeight: 1.2,
-
-    // 👇 THIS makes it smooth
-    transition:
-      "background 0.50s ease, color 0.50s ease, opacity 0.50s ease, transform 0.50s ease",
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#374151",
+  fontWeight: 600,
+  padding: "6px 14px",
+  borderRadius: 8,
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+},
 
   OptionS: {
     background: "#020617",
@@ -481,10 +475,9 @@ const styles = {
   },
 
   outlineButtonHover: {
-    background: "rgba(255, 255, 255, 0.93)",
-    color: "#000000cf",
-    fontWeight: "bold",
-  },
+  background: "#f3f4f6",
+  color: "#111827",
+},
 
   selectWrapper: {
     position: "relative",
@@ -493,20 +486,21 @@ const styles = {
   },
 
   selectIcon: {
-    position: "absolute",
-    right: 10,
-    pointerEvents: "none", // 👈 IMPORTANT: lets clicks go to select
-    color: "#ffffff",
-    opacity: 0.7,
-  },
+  position: "absolute",
+  right: 10,
+  pointerEvents: "none",
+  color: "#6b7280",
+},
 
   main: {
     padding: 24,
   },
   title: {
-    fontSize: 26,
-    marginBottom: 20,
-  },
+  fontSize: 28,
+  marginBottom: 24,
+  fontWeight: 700,
+  color: "#111827",
+},
   topBar: {
     display: "flex",
     justifyContent: "space-between",
@@ -520,13 +514,12 @@ const styles = {
     width: 260,
   },
   search: {
-    background: "#1e293b",
-    border: "none",
-    padding: "10px 14px",
-    borderRadius: 10,
-    color: "#fff",
-    width: "100%",
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#111827",
+  padding: "10px 14px",
+  borderRadius: 10,
+},
   searchIcon: {
     position: "absolute",
     right: 12,
@@ -543,11 +536,10 @@ const styles = {
     fontSize: 14,
   },
   tableWrap: {
-    background: "#020617",
-    borderRadius: 14,
-    border: "1px solid #1e293b",
-    overflow: "hidden",
-  },
+  background: "#ffffff",
+  borderRadius: 14,
+  border: "1px solid #e5e7eb",
+},
   actionGroup: {
     display: "flex",
     gap: 8,
@@ -609,20 +601,20 @@ const styles = {
   modalOverlay: {
     position: "fixed",
     inset: 0,
-    background: "rgba(2,6,23,0.7)",
+    background: "rgba(0,0,0,0.35)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     zIndex: 2000,
   },
   modal: {
-    width: 520,
-    padding: 24,
-    background: "#0f172a",
-    borderRadius: 12,
-    border: "1px solid rgba(255,255,255,0.04)",
-    boxShadow: "0 10px 30px rgba(2,6,23,0.9)",
-  },
+  width: 520,
+  padding: 24,
+  background: "#ffffff",
+  borderRadius: 16,
+  border: "1px solid #e5e7eb",
+  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+},
   modalTitle: {
     textAlign: "center",
     margin: "0 0 18px 0",
@@ -632,20 +624,21 @@ const styles = {
     marginBottom: 12,
   },
   label: {
-    display: "block",
-    marginBottom: 6,
-    color: "#e6e9ed",
-    fontSize: 13,
-  },
+  display: "block",
+  marginBottom: 6,
+  color: "#111827",   // dark black
+  fontSize: 14,
+  fontWeight: 600,    // bold
+},
   input: {
-    width: "100%",
-    padding: "10px 12px",
-    borderRadius: 8,
-    border: "1px solid rgba(255,255,255,0.03)",
-    background: "#1e293b",
-    color: "#e5e7eb",
-    outline: "none",
-  },
+  width: "100%",
+  padding: "10px 12px",
+  borderRadius: 8,
+  border: "1px solid #e5e7eb",
+  background: "#ffffff",
+  color: "#111827",
+  outline: "none",
+},
   select: {
     width: "100%",
     padding: "10px 12px",
@@ -678,38 +671,40 @@ const styles = {
     marginTop: 18,
   },
   cancelButton: {
-    background: "#0f1724",
-    border: "1px solid rgba(255,255,255,0.04)",
+    background: "#f3f4f6",
+  border: "1px solid #e5e7eb",
+  color: "#374151",
     padding: "8px 14px",
     borderRadius: 8,
-    color: "#cbd5e1",
     cursor: "pointer",
   },
   createSubmitButton: {
-    background: "#f97316",
-    border: "none",
-    padding: "8px 14px",
-    borderRadius: 8,
-    color: "#fff",
-    cursor: "pointer",
-  },
+  background: "#2563eb",
+  color: "#ffffff",
+  border: "none",
+  padding: "8px 16px",
+  borderRadius: 8,
+  cursor: "pointer",
+},
 };
 
 /* ===== STATUS BADGES ===== */
 const statusStyle = (status) => ({
-  padding: "4px 12px",
+  padding: "6px 14px",
   borderRadius: 999,
   fontSize: 12,
+  fontWeight: 600,
+  display: "inline-block",
   background:
     status === "Active"
-      ? "#064e3b"
+      ? "#dcfce7"
       : status === "Suspended"
-        ? "#713f12"
-        : "#3f3f46",
+        ? "#fef9c3"
+        : "#f3f4f6",
   color:
     status === "Active"
-      ? "#6ee7b7"
+      ? "#15803d"
       : status === "Suspended"
-        ? "#fde68a"
-        : "#e5e7eb",
+        ? "#ca8a04"
+        : "#374151",
 });

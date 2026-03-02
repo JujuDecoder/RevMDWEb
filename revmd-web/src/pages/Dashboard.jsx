@@ -28,17 +28,17 @@ export default function Dashboard() {
 
   return (
     <div
-      style={{
-        height: "90vh",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        padding: "clamp(12px, 2vw, 24px)",
-        color: "#e6eef8",
-        fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto",
-        background: "transparent",
-      }}
-    >
+  style={{
+    height: "90vh",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+    padding: "24px",
+    color: "#1f2937",
+    fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto",
+    background: "#f3f6fb", // light grey background like image
+  }}
+>
       <div
         style={{
           maxWidth: "1400px",
@@ -159,15 +159,11 @@ function StatCard({ title, left, right, rightLabel = "All", icon, tileGradient }
       role="group"
       tabIndex={-1}
       style={{
-        ...baseStyle,
-        background: isSpecial
-          ? "linear-gradient(135deg, rgba(59,130,246,0.014), rgba(255,255,255,0.008))"
-          : "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))",
-        border: `1px solid ${colors.border || "rgba(255,255,255,0.03)"}`,
-        boxShadow: isSpecial
-          ? `inset 0 1px 0 rgba(255,255,255,0.02), 0 clamp(10px, 2vw, 16px) clamp(24px, 5vw, 40px) rgba(2,6,23,0.6), 0 0 clamp(14px, 3vw, 20px) ${colors.glow || "rgba(255,255,255,0.1)"}`
-          : "inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 28px rgba(3,8,20,0.6)",
-      }}
+  ...baseStyle,
+  background: "#ffffff",
+  border: "1px solid #e5eaf2",
+  boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
+}}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "clamp(8px, 1.5vw, 12px)" }}>
         <div
@@ -185,7 +181,7 @@ function StatCard({ title, left, right, rightLabel = "All", icon, tileGradient }
         >
           {icon}
         </div>
-        <div style={{ fontSize: "clamp(14px, 2vw, 16px)", opacity: 0.92 }}>{title}</div>
+        <div style={{ fontSize: "15px", fontWeight: 500, color: "#6b7280" }}>{title}</div>
       </div>
 
       {isSpecial ? (
@@ -195,7 +191,7 @@ function StatCard({ title, left, right, rightLabel = "All", icon, tileGradient }
               style={{
                 fontSize: "clamp(28px, 5vw, 40px)",
                 fontWeight: 700,
-                color: colors.numColor,
+                color: "#1f2937",
                 lineHeight: 1,
               }}
             >
@@ -210,13 +206,13 @@ function StatCard({ title, left, right, rightLabel = "All", icon, tileGradient }
             style={{
               width: 1,
               height: "clamp(40px, 6vw, 48px)",
-              background: "rgba(255,255,255,0.04)",
+              background: "#e5eaf2",
               margin: "0 clamp(12px, 2vw, 22px)",
             }}
           />
 
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "clamp(22px, 3.5vw, 28px)", fontWeight: 700, color: "#e6eef8", lineHeight: 1 }}>
+            <div style={{ fontSize: "clamp(22px, 3.5vw, 28px)", fontWeight: 700, color: "#111827", lineHeight: 1 }}>
               {formatNumber(right)}
             </div>
             <div style={{ fontSize: "clamp(11px, 1.5vw, 12px)", color: "rgba(255,255,255,0.65)", marginTop: 8 }}>
@@ -252,7 +248,7 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
         iconGradient: "linear-gradient(180deg, #c97a3a, #7a4a25)",
         iconShadow: "0 10px 24px rgba(200,120,60,0.4), inset 0 1px rgba(255,255,255,0.08)",
         numColor: "#ffb84d",
-        strokeColor: "#ffb84d",
+        strokeColor: "#2563eb",
       },
       "Number of Reports": {
         bgGradient: "linear-gradient(180deg, rgba(200,80,60,0.08), rgba(200,80,60,0.03))",
@@ -261,7 +257,7 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
         iconGradient: "linear-gradient(180deg, #d45a42, #8a3528)",
         iconShadow: "0 10px 24px rgba(212,90,66,0.4), inset 0 1px rgba(255,255,255,0.08)",
         numColor: "#ff8a66",
-        strokeColor: "#ff8a66",
+        strokeColor: "#2563eb", // clean blue line
       },
     };
 
@@ -272,17 +268,16 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
         role="group"
         tabIndex={-1}
         style={{
-          background: cfg.bgGradient,
-          borderRadius: "clamp(12px, 2.5vw, 20px)",
-          border: `1px solid ${cfg.border}`,
-          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.01), ${cfg.boxShadow}`,
-          padding: "clamp(20px, 3.5vw, 32px)",
-          cursor: "default",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          minHeight: "clamp(240px, 30vh, 320px)",
-        }}
+  background: "#ffffff",
+  borderRadius: "16px",
+  border: "1px solid #e5eaf2",
+  boxShadow: "0 6px 24px rgba(0,0,0,0.05)",
+  padding: "28px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  minHeight: "260px",
+}}
       >
         {/* Header */}
         <div
@@ -292,7 +287,7 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
             gap: "clamp(12px, 2vw, 18px)",
             marginBottom: "clamp(12px, 2vw, 20px)",
             paddingBottom: "clamp(12px, 2vw, 16px)",
-            borderBottom: "1px solid rgba(255,255,255,0.08)",
+            borderBottom: "1px solid #eef2f7",
           }}
         >
           <div
@@ -303,30 +298,30 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: cfg.iconGradient,
-              boxShadow: cfg.iconShadow,
+              background: "#eff6ff",
+              boxShadow: "none",
               flexShrink: 0,
             }}
           >
             {icon}
           </div>
 
-          <div style={{ fontSize: "clamp(16px, 2.5vw, 22px)", fontWeight: 500, opacity: 0.96, color: "#e6eef8" }}>
+          <div style={{ fontSize: "clamp(16px, 2.5vw, 22px)", fontWeight: 500, opacity: 0.96, color: "#374151" }}>
             {title}
           </div>
         </div>
 
         {/* Number + Label Row */}
         <div style={{ display: "flex", alignItems: "baseline", gap: "clamp(8px, 1.5vw, 14px)", marginBottom: "clamp(12px, 2vw, 20px)" }}>
-          <div style={{ fontSize: "clamp(36px, 7vw, 52px)", fontWeight: 700, color: cfg.numColor, lineHeight: 1 }}>
+          <div style={{ fontSize: "clamp(36px, 7vw, 52px)", fontWeight: 700, color: "#1d4ed8", lineHeight: 1 }}>
             {formatNumber(total)}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-            <div style={{ fontSize: "clamp(12px, 1.8vw, 16px)", color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
+            <div style={{ fontSize: "clamp(12px, 1.8vw, 16px)", color: "#6b7280", fontWeight: 500 }}>
               {title.replace("Number of ", "")}
             </div>
           </div>
-          <div style={{ marginLeft: "auto", fontSize: "clamp(12px, 1.8vw, 14px)", color: "rgba(255,255,255,0.65)" }}>
+          <div style={{ marginLeft: "auto", fontSize: "clamp(12px, 1.8vw, 14px)", color: "#10b981" }}>
             {change}
           </div>
         </div>

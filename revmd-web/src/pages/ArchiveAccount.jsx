@@ -26,7 +26,7 @@ export default function Accounts() {
           data.map((m) => ({
             id: m.id,
             name: `${m.firstName} ${m.lastName}`,
-            status: m.status || "Archived",
+            status: m.status || "Inactive",
             date: m.date || "",
           })),
         );
@@ -99,7 +99,7 @@ export default function Accounts() {
                 width="20"
                 height="20"
                 fill="none"
-                stroke="#94a3b8"
+                stroke="#9ca3af"
                 strokeWidth="2"
               >
                 <circle cx="11" cy="11" r="8" />
@@ -142,15 +142,18 @@ export default function Accounts() {
                         onClick={() => handleRetrieve(m.id)} // ✅ ADD THIS
                       >
                         <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          width="18"
-                          height="18"
-                          fill="#ef4444"
-                          style={styles.iconSvg}
-                        >
-                          <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-3h8v-9H9v9zM16 2H8a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2z" />
-                        </svg>
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  width="18"
+  height="18"
+  fill="none"
+  stroke="#16a34a"
+  strokeWidth="3"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+>
+  <polyline points="20 6 9 17 4 12" />
+</svg>
                       </button>
                     </div>
                   </TableCell>
@@ -166,18 +169,20 @@ export default function Accounts() {
 
 const styles = {
   app: {
-    minHeight: "80vh",
-    background: "#020617",
-    color: "#e5e7eb",
-    fontFamily: "Inter, sans-serif",
-  },
+  minHeight: "100vh",
+  background: "#f8fafc",
+  color: "#1f2937",
+  fontFamily: "Inter, sans-serif",
+},
   main: {
     padding: 24,
   },
   title: {
-    fontSize: 26,
-    marginBottom: 20,
-  },
+  fontSize: 28,
+  marginBottom: 24,
+  fontWeight: 700,
+  color: "#111827",
+},
   topBar: {
     display: "flex",
     justifyContent: "space-between",
@@ -191,13 +196,13 @@ const styles = {
     width: 260,
   },
   search: {
-    background: "#1e293b",
-    border: "none",
-    padding: "10px 14px",
-    borderRadius: 10,
-    color: "#fff",
-    width: "100%",
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  padding: "10px 14px",
+  borderRadius: 10,
+  color: "#111827",
+  width: "100%",
+},
   searchIcon: {
     position: "absolute",
     right: 12,
@@ -214,11 +219,11 @@ const styles = {
     fontSize: 14,
   },
   tableWrap: {
-    background: "#020617",
-    borderRadius: 14,
-    border: "1px solid #1e293b",
-    overflow: "hidden",
-  },
+  background: "#ffffff",
+  borderRadius: 14,
+  border: "1px solid #e5e7eb",
+  overflow: "hidden",
+},
   actionGroup: {
     display: "flex",
     gap: 8,
@@ -368,19 +373,17 @@ const styles = {
 
 /* ===== STATUS BADGES ===== */
 const statusStyle = (status) => ({
-  padding: "4px 12px",
+  padding: "6px 14px",
   borderRadius: 999,
   fontSize: 12,
+  fontWeight: 600,
+  display: "inline-block",
   background:
     status === "Active"
-      ? "#064e3b"
-      : status === "Suspended"
-        ? "#713f12"
-        : "#3f3f46",
+      ? "#dcfce7"      // light green
+      : "#fee2e2",     // light red
   color:
     status === "Active"
-      ? "#6ee7b7"
-      : status === "Suspended"
-        ? "#fde68a"
-        : "#e5e7eb",
+      ? "#15803d"      // dark green
+      : "#b91c1c",     // dark red
 });

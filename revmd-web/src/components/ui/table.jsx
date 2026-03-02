@@ -4,7 +4,7 @@ export function Table({ children, ...props }) {
   return (
     <div className="w-full overflow-x-auto">
       <table
-        className="w-full border-collapse text-sm text-slate-100"
+        className="w-full border-collapse text-sm text-slate-800"
         {...props}
       >
         {children}
@@ -15,7 +15,10 @@ export function Table({ children, ...props }) {
 
 export function TableHeader({ children, ...props }) {
   return (
-    <thead className="bg-slate-900/60 border-b border-slate-800" {...props}>
+    <thead
+      className="bg-slate-100 border-b border-slate-200"
+      {...props}
+    >
       {children}
     </thead>
   );
@@ -28,7 +31,7 @@ export function TableBody({ children, ...props }) {
 export function TableRow({ children, ...props }) {
   return (
     <tr
-      className="border-t border-slate-800 hover:bg-slate-900/40 transition-colors"
+      className="border-t border-slate-200 hover:bg-slate-100 transition-colors"
       {...props}
     >
       {children}
@@ -39,7 +42,7 @@ export function TableRow({ children, ...props }) {
 export function TableHead({ children, className = "", ...props }) {
   return (
     <th
-      className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-400 ${className}`}
+      className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 ${className}`}
       {...props}
     >
       {children}
@@ -49,9 +52,11 @@ export function TableHead({ children, className = "", ...props }) {
 
 export function TableCell({ children, className = "", ...props }) {
   return (
-    <td className={`px-4 py-3 align-middle ${className}`} {...props}>
+    <td
+      className={`px-4 py-3 align-middle text-slate-800 ${className}`}
+      {...props}
+    >
       {children}
     </td>
   );
 }
-
