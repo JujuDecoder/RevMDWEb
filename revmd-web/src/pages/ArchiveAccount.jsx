@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Accounts() {
   const navigate = useNavigate();
-
+  const [retrieveId, setRetrieveId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [mechanics, setMechanics] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,34 +41,36 @@ export default function Accounts() {
     fetchArchived();
   }, []);
 
-  const handleRetrieve = async (id) => {
-    const confirmRetrieve = window.confirm(
-      "Are you sure you want to retrieve this mechanic?",
-    );
+  const openRetrieveModal = (id) => {
+    setRetrieveId(id);
+  };
 
-    if (!confirmRetrieve) return;
+  const closeRetrieveModal = () => {
+    setRetrieveId(null);
+  };
+
+  const confirmRetrieve = async () => {
+    if (!retrieveId) return;
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/mechanics/retrieve/${id}`,
-        {
-          method: "POST",
-        },
+        `http://localhost:5000/api/mechanics/retrieve/${retrieveId}`,
+        { method: "POST" }
       );
 
-      const data = await res.json(); // 👈 ADD THIS
-
-      console.log("SERVER RESPONSE:", data); // 👈 ADD THIS
+      const data = await res.json();
 
       if (!res.ok) {
         throw new Error(data.message || "Failed to retrieve mechanic");
       }
 
-      alert("Mechanic retrieved successfully"); // 👈 ADD THIS
+      setMechanics((prev) =>
+        prev.filter((m) => m.id !== retrieveId)
+      );
 
-      setMechanics((prev) => prev.filter((m) => m.id !== id));
+      closeRetrieveModal();
     } catch (error) {
-      console.error("FULL ERROR:", error);
+      console.error(error);
       alert(error.message);
     }
   };
@@ -107,7 +109,15 @@ export default function Accounts() {
               </svg>
             </div>
           </div>
+
+          <button
+            style={styles.outlineButton}
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </button>
         </div>
+
         {/* TABLE */}
         <div style={styles.tableWrap}>
           <Table>
@@ -139,21 +149,21 @@ export default function Accounts() {
                           ...styles.iconButton,
                           ...styles.deleteIconButton,
                         }}
-                        onClick={() => handleRetrieve(m.id)} // ✅ ADD THIS
+                        onClick={() => openRetrieveModal(m.id)}
                       >
                         <svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 24 24"
-  width="18"
-  height="18"
-  fill="none"
-  stroke="#16a34a"
-  strokeWidth="3"
-  strokeLinecap="round"
-  strokeLinejoin="round"
->
-  <polyline points="20 6 9 17 4 12" />
-</svg>
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="18"
+                          height="18"
+                          fill="none"
+                          stroke="#16a34a"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
                       </button>
                     </div>
                   </TableCell>
@@ -163,26 +173,70 @@ export default function Accounts() {
           </Table>
         </div>
       </main>
+      {/* RETRIEVE CONFIRMATION MODAL */}
+      {retrieveId && (
+        <div style={styles.modalOverlay} onMouseDown={closeRetrieveModal}>
+          <div
+            style={styles.retrieveModal}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <h3 style={styles.retrieveTitle}>Restore Mechanic?</h3>
+
+            <p style={styles.retrieveText}>
+              Are you sure you want to restore this mechanic account?
+            </p>
+
+            <div style={styles.modalActions}>
+              <button
+                style={styles.cancelButton}
+                onClick={closeRetrieveModal}
+              >
+                Cancel
+              </button>
+
+              <button
+                style={styles.retrieveConfirmButton}
+                onClick={confirmRetrieve}
+              >
+                Restore
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 const styles = {
   app: {
-  minHeight: "100vh",
-  background: "#f8fafc",
-  color: "#1f2937",
-  fontFamily: "Inter, sans-serif",
-},
+    minHeight: "100vh",
+    background: "#f8fafc",
+    color: "#1f2937",
+    fontFamily: "Inter, sans-serif",
+  },
   main: {
     padding: 24,
   },
   title: {
-  fontSize: 28,
-  marginBottom: 24,
-  fontWeight: 700,
-  color: "#111827",
-},
+    fontSize: 28,
+    marginBottom: 24,
+    fontWeight: 700,
+    color: "#111827",
+  },
+
+  outlineButton: {
+    background: "#f9fafb",
+
+    border: "2px solid #e5eaf2",
+    color: "#ef4444",
+    fontWeight: 600,
+    padding: "6px 14px",
+    borderRadius: 8,
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  },
+
   topBar: {
     display: "flex",
     justifyContent: "space-between",
@@ -196,13 +250,13 @@ const styles = {
     width: 260,
   },
   search: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  padding: "10px 14px",
-  borderRadius: 10,
-  color: "#111827",
-  width: "100%",
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    padding: "10px 14px",
+    borderRadius: 20,
+    color: "#111827",
+    width: "100%",
+  },
   searchIcon: {
     position: "absolute",
     right: 12,
@@ -219,11 +273,11 @@ const styles = {
     fontSize: 14,
   },
   tableWrap: {
-  background: "#ffffff",
-  borderRadius: 14,
-  border: "1px solid #e5e7eb",
-  overflow: "hidden",
-},
+    background: "#ffffff",
+    borderRadius: 14,
+    border: "1px solid #e5e7eb",
+    overflow: "hidden",
+  },
   actionGroup: {
     display: "flex",
     gap: 8,
@@ -239,9 +293,6 @@ const styles = {
     justifyContent: "center",
     width: 36,
     height: 36,
-  },
-  editIconButton: {
-    // subtle hover
   },
   archiveIconButton: {
     // subtle hover
@@ -291,6 +342,37 @@ const styles = {
     justifyContent: "center",
     zIndex: 2000,
   },
+  retrieveModal: {
+  width: 400,
+  padding: 24,
+  background: "#ffffff",
+  borderRadius: 16,
+  border: "1px solid #e5e7eb",
+  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+  textAlign: "center",
+},
+
+retrieveTitle: {
+  marginBottom: 10,
+  fontSize: 18,
+  fontWeight: 700,
+  color: "#111827",
+},
+
+retrieveText: {
+  marginBottom: 20,
+  fontSize: 14,
+  color: "#6b7280",
+},
+
+retrieveConfirmButton: {
+  background: "#16a34a", // green
+  color: "#ffffff",
+  border: "none",
+  padding: "8px 16px",
+  borderRadius: 8,
+  cursor: "pointer",
+},
   modal: {
     width: 520,
     padding: 24,

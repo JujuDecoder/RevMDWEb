@@ -126,7 +126,7 @@ export default function Users() {
               </select>
 
               {/* Dropdown Icon */}
-              <svg
+           <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 width="16"
@@ -240,7 +240,7 @@ const styles = {
     position: "absolute",
     right: 10,
     pointerEvents: "none", // 👈 IMPORTANT: lets clicks go to select
-    color: "#ffffff",
+    color: "#6b7280",
     opacity: 0.7,
   },
 
@@ -269,7 +269,7 @@ const styles = {
   background: "#ffffff",
   border: "1px solid #e5e7eb",
   padding: "10px 14px",
-  borderRadius: 10,
+  borderRadius: 20,
   color: "#111827",
   width: "100%",
 },

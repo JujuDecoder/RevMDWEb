@@ -45,7 +45,7 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
       id: "4003",
       mechanic: "Roberto Reyes",
       status: "To Review",
-      date: "2025-10-06 09:12:11 AM", 
+      date: "2025-10-06 09:12:11 AM",
       report: "The mechanic did not bring proper tools.",
     },
     {
@@ -84,12 +84,28 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
         <h1 style={styles.title}>User Reports </h1>
 
         <div style={styles.filterColumn}>
-          <input
-            placeholder="Search by Case ID or Mechanic"
-            style={styles.search}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+          <div style={styles.searchWrapper}>
+            <input
+              placeholder="Search"
+              style={styles.search}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <div style={styles.searchIcon}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="#9ca3af"
+                strokeWidth="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="16" y1="16" x2="20" y2="20" />
+              </svg>
+            </div>
+          </div>
 
           <select
             style={styles.statusSelect}
@@ -350,18 +366,18 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
 
 const styles = {
   app: {
-  minHeight: "100vh",
-  background: "#f8fafc",
-  color: "#1f2937",
-  fontFamily: "Inter, sans-serif",
-},
+    minHeight: "100vh",
+    background: "#f8fafc",
+    color: "#1f2937",
+    fontFamily: "Inter, sans-serif",
+  },
   main: { padding: 24 },
   title: {
-  fontSize: 28,
-  marginBottom: 20,
-  fontWeight: 700,
-  color: "#111827",
-},
+    fontSize: 28,
+    marginBottom: 20,
+    fontWeight: 700,
+    color: "#111827",
+  },
 
   filterColumn: {
     display: "flex",
@@ -372,23 +388,35 @@ const styles = {
     marginBottom: 20,
   },
 
+  searchWrapper: {
+    display: "flex",
+    alignItems: "center",
+    position: "relative",
+    width: 260,
+  },
   search: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  padding: "10px 14px",
-  borderRadius: 10,
-  color: "#111827",
-  width: 320,
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    padding: "10px 14px",
+    borderRadius: 20,
+    color: "#111827",
+    width: "100%",
+  },
+  searchIcon: {
+    position: "absolute",
+    right: 12,
+    top: "50%",
+    transform: "translateY(-50%)",
+  },
 
   statusSelect: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  padding: "10px 14px",
-  borderRadius: 10,
-  color: "#111827",
-  width: 200,
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    padding: "10px 14px",
+    borderRadius: 10,
+    color: "#111827",
+    width: 200,
+  },
 
   tableContainer: {
     display: "flex",
@@ -397,28 +425,28 @@ const styles = {
   },
 
   tableWrap: {
-  border: "1px solid #e5e7eb",
-  borderRadius: "14px 14px 0 0",
-  overflow: "hidden",
-  background: "#ffffff",
-},
+    border: "1px solid #e5e7eb",
+    borderRadius: "14px 14px 0 0",
+    overflow: "hidden",
+    background: "#ffffff",
+  },
 
   paginationContainer: {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "16px 20px",
-  background: "#ffffff",
-  borderRadius: "0 0 14px 14px",
-  border: "1px solid #e5e7eb",
-  borderTop: "none",
-},
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "16px 20px",
+    background: "#ffffff",
+    borderRadius: "0 0 14px 14px",
+    border: "1px solid #e5e7eb",
+    borderTop: "none",
+  },
 
   paginationInfo: {
-  color: "#6b7280",
-  fontSize: 14,
-  fontWeight: 500,
-},
+    color: "#6b7280",
+    fontSize: 14,
+    fontWeight: 500,
+  },
 
   paginationButtons: {
     display: "flex",
@@ -427,15 +455,15 @@ const styles = {
   },
 
   paginationBtn: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  color: "#374151",
-  padding: "8px 12px",
-  borderRadius: 8,
-  cursor: "pointer",
-  fontSize: 14,
-  transition: "all 0.2s ease",
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    color: "#374151",
+    padding: "8px 12px",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 14,
+    transition: "all 0.2s ease",
+  },
 
  modalOverlay: {
     position: "fixed",
@@ -447,14 +475,15 @@ const styles = {
     zIndex: 100,
   },
   modalCard: {
-    width: 450, // Matches the image aspect ratio
-    background: "#ffffff",
-    borderRadius: 12,
-    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-    overflow: "hidden",
+    width: 720,
+    background: "#1e293b",
+    borderRadius: 24,
   },
+
   modalHeader: {
-    padding: "12px 16px",
+    background: "#f3f4f6",
+    color: "#111827",
+    padding: 14,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -682,12 +711,115 @@ const styles = {
     alignItems: "center",
   },
 
-  
-  modalHeaderRight: {
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-},
+  // CHAT UI
+  chatCard: {
+    width: 520,
+    height: 620,
+    background: "#ffffff",
+    boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+    borderRadius: 20,
+    display: "flex",
+    flexDirection: "column",
+  },
+
+  chatHeader: {
+    background: "#2b3a67",
+    padding: 14,
+    display: "flex",
+    justifyContent: "space-between",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+
+  chatUserRow: {
+    display: "flex",
+    gap: 12,
+    padding: 16,
+    alignItems: "center",
+    borderBottom: "1px solid #334155",
+  },
+
+  chatAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+  },
+
+  onlineStatus: {
+    fontSize: 12,
+    color: "#94a3b8",
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+  },
+
+  onlineDot: {
+    width: 8,
+    height: 8,
+    background: "#22c55e",
+    borderRadius: "50%",
+  },
+
+  chatBody: {
+    flex: 1,
+    padding: 16,
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+    overflowY: "auto",
+  },
+
+  chatBubbleLeft: {
+    alignSelf: "flex-start",
+    background: "#f3f4f6",
+    color: "#111827",
+    padding: "10px 14px",
+    borderRadius: 14,
+    maxWidth: "75%",
+    fontSize: 14,
+  },
+
+  chatBubbleRight: {
+    alignSelf: "flex-end",
+    background: "#2563eb",
+    padding: "10px 14px",
+    borderRadius: 14,
+    maxWidth: "75%",
+    fontSize: 14,
+  },
+
+  chatTime: {
+    fontSize: 11,
+    color: "#94a3b8",
+    marginTop: 6,
+    textAlign: "right",
+  },
+
+  chatInputRow: {
+    padding: 14,
+    display: "flex",
+    gap: 10,
+    borderTop: "1px solid #334155",
+  },
+
+  chatInput: {
+    flex: 1,
+    background: "#020617",
+    border: "1px solid #334155",
+    color: "#fff",
+    padding: "10px 14px",
+    borderRadius: 999,
+  },
+
+  sendBtn: {
+    background: "#2563eb",
+    color: "#fff",
+    border: "none",
+    borderRadius: "50%",
+    width: 42,
+    height: 42,
+    cursor: "pointer",
+  },
 
 modalStatusSelect: {
   padding: "6px 10px",
@@ -709,14 +841,14 @@ const statusStyle = (status) => ({
     status === "Investigating"
       ? "#dbeafe"
       : status === "Resolved"
-      ? "#dcfce7"
-      : "#fef9c3",
+        ? "#dcfce7"
+        : "#fef9c3",
   color:
     status === "Investigating"
       ? "#1d4ed8"
       : status === "Resolved"
-      ? "#15803d"
-      : "#ca8a04",
+        ? "#15803d"
+        : "#ca8a04",
 });
 
 

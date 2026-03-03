@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Accounts() {
   const [accountType, setAccountType] = useState("Mechanic");
-
+  const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
   const hoverTimerRef = React.useRef(null);
   const [hoveredBtn, setHoveredBtn] = useState(null);
@@ -133,28 +133,39 @@ export default function Accounts() {
     }
   };
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this mechanic?",
-    );
-    if (!confirmDelete) return;
+  const openDeleteModal = (id) => {
+    setDeleteId(id);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteId(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+
     try {
       const res = await fetch(
-        `http://localhost:5000/api/mechanics/archive/${id}`,
+        `http://localhost:5000/api/mechanics/archive/${deleteId}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
+
       if (!res.ok) {
         throw new Error("Failed to archive mechanic");
       }
-      setMechanics((prev) => prev.filter((mechanic) => mechanic.id !== id));
+
+      setMechanics((prev) =>
+        prev.filter((mechanic) => mechanic.id !== deleteId)
+      );
+
+      closeDeleteModal();
     } catch (err) {
       console.error(err);
       alert("Failed to delete mechanic");
     }
-    console.log("Deleting mechanic with ID:", id);
   };
 
   const filteredMechanics = mechanics.filter(
@@ -291,7 +302,7 @@ export default function Accounts() {
                           ...styles.iconButton,
                           ...styles.deleteIconButton,
                         }}
-                        onClick={() => handleDelete(m.id)}
+                        onClick={() => openDeleteModal(m.id)}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -425,15 +436,46 @@ export default function Accounts() {
           </div>
         </div>
       )}
+       {/* DELETE CONFIRMATION MODAL */}
+      {deleteId && (
+        <div style={styles.modalOverlay} onMouseDown={closeDeleteModal}>
+          <div
+            style={styles.deleteModal}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <h3 style={styles.deleteTitle}>Archive Mechanic?</h3>
+
+            <p style={styles.deleteText}>
+              Are you sure you want to archive this mechanic account?
+            </p>
+
+            <div style={styles.modalActions}>
+              <button
+                style={styles.cancelButton}
+                onClick={closeDeleteModal}
+              >
+                Cancel
+              </button>
+
+              <button
+                style={styles.deleteConfirmButton}
+                onClick={confirmDelete}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 const styles = {
   app: {
-     minHeight: "100vh",
-  background: "#f8fafc",
-  color: "#1f2937",
+    minHeight: "100vh",
+    background: "#f8fafc",
+    color: "#1f2937",
     fontFamily: "Inter, sans-serif",
   },
   buttonGroup: {
@@ -443,31 +485,31 @@ const styles = {
   },
 
   outlineSelect: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  color: "#374151",
-  fontWeight: 600,
-  padding: "6px 32px 6px 12px",
-  borderRadius: 8,
-  cursor: "pointer",
-  fontSize: 13,
-  lineHeight: 1.2,
-  appearance: "none",
-  WebkitAppearance: "none",
-  MozAppearance: "none",
-  transition: "all 0.2s ease",
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    color: "#374151",
+    fontWeight: 600,
+    padding: "6px 32px 6px 12px",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 13,
+    lineHeight: 1.2,
+    appearance: "none",
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+    transition: "all 0.2s ease",
+  },
 
   outlineButton: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  color: "#374151",
-  fontWeight: 600,
-  padding: "6px 14px",
-  borderRadius: 8,
-  cursor: "pointer",
-  transition: "all 0.2s ease",
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    color: "#374151",
+    fontWeight: 600,
+    padding: "6px 14px",
+    borderRadius: 8,
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  },
 
   OptionS: {
     background: "#020617",
@@ -475,9 +517,9 @@ const styles = {
   },
 
   outlineButtonHover: {
-  background: "#f3f4f6",
-  color: "#111827",
-},
+    background: "#f3f4f6",
+    color: "#111827",
+  },
 
   selectWrapper: {
     position: "relative",
@@ -486,21 +528,53 @@ const styles = {
   },
 
   selectIcon: {
-  position: "absolute",
-  right: 10,
-  pointerEvents: "none",
+    position: "absolute",
+    right: 10,
+    pointerEvents: "none",
+    color: "#6b7280",
+  },
+
+  deleteModal: {
+  width: 400,
+  padding: 24,
+  background: "#ffffff",
+  borderRadius: 16,
+  border: "1px solid #e5e7eb",
+  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+  textAlign: "center",
+},
+
+deleteTitle: {
+  marginBottom: 10,
+  fontSize: 18,
+  fontWeight: 700,
+  color: "#111827",
+},
+
+deleteText: {
+  marginBottom: 20,
+  fontSize: 14,
   color: "#6b7280",
+},
+
+deleteConfirmButton: {
+  background: "#ef4444",
+  color: "#ffffff",
+  border: "none",
+  padding: "8px 16px",
+  borderRadius: 8,
+  cursor: "pointer",
 },
 
   main: {
     padding: 24,
   },
   title: {
-  fontSize: 28,
-  marginBottom: 24,
-  fontWeight: 700,
-  color: "#111827",
-},
+    fontSize: 28,
+    marginBottom: 24,
+    fontWeight: 700,
+    color: "#111827",
+  },
   topBar: {
     display: "flex",
     justifyContent: "space-between",
@@ -514,12 +588,13 @@ const styles = {
     width: 260,
   },
   search: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  color: "#111827",
-  padding: "10px 14px",
-  borderRadius: 10,
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    padding: "10px 14px",
+    borderRadius: 20,
+    color: "#111827",
+    width: "100%",
+  },
   searchIcon: {
     position: "absolute",
     right: 12,
@@ -536,10 +611,10 @@ const styles = {
     fontSize: 14,
   },
   tableWrap: {
-  background: "#ffffff",
-  borderRadius: 14,
-  border: "1px solid #e5e7eb",
-},
+    background: "#ffffff",
+    borderRadius: 14,
+    border: "1px solid #e5e7eb",
+  },
   actionGroup: {
     display: "flex",
     gap: 8,
@@ -608,13 +683,13 @@ const styles = {
     zIndex: 2000,
   },
   modal: {
-  width: 520,
-  padding: 24,
-  background: "#ffffff",
-  borderRadius: 16,
-  border: "1px solid #e5e7eb",
-  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-},
+    width: 520,
+    padding: 24,
+    background: "#ffffff",
+    borderRadius: 16,
+    border: "1px solid #e5e7eb",
+    boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+  },
   modalTitle: {
     textAlign: "center",
     margin: "0 0 18px 0",
@@ -624,21 +699,21 @@ const styles = {
     marginBottom: 12,
   },
   label: {
-  display: "block",
-  marginBottom: 6,
-  color: "#111827",   // dark black
-  fontSize: 14,
-  fontWeight: 600,    // bold
-},
+    display: "block",
+    marginBottom: 6,
+    color: "#111827",   // dark black
+    fontSize: 14,
+    fontWeight: 600,    // bold
+  },
   input: {
-  width: "100%",
-  padding: "10px 12px",
-  borderRadius: 8,
-  border: "1px solid #e5e7eb",
-  background: "#ffffff",
-  color: "#111827",
-  outline: "none",
-},
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: 8,
+    border: "1px solid #e5e7eb",
+    background: "#ffffff",
+    color: "#111827",
+    outline: "none",
+  },
   select: {
     width: "100%",
     padding: "10px 12px",
@@ -672,20 +747,20 @@ const styles = {
   },
   cancelButton: {
     background: "#f3f4f6",
-  border: "1px solid #e5e7eb",
-  color: "#374151",
+    border: "1px solid #e5e7eb",
+    color: "#374151",
     padding: "8px 14px",
     borderRadius: 8,
     cursor: "pointer",
   },
   createSubmitButton: {
-  background: "#2563eb",
-  color: "#ffffff",
-  border: "none",
-  padding: "8px 16px",
-  borderRadius: 8,
-  cursor: "pointer",
-},
+    background: "#2563eb",
+    color: "#ffffff",
+    border: "none",
+    padding: "8px 16px",
+    borderRadius: 8,
+    cursor: "pointer",
+  },
 };
 
 /* ===== STATUS BADGES ===== */
