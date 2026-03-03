@@ -129,12 +129,28 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
         <h1 style={styles.title}>User Reports </h1>
 
         <div style={styles.filterColumn}>
-          <input
-            placeholder="Search by Case ID or Mechanic"
-            style={styles.search}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+            <div style={styles.searchWrapper}>
+            <input
+              placeholder="Search"
+              style={styles.search}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <div style={styles.searchIcon}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="#9ca3af"
+                strokeWidth="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="16" y1="16" x2="20" y2="20" />
+              </svg>
+            </div>
+          </div>
 
           <select
             style={styles.statusSelect}
@@ -551,14 +567,26 @@ const styles = {
     marginBottom: 20,
   },
 
+    searchWrapper: {
+    display: "flex",
+    alignItems: "center",
+    position: "relative",
+    width: 260,
+  },
   search: {
   background: "#ffffff",
   border: "1px solid #e5e7eb",
   padding: "10px 14px",
-  borderRadius: 10,
+  borderRadius: 20,
   color: "#111827",
-  width: 320,
+  width: "100%",
 },
+  searchIcon: {
+    position: "absolute",
+    right: 12,
+    top: "50%",
+    transform: "translateY(-50%)",
+  },
 
   statusSelect: {
   background: "#ffffff",

@@ -87,12 +87,28 @@ export default function Appeals() {
       <main style={styles.main}>
         <h1 style={styles.title}>Appeals</h1>
         <div style={styles.searchRow}>
-          <input
-            placeholder="Search by Case ID or Mechanic"
-            style={styles.search}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+            <div style={styles.searchWrapper}>
+            <input
+              placeholder="Search"
+              style={styles.search}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <div style={styles.searchIcon}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="#9ca3af"
+                strokeWidth="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="16" y1="16" x2="20" y2="20" />
+              </svg>
+            </div>
+          </div>
           <button
             style={styles.viewArchiveBtn}
             onClick={() => setShowArchiveList(true)}
@@ -309,14 +325,25 @@ const styles = {
     fontWeight: 700,
     color: "#111827",
   },
-
+searchWrapper: {
+    display: "flex",
+    alignItems: "center",
+    position: "relative",
+    width: 260,
+  },
   search: {
-    background: "#ffffff",
-    border: "1px solid #e5e7eb",
-    color: "#111827",
-    padding: "10px 14px",
-    borderRadius: 10,
-    width: 320,
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  padding: "10px 14px",
+  borderRadius: 20,
+  color: "#111827",
+  width: "100%",
+},
+  searchIcon: {
+    position: "absolute",
+    right: 12,
+    top: "50%",
+    transform: "translateY(-50%)",
   },
 
   tableWrap: {
