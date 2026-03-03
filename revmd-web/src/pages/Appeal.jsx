@@ -36,269 +36,292 @@ export default function Appeals() {
   useEffect(() => {
     fetchAppeals();
   }, []);
+  useEffect(() => {
+    if (!selectedAppeal) return;
+
+    const fetchMessages = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/appeals/${selectedAppeal.id}/messages`
+        );
+        const data = await res.json();
+        setMessages(data);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+
+    fetchMessages();
+  }, [selectedAppeal]);
   const [reports, setReports] = useState([]);
   const [archivedReports, setArchivedReports] = useState([]);
 
   /* 💬 CHAT STATE */
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: "admin",
-      text: "Hi, we’re reviewing your appeal.",
-      time: "11:10 AM",
-    },
-    {
-      id: 2,
-      sender: "user",
-      text: "Thank you.",
-      time: "11:14 AM",
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
 
   const [messageInput, setMessageInput] = useState("");
   const [newStatus, setNewStatus] = useState("");
 
-  const handleSendMessage = () => {
-    if (!messageInput.trim()) return;
+  const handleSendMessage = async () => {
+  if (!messageInput.trim() || !selectedAppeal) return;
 
-    setMessages((prev) => [
-      ...prev,
+  try {
+    await fetch(
+      `http://localhost:5000/api/appeals/${selectedAppeal.id}/messages`,
       {
-        id: Date.now(),
-        sender: "admin",
-        text: messageInput,
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sender: "admin",
+          text: messageInput,
         }),
-      },
-    ]);
-
+      }
+    );
+ 
     setMessageInput("");
-  };
 
-  const archiveAppeal = (appeal) => {
-    setArchivedReports((prev) => [...prev, appeal]);
-    setReports((prev) => prev.filter((r) => r.id !== appeal.id));
-  };
+    // Refresh messages
+    const res = await fetch(
+      `http://localhost:5000/api/appeals/${selectedAppeal.id}/messages`
+    );
+    const data = await res.json();
+    setMessages(data);
 
-  return (
-    <div style={styles.app}>
-      <main style={styles.main}>
-        <h1 style={styles.title}>Appeals</h1>
-        <div style={styles.searchRow}>
-            <div style={styles.searchWrapper}>
-            <input
-              placeholder="Search"
-              style={styles.search}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <div style={styles.searchIcon}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="20"
-                height="20"
-                fill="none"
-                stroke="#9ca3af"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="16" y1="16" x2="20" y2="20" />
-              </svg>
-            </div>
-          </div>
-          <button
-            style={styles.viewArchiveBtn}
-            onClick={() => setShowArchiveList(true)}
-          >
-            Archive
-          </button>
-        </div>
-        <div style={styles.tableWrap}>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Case ID</TableHead>
-                <TableHead>Mechanic</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {reports
-                .filter(
-                  (r) =>
-                    r.mechanic
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase()) ||
-                    r.id.includes(searchQuery),
-                )
-                .map((r) => (
-                  <TableRow
-                    key={r.id}
-                    onClick={() => {
-                      setSelectedAppeal(r);
-                      setNewStatus(r.status);
-                      setShowMessageUser(true);
-                    }}
-                  >
-                    <TableCell>{r.id}</TableCell>
-                    <TableCell>{r.mechanic}</TableCell>
-                    <TableCell>
-                      <span style={statusStyle(r.status)}>{r.status}</span>
-                    </TableCell>
-                    <TableCell>{r.date}</TableCell>
-                    <TableCell>
-                      <button
-                        type="button"
-                        title="Archive appeal"
-                        style={{
-                          ...styles.iconButton,
-                          ...styles.deleteIconButton,
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation(); // prevent opening chat
-                          archiveAppeal(r);
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          width="18"
-                          height="18"
-                          fill="#ef4444"
-                          style={styles.iconSvg}
-                        >
-                          <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-3h8v-9H9v9zM16 2H8a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2z" />
-                        </svg>
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </div>
-      </main>
+  } catch (error) {
+    console.error("Error sending message:", error);
+  }
+};
 
-      {/* 💬 MESSAGE BOX MODAL */}
-      {showMessageUser && selectedAppeal && (
-        <div
-          style={styles.chatOverlay}
-          onClick={() => setShowMessageUser(false)}
-        >
-          <div style={styles.chatCard} onClick={(e) => e.stopPropagation()}>
-            <div style={styles.chatHeader}>
-              <span>Case #{selectedAppeal.id}</span>
-              <button
-                style={styles.closeBtn}
-                onClick={() => setShowMessageUser(false)}
-              >
-                ✕
-              </button>
-            </div>
+const archiveAppeal = (appeal) => {
+  setArchivedReports((prev) => [...prev, appeal]);
+  setReports((prev) => prev.filter((r) => r.id !== appeal.id));
+};
 
-            <div style={styles.caseMeta}>
-              <strong>{selectedAppeal.mechanic}</strong>
-              <select
-                style={styles.statusSelect}
-                value={newStatus}
-                onChange={(e) => setNewStatus(e.target.value)}
-              >
-                <option value="Investigating">Investigating</option>
-                <option value="To Review">To Review</option>
-                <option value="Resolved">Resolved</option>
-              </select>
-            </div>
-
-            <div style={styles.chatBody}>
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  style={
-                    msg.sender === "admin"
-                      ? styles.chatBubbleRight
-                      : styles.chatBubbleLeft
-                  }
-                >
-                  {msg.text}
-                  <div style={styles.chatTime}>{msg.time}</div>
-                </div>
-              ))}
-            </div>
-
-            <div style={styles.chatInputRow}>
-              <input
-                placeholder="Type a message..."
-                style={styles.chatInput}
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-              />
-              <button
-                style={styles.sendBtn}
-                onClick={() => {
-                  handleSendMessage();
-                  setReports((prev) =>
-                    prev.map((r) =>
-                      r.id === selectedAppeal.id
-                        ? { ...r, status: newStatus }
-                        : r,
-                    ),
-                  );
-                }}
-              >
-                ➤
-              </button>
-            </div>
+return (
+  <div style={styles.app}>
+    <main style={styles.main}>
+      <h1 style={styles.title}>Appeals</h1>
+      <div style={styles.searchRow}>
+        <div style={styles.searchWrapper}>
+          <input
+            placeholder="Search"
+            style={styles.search}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <div style={styles.searchIcon}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="#9ca3af"
+              strokeWidth="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="16" y1="16" x2="20" y2="20" />
+            </svg>
           </div>
         </div>
-      )}
-
-      {/* 📦 ARCHIVED APPEALS MODAL */}
-      {showArchiveList && (
-        <div
-          style={styles.chatOverlay}
-          onClick={() => setShowArchiveList(false)}
+        <button
+          style={styles.viewArchiveBtn}
+          onClick={() => setShowArchiveList(true)}
         >
-          <div style={styles.archiveCard} onClick={(e) => e.stopPropagation()}>
-            <div style={styles.chatHeader}>
-              <span>Archived Appeals</span>
-              <button
-                style={styles.closeBtn}
-                onClick={() => setShowArchiveList(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <div style={{ padding: 16 }}>
-              {archivedReports.length === 0 && (
-                <p style={{ color: "#94a3b8" }}>No archived appeals.</p>
-              )}
-
-              {archivedReports.map((r) => (
-                <div
+          Archive
+        </button>
+      </div>
+      <div style={styles.tableWrap}>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Case ID</TableHead>
+              <TableHead>Mechanic</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Action</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {reports
+              .filter(
+                (r) =>
+                  r.mechanic
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase()) ||
+                  r.id.includes(searchQuery),
+              )
+              .map((r) => (
+                <TableRow
                   key={r.id}
-                  style={styles.archiveRow}
                   onClick={() => {
                     setSelectedAppeal(r);
                     setNewStatus(r.status);
-                    setShowArchiveList(false);
                     setShowMessageUser(true);
                   }}
                 >
-                  <strong>{r.id}</strong> — {r.mechanic}
-                </div>
+                  <TableCell>{r.id}</TableCell>
+                  <TableCell>{r.mechanic}</TableCell>
+                  <TableCell>
+                    <span style={statusStyle(r.status)}>{r.status}</span>
+                  </TableCell>
+                  <TableCell>{r.date}</TableCell>
+                  <TableCell>
+                    <button
+                      type="button"
+                      title="Archive appeal"
+                      style={{
+                        ...styles.iconButton,
+                        ...styles.deleteIconButton,
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent opening chat
+                        archiveAppeal(r);
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                        fill="#ef4444"
+                        style={styles.iconSvg}
+                      >
+                        <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-3h8v-9H9v9zM16 2H8a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2z" />
+                      </svg>
+                    </button>
+                  </TableCell>
+                </TableRow>
               ))}
-            </div>
+          </TableBody>
+        </Table>
+      </div>
+    </main>
+
+    {/* 💬 MESSAGE BOX MODAL */}
+    {showMessageUser && selectedAppeal && (
+      <div
+        style={styles.chatOverlay}
+        onClick={() => setShowMessageUser(false)}
+      >
+        <div style={styles.chatCard} onClick={(e) => e.stopPropagation()}>
+          <div style={styles.chatHeader}>
+            <span>Case #{selectedAppeal.id}</span>
+            <button
+              style={styles.closeBtn}
+              onClick={() => setShowMessageUser(false)}
+            >
+              ✕
+            </button>
+          </div>
+
+          <div style={styles.caseMeta}>
+            <strong>{selectedAppeal.mechanic}</strong>
+            <select
+              style={styles.statusSelect}
+              value={newStatus}
+              onChange={(e) => setNewStatus(e.target.value)}
+            >
+              <option value="Investigating">Investigating</option>
+              <option value="To Review">To Review</option>
+              <option value="Resolved">Resolved</option>
+            </select>
+          </div>
+
+          <div style={styles.chatBody}>
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                style={
+                  msg.sender === "admin"
+                    ? styles.chatBubbleRight
+                    : styles.chatBubbleLeft
+                }
+              >
+                {msg.text}
+                <div style={styles.chatTime}>
+                  {msg.timestamp
+                    ? new Date(msg.timestamp._seconds * 1000).toLocaleTimeString()
+                    : ""}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={styles.chatInputRow}>
+            <input
+              placeholder="Type a message..."
+              style={styles.chatInput}
+              value={messageInput}
+              onChange={(e) => setMessageInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+            />
+           <button
+  style={styles.sendBtn}
+  onClick={async () => {
+    await handleSendMessage();
+
+    await fetch(
+      `http://localhost:5000/api/appeals/${selectedAppeal.id}/status`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      }
+    );
+
+    fetchAppeals(); // refresh table from backend
+  }}
+>
+  ➤
+</button>
           </div>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+
+    {/* 📦 ARCHIVED APPEALS MODAL */}
+    {showArchiveList && (
+      <div
+        style={styles.chatOverlay}
+        onClick={() => setShowArchiveList(false)}
+      >
+        <div style={styles.archiveCard} onClick={(e) => e.stopPropagation()}>
+          <div style={styles.chatHeader}>
+            <span>Archived Appeals</span>
+            <button
+              style={styles.closeBtn}
+              onClick={() => setShowArchiveList(false)}
+            >
+              ✕
+            </button>
+          </div>
+
+          <div style={{ padding: 16 }}>
+            {archivedReports.length === 0 && (
+              <p style={{ color: "#94a3b8" }}>No archived appeals.</p>
+            )}
+
+            {archivedReports.map((r) => (
+              <div
+                key={r.id}
+                style={styles.archiveRow}
+                onClick={() => {
+                  setSelectedAppeal(r);
+                  setNewStatus(r.status);
+                  setShowArchiveList(false);
+                  setShowMessageUser(true);
+                }}
+              >
+                <strong>{r.id}</strong> — {r.mechanic}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+);
 }
 
 /* ================= STYLES ================= */
@@ -325,20 +348,20 @@ const styles = {
     fontWeight: 700,
     color: "#111827",
   },
-searchWrapper: {
+  searchWrapper: {
     display: "flex",
     alignItems: "center",
     position: "relative",
     width: 260,
   },
   search: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  padding: "10px 14px",
-  borderRadius: 20,
-  color: "#111827",
-  width: "100%",
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    padding: "10px 14px",
+    borderRadius: 20,
+    color: "#111827",
+    width: "100%",
+  },
   searchIcon: {
     position: "absolute",
     right: 12,

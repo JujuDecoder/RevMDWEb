@@ -90,7 +90,7 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
       id: "4003",
       mechanic: "Roberto Reyes",
       status: "To Review",
-      date: "2025-10-06 09:12:11 AM", 
+      date: "2025-10-06 09:12:11 AM",
       report: "The mechanic did not bring proper tools.",
     },
     {
@@ -129,7 +129,7 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
         <h1 style={styles.title}>User Reports </h1>
 
         <div style={styles.filterColumn}>
-            <div style={styles.searchWrapper}>
+          <div style={styles.searchWrapper}>
             <input
               placeholder="Search"
               style={styles.search}
@@ -545,18 +545,18 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
 
 const styles = {
   app: {
-  minHeight: "100vh",
-  background: "#f8fafc",
-  color: "#1f2937",
-  fontFamily: "Inter, sans-serif",
-},
+    minHeight: "100vh",
+    background: "#f8fafc",
+    color: "#1f2937",
+    fontFamily: "Inter, sans-serif",
+  },
   main: { padding: 24 },
   title: {
-  fontSize: 28,
-  marginBottom: 20,
-  fontWeight: 700,
-  color: "#111827",
-},
+    fontSize: 28,
+    marginBottom: 20,
+    fontWeight: 700,
+    color: "#111827",
+  },
 
   filterColumn: {
     display: "flex",
@@ -567,20 +567,20 @@ const styles = {
     marginBottom: 20,
   },
 
-    searchWrapper: {
+  searchWrapper: {
     display: "flex",
     alignItems: "center",
     position: "relative",
     width: 260,
   },
   search: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  padding: "10px 14px",
-  borderRadius: 20,
-  color: "#111827",
-  width: "100%",
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    padding: "10px 14px",
+    borderRadius: 20,
+    color: "#111827",
+    width: "100%",
+  },
   searchIcon: {
     position: "absolute",
     right: 12,
@@ -589,13 +589,13 @@ const styles = {
   },
 
   statusSelect: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  padding: "10px 14px",
-  borderRadius: 10,
-  color: "#111827",
-  width: 200,
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    padding: "10px 14px",
+    borderRadius: 10,
+    color: "#111827",
+    width: 200,
+  },
 
   tableContainer: {
     display: "flex",
@@ -604,28 +604,28 @@ const styles = {
   },
 
   tableWrap: {
-  border: "1px solid #e5e7eb",
-  borderRadius: "14px 14px 0 0",
-  overflow: "hidden",
-  background: "#ffffff",
-},
+    border: "1px solid #e5e7eb",
+    borderRadius: "14px 14px 0 0",
+    overflow: "hidden",
+    background: "#ffffff",
+  },
 
   paginationContainer: {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "16px 20px",
-  background: "#ffffff",
-  borderRadius: "0 0 14px 14px",
-  border: "1px solid #e5e7eb",
-  borderTop: "none",
-},
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "16px 20px",
+    background: "#ffffff",
+    borderRadius: "0 0 14px 14px",
+    border: "1px solid #e5e7eb",
+    borderTop: "none",
+  },
 
   paginationInfo: {
-  color: "#6b7280",
-  fontSize: 14,
-  fontWeight: 500,
-},
+    color: "#6b7280",
+    fontSize: 14,
+    fontWeight: 500,
+  },
 
   paginationButtons: {
     display: "flex",
@@ -634,15 +634,15 @@ const styles = {
   },
 
   paginationBtn: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  color: "#374151",
-  padding: "8px 12px",
-  borderRadius: 8,
-  cursor: "pointer",
-  fontSize: 14,
-  transition: "all 0.2s ease",
-},
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    color: "#374151",
+    padding: "8px 12px",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 14,
+    transition: "all 0.2s ease",
+  },
 
   modalOverlay: {
     position: "fixed",
@@ -654,14 +654,14 @@ const styles = {
   },
 
   modalCard: {
-  width: 720,
-  background: "#1e293b",
-  borderRadius: 24,
-},
+    width: 720,
+    background: "#1e293b",
+    borderRadius: 24,
+  },
 
   modalHeader: {
     background: "#f3f4f6",
-  color: "#111827",
+    color: "#111827",
     padding: 14,
     display: "flex",
     justifyContent: "space-between",
@@ -828,7 +828,7 @@ const styles = {
     width: 520,
     height: 620,
     background: "#ffffff",
-  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+    boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
     borderRadius: 20,
     display: "flex",
     flexDirection: "column",
@@ -884,7 +884,7 @@ const styles = {
   chatBubbleLeft: {
     alignSelf: "flex-start",
     background: "#f3f4f6",
-  color: "#111827",
+    color: "#111827",
     padding: "10px 14px",
     borderRadius: 14,
     maxWidth: "75%",
@@ -954,14 +954,14 @@ const statusStyle = (status) => ({
     status === "Investigating"
       ? "#dbeafe"
       : status === "Resolved"
-      ? "#dcfce7"
-      : "#fef9c3",
+        ? "#dcfce7"
+        : "#fef9c3",
   color:
     status === "Investigating"
       ? "#1d4ed8"
       : status === "Resolved"
-      ? "#15803d"
-      : "#ca8a04",
+        ? "#15803d"
+        : "#ca8a04",
 });
 
 
