@@ -276,72 +276,76 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
       
       {/* USER PROFILE MODAL */}
       {showUserProfile && (
-        <div
-          style={styles.modalOverlay}
+  <div
+    style={styles.profileOverlay}
+    onClick={() => setShowUserProfile(false)}
+  >
+    <div
+      style={styles.profileCard}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header */}
+      <div style={styles.profileHeader}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={styles.profileTitle}>USER PROFILE</span>
+          <span style={styles.infoIcon}>i</span>
+        </div>
+
+        <button
+          style={styles.profileClose}
           onClick={() => setShowUserProfile(false)}
         >
-          <div
-            style={styles.userProfileCard}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={styles.userProfileHeader}>
-              <span>User Profile</span>
-              <button
-                style={styles.closeBtn}
-                onClick={() => setShowUserProfile(false)}
-              >
-                ✕
-              </button>
+          ✕
+        </button>
+      </div>
+
+      {/* Body */}
+      <div style={styles.profileBody}>
+        <div style={styles.profileTopSection}>
+          <div style={styles.profileAvatarCircle}>
+            <svg
+              width="50"
+              height="50"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="1.8"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+
+          <div>
+            <h2 style={styles.profileName}>Emily R.</h2>
+
+            <div style={styles.profileLine}>
+              📞 +1 987 654 3210
             </div>
 
-            <div style={styles.userProfileBody}>
-              <div style={{ display: "flex", gap: 16 }}>
-                <img
-                  src="https://i.pravatar.cc/150?img=12"
-                  alt="User"
-                  style={styles.avatar}
-                />
-
-                <div>
-                  <h2 style={{ margin: 0 }}>Mario Santos</h2>
-                  <p style={styles.muted}>📞 +1 987 654 3210</p>
-                  <p style={styles.muted}>✉️ mario.santos@email.com</p>
-
-                  <span style={styles.activeBadge}>Active</span>
-                </div>
-              </div>
-
-              <div style={styles.profileMeta}>
-                ⭐ <strong>Account Status:</strong> Active <br />
-                📅 <strong>Signup Date:</strong> 2024-02-15
-              </div>
-
-              <div style={styles.reportedMechanic}>
-                <p>Reported Mechanic</p>
-
-                <div style={{ display: "flex", gap: 12 }}>
-                  <img
-                    src="https://i.pravatar.cc/100?img=32"
-                    alt="Mechanic"
-                    style={styles.mechanicAvatar}
-                  />
-                  <div>
-                    <strong>Mark Dela Cruz</strong>
-                    <div style={styles.muted}>
-                      ⭐ 4.2 • 129 Services
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div style={styles.userProfileFooter}>
-              <button style={styles.suspendBtn}>Suspend Account</button>
-             
+            <div style={styles.profileLine}>
+              ✉️ emily.r@email.com
             </div>
           </div>
         </div>
-      )}
+
+        <div style={styles.signupRow}>
+          📅 <strong>Sign up Date:</strong> November 14, 2023
+        </div>
+      </div>
+
+      {/* Footer Button */}
+      <div style={styles.profileFooter}>
+        <button
+          style={styles.profileBackBtn}
+          onClick={() => setShowUserProfile(false)}
+        >
+          OK, GO BACK
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
     </div>
   );
@@ -565,80 +569,118 @@ const styles = {
   },
 
 
-  // USER PROFILE
-  userProfileCard: {
-    width: 560,
-    background: "linear-gradient(180deg,#1e293b,#020617)",
-    borderRadius: 20,
-  },
+  /* ================= NEW USER PROFILE ================= */
 
-  userProfileHeader: {
-    background: "#2b3a67",
-    padding: 14,
-    display: "flex",
-    justifyContent: "space-between",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
+profileOverlay: {
+  position: "fixed",
+  inset: 0,
+  background: "rgba(0,0,0,0.35)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 200,
+},
 
-  userProfileBody: { padding: 24 },
+profileCard: {
+  width: 520,
+  background: "#ffffff",
+  borderRadius: 18,
+  boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
+  overflow: "hidden",
+},
 
-  avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: 12,
-    objectFit: "cover",
-  },
+profileHeader: {
+  padding: "18px 22px",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  borderBottom: "1px solid #f1f5f9",
+},
 
-  mechanicAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-  },
+profileTitle: {
+  fontSize: 18,
+  fontWeight: 700,
+  letterSpacing: 0.5,
+  color: "#111827",
+},
 
-  muted: { color: "#94a3b8", fontSize: 14 },
+infoIcon: {
+  width: 20,
+  height: 20,
+  borderRadius: "50%",
+  background: "#e0f2fe",
+  color: "#0284c7",
+  fontSize: 12,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: 700,
+},
 
-  activeBadge: {
-    background: "#064e3b",
-    color: "#6ee7b7",
-    padding: "4px 12px",
-    borderRadius: 999,
-    fontSize: 12,
-  },
+profileClose: {
+  background: "none",
+  border: "none",
+  fontSize: 18,
+  cursor: "pointer",
+  color: "#6b7280",
+},
 
-  profileMeta: {
-    marginTop: 16,
-    borderTop: "1px solid #334155",
-    paddingTop: 12,
-  },
+profileBody: {
+  padding: "30px 28px",
+},
 
-  reportedMechanic: {
-    marginTop: 20,
-    borderTop: "1px solid #334155",
-    paddingTop: 16,
-  },
+profileTopSection: {
+  display: "flex",
+  gap: 20,
+  alignItems: "center",
+  marginBottom: 30,
+},
 
-  userProfileFooter: {
-    padding: 24,
-    display: "flex",
-    justifyContent: "space-between",
-  },
+profileAvatarCircle: {
+  width: 100,
+  height: 100,
+  borderRadius: "50%",
+  background: "#1e293b",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+},
 
-  suspendBtn: {
-    background: "#7f1d1d",
-    color: "#fff",
-    border: "none",
-    borderRadius: 999,
-    padding: "10px 22px",
-  },
+profileName: {
+  margin: 0,
+  fontSize: 26,
+  fontWeight: 700,
+  color: "#111827",
+},
 
-  messageBtn: {
-    background: "#2563eb",
-    color: "#fff",
-    border: "none",
-    borderRadius: 999,
-    padding: "10px 22px",
-  },
+profileLine: {
+  marginTop: 6,
+  fontSize: 15,
+  color: "#374151",
+},
+
+signupRow: {
+  marginTop: 10,
+  fontSize: 15,
+  color: "#111827",
+},
+
+profileFooter: {
+  padding: 20,
+  borderTop: "1px solid #f1f5f9",
+},
+
+profileBackBtn: {
+  width: "100%",
+  padding: "14px",
+  borderRadius: 10,
+  border: "none",
+  background: "linear-gradient(90deg,#2563eb,#3b82f6)",
+  color: "#ffffff",
+  fontWeight: 700,
+  fontSize: 15,
+  cursor: "pointer",
+},
 
   // UPDATE STATUS
   updateStatusCard: {
