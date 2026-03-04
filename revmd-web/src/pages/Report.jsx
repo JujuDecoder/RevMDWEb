@@ -14,7 +14,13 @@ export default function AdminReports() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+<<<<<<< Updated upstream
   const itemsPerPage = 15;
+=======
+  const [tempStatus, setTempStatus] = useState("");
+
+  const itemsPerPage = 7;
+>>>>>>> Stashed changes
 
   // Added chat / status state
   const [showUpdateStatus, setShowUpdateStatus] = useState(false);
@@ -100,6 +106,41 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
       date: "2025-10-05 08:56:24 PM",
       report: "The mechanic completed the work but was delayed.",
     },
+    {
+  id: "4005",
+  mechanic: "Daniel Cruz",
+  status: "Investigating",
+  date: "2025-10-04 03:22:10 PM",
+  report: "Mechanic failed to show up for scheduled service.",
+},
+{
+  id: "4006",
+  mechanic: "Anthony Lim",
+  status: "Resolved",
+  date: "2025-10-03 11:45:09 AM",
+  report: "Mechanic resolved issue but charged extra without notice.",
+},
+{
+  id: "4007",
+  mechanic: "Carlo Mendoza",
+  status: "To Review",
+  date: "2025-10-02 02:18:37 PM",
+  report: "Mechanic was rude and unprofessional during service.",
+},
+{
+  id: "4008",
+  mechanic: "Leo Fernandez",
+  status: "Investigating",
+  date: "2025-10-01 08:30:12 AM",
+  report: "Repair was incomplete and tools were left behind.",
+},
+{
+  id: "4009",
+  mechanic: "Ryan Bautista",
+  status: "To Review",
+  date: "2025-09-30 06:50:45 PM",
+  report: "Mechanic arrived late and did not communicate properly.",
+},
   ]);
 
   const filteredReports = reports.filter((r) => {
@@ -194,9 +235,7 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
 
           {/* PAGINATION CONTROLS */}
           <div style={styles.paginationContainer}>
-            <div style={styles.paginationInfo}>
-              Showing {startIndex + 1}–{Math.min(startIndex + itemsPerPage, filteredReports.length)} of {filteredReports.length} results
-            </div>
+            
 
             <div style={styles.paginationButtons}>
               <button
@@ -216,9 +255,12 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
                   key={page}
                   style={{
                     ...styles.paginationBtn,
-                    background: currentPage === page ? "#2563eb" : "#1e293b",
-                    fontWeight: currentPage === page ? 600 : 400,
-                    border: currentPage === page ? "1px solid #3b82f6" : "1px solid #334155",
+                    background: currentPage === page ? "#dbeafe" : "#ffffff",
+color: "#111827",
+fontWeight: currentPage === page ? 600 : 500,
+border: currentPage === page
+  ? "1px solid #93c5fd"
+  : "1px solid #e5e7eb",
                   }}
                   onClick={() => setCurrentPage(page)}
                 >
@@ -544,12 +586,16 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
 /* ================= STYLES ================= */
 
 const styles = {
+<<<<<<< Updated upstream
   app: {
     minHeight: "100vh",
     background: "#f8fafc",
     color: "#1f2937",
     fontFamily: "Inter, sans-serif",
   },
+=======
+  
+>>>>>>> Stashed changes
   main: { padding: 24 },
   title: {
     fontSize: 28,
@@ -611,6 +657,7 @@ const styles = {
   },
 
   paginationContainer: {
+<<<<<<< Updated upstream
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -620,6 +667,17 @@ const styles = {
     border: "1px solid #e5e7eb",
     borderTop: "none",
   },
+=======
+  display: "flex",
+  justifyContent: "flex-end",   // 👈 align left
+  alignItems: "center",
+  padding: "16px 20px",
+  background: "#ffffff",
+  borderRadius: "0 0 14px 14px",
+  border: "1px solid #e5e7eb",
+  borderTop: "none",
+},
+>>>>>>> Stashed changes
 
   paginationInfo: {
     color: "#6b7280",

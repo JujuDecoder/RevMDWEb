@@ -34,6 +34,7 @@ export default function SidePanelCard() {
             <NavItem to="/dashboard/reports">Reports</NavItem>
             <NavItem to="/dashboard/appeal">Appeal</NavItem>
             <NavItem to="/dashboard/accounts">Accounts</NavItem>
+            <NavItem to="/dashboard/appointments">Appointments</NavItem>
           </nav>
         </div>
 

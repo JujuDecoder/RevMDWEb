@@ -10,6 +10,8 @@ import {
 import { useNavigate } from "react-router-dom";
 
 export default function Accounts() {
+  const [currentPage, setCurrentPage] = useState(1);
+const itemsPerPage = 7;
   const [accountType, setAccountType] = useState("Mechanic");
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
@@ -52,6 +54,9 @@ export default function Accounts() {
     };
     fetchMechanics();
   }, []);
+  useEffect(() => {
+  setCurrentPage(1);
+}, [searchQuery]);
 
   // Modal + form state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -169,10 +174,19 @@ export default function Accounts() {
   };
 
   const filteredMechanics = mechanics.filter(
-    (m) =>
-      m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.id.includes(searchQuery),
-  );
+  (m) =>
+    m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    m.id.includes(searchQuery)
+);
+
+// Pagination calculations
+const totalPages = Math.ceil(filteredMechanics.length / itemsPerPage);
+const startIndex = (currentPage - 1) * itemsPerPage;
+
+const paginatedMechanics = filteredMechanics.slice(
+  startIndex,
+  startIndex + itemsPerPage
+);
 
   return (
     <div style={styles.app}>
@@ -272,56 +286,109 @@ export default function Accounts() {
           </div>
         </div>
         {/* TABLE */}
-        <div style={styles.tableWrap}>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Mechanic ID</TableHead>
-                <TableHead>Full Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Updated</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredMechanics.map((m) => (
-                <TableRow key={m.id}>
-                  <TableCell>{m.id}</TableCell>
-                  <TableCell>{m.name}</TableCell>
-                  <TableCell>
-                    <span style={statusStyle(m.status)}>{m.status}</span>
-                  </TableCell>
-                  <TableCell>{m.date}</TableCell>
-                  <TableCell>
-                    <div style={styles.actionGroup}>
-                      {/* Delete Button */}
-                      <button
-                        type="button"
-                        title="Delete mechanic"
-                        style={{
-                          ...styles.iconButton,
-                          ...styles.deleteIconButton,
-                        }}
-                        onClick={() => openDeleteModal(m.id)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          width="18"
-                          height="18"
-                          fill="#ef4444"
-                          style={styles.iconSvg}
-                        >
-                          <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-3h8v-9H9v9zM16 2H8a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2z" />
-                        </svg>
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <div style={styles.tableContainer}>
+  <div style={styles.tableWrap}>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Mechanic ID</TableHead>
+          <TableHead>Full Name</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Last Updated</TableHead>
+          <TableHead>Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {paginatedMechanics.map((m) => (
+          <TableRow key={m.id}>
+            <TableCell>{m.id}</TableCell>
+            <TableCell>{m.name}</TableCell>
+            <TableCell>
+              <span style={statusStyle(m.status)}>{m.status}</span>
+            </TableCell>
+            <TableCell>{m.date}</TableCell>
+            <TableCell>
+              <div style={styles.actionGroup}>
+                <button
+                  type="button"
+                  title="Delete mechanic"
+                  style={{
+                    ...styles.iconButton,
+                    ...styles.deleteIconButton,
+                  }}
+                  onClick={() => openDeleteModal(m.id)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="18"
+                    height="18"
+                    fill="#ef4444"
+                    style={styles.iconSvg}
+                  >
+                    <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zm3-3h8v-9H9v9zM16 2H8a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2z" />
+                  </svg>
+                </button>
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </div>
+
+  {/* Same bottom structure as Reports */}
+  <div style={styles.paginationContainer}>
+  <div style={styles.paginationButtons}>
+    <button
+      style={{
+        ...styles.paginationBtn,
+        opacity: currentPage === 1 ? 0.5 : 1,
+        cursor: currentPage === 1 ? "not-allowed" : "pointer",
+      }}
+      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+      disabled={currentPage === 1}
+    >
+      ← Previous
+    </button>
+
+    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+      <button
+        key={page}
+        style={{
+          ...styles.paginationBtn,
+          background: currentPage === page ? "#dbeafe" : "#ffffff",
+          color: "#111827",
+          fontWeight: currentPage === page ? 600 : 500,
+          border:
+            currentPage === page
+              ? "1px solid #93c5fd"
+              : "1px solid #e5e7eb",
+        }}
+        onClick={() => setCurrentPage(page)}
+      >
+        {page}
+      </button>
+    ))}
+
+    <button
+      style={{
+        ...styles.paginationBtn,
+        opacity: currentPage === totalPages ? 0.5 : 1,
+        cursor:
+          currentPage === totalPages ? "not-allowed" : "pointer",
+      }}
+      onClick={() =>
+        setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+      }
+      disabled={currentPage === totalPages}
+    >
+      Next →
+    </button>
+  </div>
+</div>
+</div>
         {/* BELOW TABLE */}
         {/* This is archive button */}
       </main>
@@ -472,12 +539,7 @@ export default function Accounts() {
 }
 
 const styles = {
-  app: {
-    minHeight: "100vh",
-    background: "#f8fafc",
-    color: "#1f2937",
-    fontFamily: "Inter, sans-serif",
-  },
+  
   buttonGroup: {
     display: "flex",
     gap: 12, // space between buttons
@@ -761,6 +823,43 @@ deleteConfirmButton: {
     borderRadius: 8,
     cursor: "pointer",
   },
+  tableContainer: {
+  display: "flex",
+  flexDirection: "column",
+},
+
+tableWrap: {
+  border: "1px solid #e5e7eb",
+  borderRadius: "14px 14px 0 0",
+  overflow: "hidden",
+  background: "#ffffff",
+},
+
+paginationContainer: {
+  padding: "16px 20px",
+  background: "#ffffff",
+  borderRadius: "0 0 14px 14px",
+  border: "1px solid #e5e7eb",
+  borderTop: "none",
+  display: "flex",
+  justifyContent: "flex-end",
+},
+paginationButtons: {
+  display: "flex",
+  gap: 8,
+  alignItems: "center",
+},
+
+paginationBtn: {
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#374151",
+  padding: "8px 12px",
+  borderRadius: 8,
+  cursor: "pointer",
+  fontSize: 14,
+  transition: "all 0.2s ease",
+},
 };
 
 /* ===== STATUS BADGES ===== */
