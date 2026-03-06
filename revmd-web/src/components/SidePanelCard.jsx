@@ -31,10 +31,11 @@ export default function SidePanelCard() {
           </h2>
 
           <nav>
-            <NavItem to="/dashboard" icon={<FiGrid />}>Dashboard</NavItem>
-  <NavItem to="/dashboard/reports" icon={<FiBarChart2 />}>Reports</NavItem>
-  <NavItem to="/dashboard/appeal" icon={<FiFileText />}>Appeal</NavItem>
-  <NavItem to="/dashboard/accounts" icon={<FiUsers />}>Accounts</NavItem>
+            <NavItem to="/dashboard">Dashboard</NavItem>
+            <NavItem to="/dashboard/reports">Reports</NavItem>
+            <NavItem to="/dashboard/appeal">Appeal</NavItem>
+            <NavItem to="/dashboard/accounts">Accounts</NavItem>
+            <NavItem to="/dashboard/appointments">Appointments</NavItem>
           </nav>
         </div>
 

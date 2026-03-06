@@ -9,6 +9,7 @@ import {
 } from "../components/ui/table";
 
 export default function Appeals() {
+  const [statusFilter, setStatusFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAppeal, setSelectedAppeal] = useState(null);
   const [showMessageUser, setShowMessageUser] = useState(false);
@@ -63,93 +64,109 @@ export default function Appeals() {
   const [newStatus, setNewStatus] = useState("");
 
   const handleSendMessage = async () => {
-  if (!messageInput.trim() || !selectedAppeal) return;
+    if (!messageInput.trim() || !selectedAppeal) return;
 
-  try {
-    await fetch(
-      `http://localhost:5000/api/appeals/${selectedAppeal.id}/messages`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sender: "admin",
-          text: messageInput,
-        }),
-      }
-    );
- 
-    setMessageInput("");
+    try {
+      await fetch(
+        `http://localhost:5000/api/appeals/${selectedAppeal.id}/messages`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sender: "admin",
+            text: messageInput,
+          }),
+        }
+      );
 
-    // Refresh messages
-    const res = await fetch(
-      `http://localhost:5000/api/appeals/${selectedAppeal.id}/messages`
-    );
-    const data = await res.json();
-    setMessages(data);
+      setMessageInput("");
 
-  } catch (error) {
-    console.error("Error sending message:", error);
-  }
-};
+      // Refresh messages
+      const res = await fetch(
+        `http://localhost:5000/api/appeals/${selectedAppeal.id}/messages`
+      );
+      const data = await res.json();
+      setMessages(data);
 
-const archiveAppeal = (appeal) => {
-  setArchivedReports((prev) => [...prev, appeal]);
-  setReports((prev) => prev.filter((r) => r.id !== appeal.id));
-};
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  };
 
-return (
-  <div style={styles.app}>
-    <main style={styles.main}>
-      <h1 style={styles.title}>Appeals</h1>
-      <div style={styles.searchRow}>
-        <div style={styles.searchWrapper}>
-          <input
-            placeholder="Search"
-            style={styles.search}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <div style={styles.searchIcon}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="20"
-              height="20"
-              fill="none"
-              stroke="#9ca3af"
-              strokeWidth="2"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="16" y1="16" x2="20" y2="20" />
-            </svg>
+  const archiveAppeal = (appeal) => {
+    setArchivedReports((prev) => [...prev, appeal]);
+    setReports((prev) => prev.filter((r) => r.id !== appeal.id));
+  };
+
+  return (
+    <div style={styles.app}>
+      <main style={styles.main}>
+        <h1 style={styles.title}>Appeals</h1>
+        <div style={styles.searchRow}>
+          <div style={styles.searchWrapper}>
+            <input
+              placeholder="Search"
+              style={styles.search}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <div style={styles.searchIcon}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="#9ca3af"
+                strokeWidth="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="16" y1="16" x2="20" y2="20" />
+              </svg>
+            </div>
           </div>
+          <div style={styles.filterGroup}>
+  <select
+    value={statusFilter}
+    onChange={(e) => setStatusFilter(e.target.value)}
+    style={styles.statusFilter}
+  >
+    <option value="All">All Status</option>
+    <option value="Investigating">Investigating</option>
+    <option value="To Review">To Review</option>
+    <option value="Resolved">Resolved</option>
+  </select>
+
+  <button
+    style={styles.viewArchiveBtn}
+    onClick={() => setShowArchiveList(true)}
+  >
+    Archive
+  </button>
+</div>
         </div>
-        <button
-          style={styles.viewArchiveBtn}
-          onClick={() => setShowArchiveList(true)}
-        >
-          Archive
-        </button>
-      </div>
-      <div style={styles.tableWrap}>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Case ID</TableHead>
-              <TableHead>Mechanic</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {reports
-              .filter(
-                (r) =>
-                  r.mechanic
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase()) ||
-                  r.id.includes(searchQuery),
+        {/* TABLE */}
+<div style={styles.tableContainer}>
+  <div style={styles.tableWrap}>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Case ID</TableHead>
+          <TableHead>Mechanic</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Date</TableHead>
+          <TableHead>Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {reports
+          .filter(
+            (r) =>
+              (statusFilter === "All" || r.status === statusFilter) &&
+              (
+                r.mechanic.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                r.id.toLowerCase().includes(searchQuery.toLowerCase())
               )
               .map((r) => (
                 <TableRow
@@ -295,42 +312,134 @@ return (
             </button>
           </div>
 
-          <div style={{ padding: 16 }}>
-            {archivedReports.length === 0 && (
-              <p style={{ color: "#94a3b8" }}>No archived appeals.</p>
-            )}
-
-            {archivedReports.map((r) => (
-              <div
-                key={r.id}
-                style={styles.archiveRow}
-                onClick={() => {
-                  setSelectedAppeal(r);
-                  setNewStatus(r.status);
-                  setShowArchiveList(false);
-                  setShowMessageUser(true);
-                }}
+      {/* 📦 ARCHIVED APPEALS MODAL */}
+      {showArchiveList && (
+        <div
+          style={styles.chatOverlay}
+          onClick={() => setShowArchiveList(false)}
+        >
+          <div style={styles.archiveCard} onClick={(e) => e.stopPropagation()}>
+            <div style={styles.chatHeader}>
+              <span>Archived Appeals</span>
+              <button
+                style={styles.closeBtn}
+                onClick={() => setShowArchiveList(false)}
               >
-                <strong>{r.id}</strong> — {r.mechanic}
-              </div>
-            ))}
+                ✕
+              </button>
+            </div>
+
+            <div style={{ padding: 16 }}>
+              {archivedReports.length === 0 && (
+                <p style={{ color: "#94a3b8" }}>No archived appeals.</p>
+              )}
+
+              {archivedReports.map((r) => (
+                <div
+                  key={r.id}
+                  style={styles.archiveRow}
+                  onClick={() => {
+                    setSelectedAppeal(r);
+                    setNewStatus(r.status);
+                    setShowArchiveList(false);
+                    setShowMessageUser(true);
+                  }}
+                >
+                  <strong>{r.id}</strong> — {r.mechanic}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    )}
-  </div>
-);
+      )}
+    </div>
+  );
 }
 
 /* ================= STYLES ================= */
 
 const styles = {
-  app: {
-    minHeight: "100vh",
-    background: "#f8fafc",
-    color: "#1f2937",
-    fontFamily: "Inter, sans-serif",
-  },
+  tableContainer: {
+  display: "flex",
+  flexDirection: "column",
+  height: 500, // 🔥 fixed height (adjust if needed)
+},
+
+tableContainer: {
+  display: "flex",
+  flexDirection: "column",
+  height: 500, // fixed height
+},
+
+tableWrap: {
+  flex: 1,
+  border: "1px solid #e5e7eb",
+  borderRadius: "14px 14px 0 0",
+  overflow: "hidden",
+  background: "#ffffff",
+},
+
+tableRow: {
+  cursor: "pointer",
+  transition: "background 0.2s ease",
+},
+
+paginationContainer: {
+  padding: "16px 20px",
+  background: "#ffffff",
+  borderRadius: "0 0 14px 14px",
+  border: "1px solid #e5e7eb",
+  borderTop: "none",
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "center",
+},
+
+paginationButtons: {
+  display: "flex",
+  gap: 8,
+  alignItems: "center",
+},
+
+paginationBtn: {
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#374151",
+  padding: "8px 12px",
+  borderRadius: 8,
+  cursor: "pointer",
+  fontSize: 14,
+  transition: "all 0.2s ease",
+},
+
+activePageBtn: {
+  background: "#dbeafe",
+  border: "1px solid #93c5fd",
+  color: "#1e3a8a",
+  padding: "8px 12px",
+  borderRadius: 8,
+  fontWeight: 600,
+  cursor: "pointer",
+},
+
+actionGroup: {
+  display: "flex",
+  gap: 8,
+},
+
+iconButton: {
+  background: "transparent",
+  border: "none",
+  padding: 8,
+  borderRadius: 8,
+  cursor: "pointer",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 36,
+  height: 36,
+  transition: "background 0.2s ease",
+},
   searchRow: {
     display: "flex",
     justifyContent: "space-between",

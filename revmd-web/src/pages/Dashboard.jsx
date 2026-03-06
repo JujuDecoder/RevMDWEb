@@ -28,16 +28,7 @@ export default function Dashboard() {
 
   return (
     <div
-  style={{
-    height: "90vh",
-    overflow: "hidden",
-    display: "flex",
-    flexDirection: "column",
-    padding: "24px",
-    color: "#1f2937",
-    fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto",
-    background: "#f3f6fb", // light grey background like image
-  }}
+  
 >
       <div
         style={{
@@ -334,7 +325,7 @@ function LargeStat({ title, total, change, sparkline = [], tileGradient, icon })
         </div>
 
         {/* Date labels */}
-        <div style={{ display: "flex", gap: "clamp(8px, 1.5vw, 14px)", color: "rgba(255,255,255,0.5)", fontSize: "clamp(11px, 1.5vw, 13px)", letterSpacing: "0.5px" }}>
+        <div style={{ display: "flex", gap: "clamp(8px, 1.5vw, 14px)", color: "rgba(0)", fontSize: "clamp(11px, 1.5vw, 13px)", letterSpacing: "0.5px" }}>
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
             <div key={day} style={{ flex: 1, textAlign: "center" }}>
               {day}
