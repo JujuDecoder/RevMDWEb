@@ -11,7 +11,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function Users() {
   const [accountType, setAccountType] = useState("User");
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const navigate = useNavigate();
   const hoverTimerRef = React.useRef(null);
   const [hoveredBtn, setHoveredBtn] = useState(null);
@@ -57,13 +58,24 @@ export default function Users() {
 
     fetchUsers();
   }, []);
+  useEffect(() => {
+  setCurrentPage(1);
+}, [searchQuery]);
 
 
-  const filteredMechanics = mechanics.filter(
-    (m) =>
-      m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.id.includes(searchQuery),
-  );
+  const filteredUsers = users.filter(
+  (u) =>
+    u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    u.id.includes(searchQuery)
+);
+
+const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+const startIndex = (currentPage - 1) * itemsPerPage;
+
+const paginatedUsers = filteredUsers.slice(
+  startIndex,
+  startIndex + itemsPerPage
+);
 
   return (
     <div style={styles.app}>
@@ -144,29 +156,80 @@ export default function Users() {
           </div>
         </div>
         {/* TABLE */}
-        <div style={styles.tableWrap}>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>User ID</TableHead>
-                <TableHead>Full Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Address</TableHead>
-              </TableRow>
-            </TableHeader>
+        <div style={styles.tableContainer}>
+  <div style={styles.tableWrap}>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>User ID</TableHead>
+          <TableHead>Full Name</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Address</TableHead>
+        </TableRow>
+      </TableHeader>
 
-            <TableBody>
-              {users.map((u) => (
-                <TableRow key={u.id}>
-                  <TableCell>{u.id}</TableCell>
-                  <TableCell>{u.name}</TableCell>
-                  <TableCell>{u.email}</TableCell>
-                  <TableCell>{u.address}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+      <TableBody>
+        {paginatedUsers.map((u) => (
+          <TableRow key={u.id}>
+            <TableCell>{u.id}</TableCell>
+            <TableCell>{u.name}</TableCell>
+            <TableCell>{u.email}</TableCell>
+            <TableCell>{u.address}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </div>
+
+  <div style={styles.paginationContainer}>
+    <div style={styles.paginationButtons}>
+      <button
+        style={{
+          ...styles.paginationBtn,
+          opacity: currentPage === 1 ? 0.5 : 1,
+          cursor: currentPage === 1 ? "not-allowed" : "pointer",
+        }}
+        onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+        disabled={currentPage === 1}
+      >
+        ← Previous
+      </button>
+
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        <button
+          key={page}
+          style={{
+            ...styles.paginationBtn,
+            background: currentPage === page ? "#dbeafe" : "#ffffff",
+            color: "#111827",
+            fontWeight: currentPage === page ? 600 : 500,
+            border:
+              currentPage === page
+                ? "1px solid #93c5fd"
+                : "1px solid #e5e7eb",
+          }}
+          onClick={() => setCurrentPage(page)}
+        >
+          {page}
+        </button>
+      ))}
+
+      <button
+        style={{
+          ...styles.paginationBtn,
+          opacity: currentPage === totalPages ? 0.5 : 1,
+          cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+        }}
+        onClick={() =>
+          setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+        }
+        disabled={currentPage === totalPages}
+      >
+        Next →
+      </button>
+    </div>
+  </div>
+</div>
         {/* BELOW TABLE */}
         {/* This is archive button */}
       </main>
@@ -176,12 +239,7 @@ export default function Users() {
 }
 
 const styles = {
-  app: {
-  minHeight: "100vh",
-  background: "#f8fafc",
-  color: "#1f2937",
-  fontFamily: "Inter, sans-serif",
-},
+  
   buttonGroup: {
     display: "flex",
     gap: 12, // space between buttons
@@ -439,6 +497,44 @@ const styles = {
     color: "#fff",
     cursor: "pointer",
   },
+  tableContainer: {
+  display: "flex",
+  flexDirection: "column",
+},
+
+tableWrap: {
+  border: "1px solid #e5e7eb",
+  borderRadius: "14px 14px 0 0",
+  overflow: "hidden",
+  background: "#ffffff",
+},
+
+paginationContainer: {
+  padding: "16px 20px",
+  background: "#ffffff",
+  borderRadius: "0 0 14px 14px",
+  border: "1px solid #e5e7eb",
+  borderTop: "none",
+  display: "flex",
+  justifyContent: "flex-end",
+},
+
+paginationButtons: {
+  display: "flex",
+  gap: 8,
+  alignItems: "center",
+},
+
+paginationBtn: {
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#374151",
+  padding: "8px 12px",
+  borderRadius: 8,
+  cursor: "pointer",
+  fontSize: 14,
+  transition: "all 0.2s ease",
+},
 };
 
 /* ===== STATUS BADGES ===== */

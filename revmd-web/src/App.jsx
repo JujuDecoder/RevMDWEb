@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Reports from "./pages/Report";
 import Appeal from "./pages/Appeal";
 import Accounts from "./pages/Accounts";
+import Appointment from "./pages/Appointment";
 import AdminLayout from "./components/AdminLayout";
 import ArchiveAccount from "./pages/ArchiveAccount";
 import User from "./pages/User"; // adjust the path to where your component is
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="accounts" element={<Accounts />} />
         <Route path="users" element={<User />} /> {/* 👈 NEW */}
         <Route path="archive-accounts" element={<ArchiveAccount />} />
+        <Route path="appointments" element={<Appointment />} />
       </Route>
     </Routes>
   );
