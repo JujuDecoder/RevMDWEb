@@ -14,13 +14,7 @@ export default function AdminReports() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-<<<<<<< Updated upstream
   const itemsPerPage = 15;
-=======
-  const [tempStatus, setTempStatus] = useState("");
-
-  const itemsPerPage = 7;
->>>>>>> Stashed changes
 
   // Added chat / status state
   const [showUpdateStatus, setShowUpdateStatus] = useState(false);
@@ -586,16 +580,12 @@ border: currentPage === page
 /* ================= STYLES ================= */
 
 const styles = {
-<<<<<<< Updated upstream
   app: {
     minHeight: "100vh",
     background: "#f8fafc",
     color: "#1f2937",
     fontFamily: "Inter, sans-serif",
   },
-=======
-  
->>>>>>> Stashed changes
   main: { padding: 24 },
   title: {
     fontSize: 28,
@@ -657,7 +647,6 @@ const styles = {
   },
 
   paginationContainer: {
-<<<<<<< Updated upstream
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -667,17 +656,6 @@ const styles = {
     border: "1px solid #e5e7eb",
     borderTop: "none",
   },
-=======
-  display: "flex",
-  justifyContent: "flex-end",   // 👈 align left
-  alignItems: "center",
-  padding: "16px 20px",
-  background: "#ffffff",
-  borderRadius: "0 0 14px 14px",
-  border: "1px solid #e5e7eb",
-  borderTop: "none",
-},
->>>>>>> Stashed changes
 
   paginationInfo: {
     color: "#6b7280",
