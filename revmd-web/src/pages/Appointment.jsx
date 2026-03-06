@@ -7,6 +7,7 @@ import {
   TableHead,
   TableCell,
 } from "../components/ui/table";
+import { FiEye, FiX } from "react-icons/fi";
 
 export default function Appointment() {
     const [currentPage, setCurrentPage] = useState(1);
@@ -126,10 +127,15 @@ export default function Appointment() {
             </TableCell>
             <TableCell>{a.date}</TableCell>
             <TableCell>
-              <div style={styles.actionRow}>
-                <button style={styles.viewBtn}>View</button>
-                <button style={styles.cancelBtn}>Cancel</button>
-              </div>
+             <div style={styles.actionRow}>
+  <button style={styles.viewBtn}>
+    <FiEye size={18} />
+  </button>
+
+  <button style={styles.cancelBtn}>
+    <FiX size={18} />
+  </button>
+</div>
             </TableCell>
           </TableRow>
         ))}
@@ -321,6 +327,26 @@ statusFilter: {
   borderRadius: 8,
   color: "#374151",
   cursor: "pointer",
+},
+viewBtn: {
+  background: "transparent",
+  border: "none",
+  color: "#2563eb",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: 4,
+},
+cancelBtn: {
+  background: "transparent",
+  border: "none",
+  color: "#ef4444",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: 4,
 },
 };
 
