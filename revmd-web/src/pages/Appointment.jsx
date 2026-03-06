@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -10,49 +10,17 @@ import {
 import { FiEye, FiX } from "react-icons/fi";
 
 export default function Appointment() {
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 7;
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7;
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const appointments = [
-    {
-      id: "APT-1001",
-      customer: "Juan Dela Cruz",
-      mechanic: "Mario Santos",
-      service: "Brake Repair",
-      status: "Scheduled",
-      date: "3/10/2026, 4:30 PM",
-    },
-    {
-      id: "APT-1002",
-      customer: "Maria Santos",
-      mechanic: "Maria Santos",
-      service: "Oil Change",
-      status: "On Going",
-      date: "3/10/2026, 3:00 PM",
-    },
-    {
-      id: "APT-1003",
-      customer: "Roberto Reyes",
-      mechanic: "Roberto Reyes",
-      service: "Tire Replacement",
-      status: "Scheduled",
-      date: "3/11/2026, 10:00 AM",
-    },
-    {
-      id: "APT-1004",
-      customer: "Agnes Lim",
-      mechanic: "Mario Santos",
-      service: "Diagnostic",
-      status: "Completed",
-      date: "3/09/2026, 1:00 PM",
-    },
-  ];
+  const [appointments, setAppointments] = useState([]);
   const filteredAppointments = appointments.filter(
     (a) =>
       (statusFilter === "All" || a.status === statusFilter) &&
       (
-        a.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.mechanic.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
         a.mechanic.toLowerCase().includes(searchQuery.toLowerCase()) ||
         a.id.includes(searchQuery)
       )
@@ -66,6 +34,28 @@ export default function Appointment() {
     startIndex + itemsPerPage
   );
 
+  const fetchAppointments = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/appointments");
+      const data = await response.json();
+
+      const formatted = data.map((item) => ({
+        id: item.id,
+        mechanic: item.mechanicName,
+        status: item.status,
+        date: item.date + " " + item.timeSlot,
+        fee: item.appointmentFee,
+        paid: item.isPaid ? "Paid" : "Unpaid",
+      }));
+
+      setAppointments(formatted);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
+  };
+  useEffect(() => {
+  fetchAppointments();
+}, []);
   return (
     <div style={styles.app}>
       <main style={styles.main}>
@@ -205,47 +195,47 @@ export default function Appointment() {
 /* ================= STYLES ================= */
 
 const styles = {
-  
-tableContainer: {
-  display: "flex",
-  flexDirection: "column",
-  gap: 0,
-},
 
-tableWrap: {
-  border: "1px solid #e5e7eb",
-  borderRadius: "14px 14px 0 0",
-  overflow: "hidden",
-  background: "#ffffff",
-},
+  tableContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 0,
+  },
 
-paginationContainer: {
-  display: "flex",
-  justifyContent: "flex-end",
-  alignItems: "center",
-  padding: "16px 20px",
-  background: "#ffffff",
-  borderRadius: "0 0 14px 14px",
-  border: "1px solid #e5e7eb",
-  borderTop: "none",
-},
+  tableWrap: {
+    border: "1px solid #e5e7eb",
+    borderRadius: "14px 14px 0 0",
+    overflow: "hidden",
+    background: "#ffffff",
+  },
 
-paginationButtons: {
-  display: "flex",
-  gap: 8,
-  alignItems: "center",
-},
+  paginationContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    padding: "16px 20px",
+    background: "#ffffff",
+    borderRadius: "0 0 14px 14px",
+    border: "1px solid #e5e7eb",
+    borderTop: "none",
+  },
 
-paginationBtn: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  color: "#374151",
-  padding: "8px 12px",
-  borderRadius: 8,
-  cursor: "pointer",
-  fontSize: 14,
-  transition: "all 0.2s ease",
-},
+  paginationButtons: {
+    display: "flex",
+    gap: 8,
+    alignItems: "center",
+  },
+
+  paginationBtn: {
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    color: "#374151",
+    padding: "8px 12px",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 14,
+    transition: "all 0.2s ease",
+  },
   main: { padding: 24 },
 
   title: {
@@ -360,20 +350,20 @@ const statusStyle = (status) => ({
     status === "On Going"
       ? "#dbeafe"      // blue
       : status === "Completed"
-      ? "#dcfce7"      // green
-      : status === "Scheduled"
-      ? "#e0f2fe"      // light blue
-      : status === "Cancelled"
-      ? "#fee2e2"      // red
-      : "#f3f4f6",
+        ? "#dcfce7"      // green
+        : status === "Scheduled"
+          ? "#e0f2fe"      // light blue
+          : status === "Cancelled"
+            ? "#fee2e2"      // red
+            : "#f3f4f6",
   color:
     status === "On Going"
       ? "#1d4ed8"
       : status === "Completed"
-      ? "#15803d"
-      : status === "Scheduled"
-      ? "#0369a1"
-      : status === "Cancelled"
-      ? "#b91c1c"
-      : "#374151",
+        ? "#15803d"
+        : status === "Scheduled"
+          ? "#0369a1"
+          : status === "Cancelled"
+            ? "#b91c1c"
+            : "#374151",
 });
