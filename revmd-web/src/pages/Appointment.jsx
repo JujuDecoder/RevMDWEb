@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -9,49 +9,17 @@ import {
 } from "../components/ui/table";
 
 export default function Appointment() {
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 7;
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7;
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const appointments = [
-    {
-      id: "APT-1001",
-      customer: "Juan Dela Cruz",
-      mechanic: "Mario Santos",
-      service: "Brake Repair",
-      status: "Scheduled",
-      date: "3/10/2026, 4:30 PM",
-    },
-    {
-      id: "APT-1002",
-      customer: "Maria Santos",
-      mechanic: "Maria Santos",
-      service: "Oil Change",
-      status: "On Going",
-      date: "3/10/2026, 3:00 PM",
-    },
-    {
-      id: "APT-1003",
-      customer: "Roberto Reyes",
-      mechanic: "Roberto Reyes",
-      service: "Tire Replacement",
-      status: "Scheduled",
-      date: "3/11/2026, 10:00 AM",
-    },
-    {
-      id: "APT-1004",
-      customer: "Agnes Lim",
-      mechanic: "Mario Santos",
-      service: "Diagnostic",
-      status: "Completed",
-      date: "3/09/2026, 1:00 PM",
-    },
-  ];
+  const [appointments, setAppointments] = useState([]);
   const filteredAppointments = appointments.filter(
     (a) =>
       (statusFilter === "All" || a.status === statusFilter) &&
       (
-        a.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.mechanic.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
         a.mechanic.toLowerCase().includes(searchQuery.toLowerCase()) ||
         a.id.includes(searchQuery)
       )
@@ -65,132 +33,159 @@ export default function Appointment() {
     startIndex + itemsPerPage
   );
 
+  const fetchAppointments = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/appointments");
+      const data = await response.json();
+
+      const formatted = data.map((item) => ({
+        id: item.id,
+        mechanic: item.mechanicName,
+        status: item.status,
+        date: item.date + " " + item.timeSlot,
+        fee: item.appointmentFee,
+        paid: item.isPaid ? "Paid" : "Unpaid",
+      }));
+
+      setAppointments(formatted);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
+  };
+  useEffect(() => {
+  fetchAppointments();
+}, []);
   return (
     <div style={styles.app}>
       <main style={styles.main}>
         <h1 style={styles.title}>Appointments</h1>
 
         <div style={styles.searchRow}>
-  <div style={styles.searchWrapper}>
-    <input
-      placeholder="Search by ID, Customer, or Mechanic"
-      style={styles.search}
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-    />
-  </div>
+          <div style={styles.searchWrapper}>
+            <input
+              placeholder="Search by ID, Customer, or Mechanic"
+              style={styles.search}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
-  <div style={styles.filterGroup}>
-    <select
-  value={statusFilter}
-  onChange={(e) => setStatusFilter(e.target.value)}
-  style={styles.statusFilter}
->
-  <option value="All">All Status</option>
-  <option value="On Going">On Going</option>
-  <option value="Scheduled">Scheduled</option>
-  <option value="Completed">Completed</option>
-  <option value="Cancelled">Cancelled</option>
-</select>
+          <div style={styles.filterGroup}>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              style={styles.statusFilter}
+            >
+              <option value="All">All Status</option>
+              <option value="On Going">On Going</option>
+              <option value="Scheduled">Scheduled</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
 
-    <button style={styles.viewArchiveBtn}>Archive</button>
-  </div>
-</div>
+            <button style={styles.viewArchiveBtn}>Archive</button>
+          </div>
+        </div>
 
-<div style={styles.tableContainer}>
-  <div style={styles.tableWrap}>
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Appointment ID</TableHead>
-          <TableHead>Customer</TableHead>
-          <TableHead>Mechanic</TableHead>
-          <TableHead>Service</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Date & Time</TableHead>
-          <TableHead>Action</TableHead>
-        </TableRow>
-      </TableHeader>
+        <div style={styles.tableContainer}>
+          <div style={styles.tableWrap}>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Appointment ID</TableHead>
+                  <TableHead>Mechanic</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Date & Time</TableHead>
+                  <TableHead>Fee</TableHead>
+                  <TableHead>Payment</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
 
-      <TableBody>
-        {paginatedAppointments.map((a) => (
-          <TableRow key={a.id}>
-            <TableCell>{a.id}</TableCell>
-            <TableCell>{a.customer}</TableCell>
-            <TableCell>{a.mechanic}</TableCell>
-            <TableCell>{a.service}</TableCell>
-            <TableCell>
-              <span style={statusStyle(a.status)}>
-                {a.status}
-              </span>
-            </TableCell>
-            <TableCell>{a.date}</TableCell>
-            <TableCell>
-              <div style={styles.actionRow}>
-                <button style={styles.viewBtn}>View</button>
-                <button style={styles.cancelBtn}>Cancel</button>
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </div>
+              <TableBody>
+                {paginatedAppointments.map((a) => (
+                  <TableRow key={a.id}>
+                    <TableCell>{a.id}</TableCell>
+                    <TableCell>{a.mechanic}</TableCell>
 
-  {/* PAGINATION */}
-  <div style={styles.paginationContainer}>
-    <div style={styles.paginationButtons}>
-      <button
-        style={{
-          ...styles.paginationBtn,
-          opacity: currentPage === 1 ? 0.5 : 1,
-          cursor: currentPage === 1 ? "not-allowed" : "pointer",
-        }}
-        onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-        disabled={currentPage === 1}
-      >
-        ← Previous
-      </button>
+                    <TableCell>
+                      <span style={statusStyle(a.status)}>
+                        {a.status}
+                      </span>
+                    </TableCell>
 
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-        <button
-          key={page}
-          style={{
-            ...styles.paginationBtn,
-            background: currentPage === page ? "#dbeafe" : "#ffffff",
-            color: "#111827",
-            fontWeight: currentPage === page ? 600 : 500,
-            border:
-              currentPage === page
-                ? "1px solid #93c5fd"
-                : "1px solid #e5e7eb",
-          }}
-          onClick={() => setCurrentPage(page)}
-        >
-          {page}
-        </button>
-      ))}
+                    <TableCell>{a.date}</TableCell>
 
-      <button
-        style={{
-          ...styles.paginationBtn,
-          opacity: currentPage === totalPages ? 0.5 : 1,
-          cursor:
-            currentPage === totalPages ? "not-allowed" : "pointer",
-        }}
-        onClick={() =>
-          setCurrentPage((prev) =>
-            Math.min(totalPages, prev + 1)
-          )
-        }
-        disabled={currentPage === totalPages}
-      >
-        Next →
-      </button>
-    </div>
-  </div>
-</div>
-       
+                    <TableCell>₱{a.fee}</TableCell>
+
+                    <TableCell>{a.paid}</TableCell>
+
+                    <TableCell>
+                      <div style={styles.actionRow}>
+                        <button style={styles.viewBtn}>View</button>
+                        <button style={styles.cancelBtn}>Cancel</button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* PAGINATION */}
+          <div style={styles.paginationContainer}>
+            <div style={styles.paginationButtons}>
+              <button
+                style={{
+                  ...styles.paginationBtn,
+                  opacity: currentPage === 1 ? 0.5 : 1,
+                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                }}
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+              >
+                ← Previous
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  style={{
+                    ...styles.paginationBtn,
+                    background: currentPage === page ? "#dbeafe" : "#ffffff",
+                    color: "#111827",
+                    fontWeight: currentPage === page ? 600 : 500,
+                    border:
+                      currentPage === page
+                        ? "1px solid #93c5fd"
+                        : "1px solid #e5e7eb",
+                  }}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                style={{
+                  ...styles.paginationBtn,
+                  opacity: currentPage === totalPages ? 0.5 : 1,
+                  cursor:
+                    currentPage === totalPages ? "not-allowed" : "pointer",
+                }}
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    Math.min(totalPages, prev + 1)
+                  )
+                }
+                disabled={currentPage === totalPages}
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+        </div>
+
       </main>
     </div>
   );
@@ -199,47 +194,47 @@ export default function Appointment() {
 /* ================= STYLES ================= */
 
 const styles = {
-  
-tableContainer: {
-  display: "flex",
-  flexDirection: "column",
-  gap: 0,
-},
 
-tableWrap: {
-  border: "1px solid #e5e7eb",
-  borderRadius: "14px 14px 0 0",
-  overflow: "hidden",
-  background: "#ffffff",
-},
+  tableContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 0,
+  },
 
-paginationContainer: {
-  display: "flex",
-  justifyContent: "flex-end",
-  alignItems: "center",
-  padding: "16px 20px",
-  background: "#ffffff",
-  borderRadius: "0 0 14px 14px",
-  border: "1px solid #e5e7eb",
-  borderTop: "none",
-},
+  tableWrap: {
+    border: "1px solid #e5e7eb",
+    borderRadius: "14px 14px 0 0",
+    overflow: "hidden",
+    background: "#ffffff",
+  },
 
-paginationButtons: {
-  display: "flex",
-  gap: 8,
-  alignItems: "center",
-},
+  paginationContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    padding: "16px 20px",
+    background: "#ffffff",
+    borderRadius: "0 0 14px 14px",
+    border: "1px solid #e5e7eb",
+    borderTop: "none",
+  },
 
-paginationBtn: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  color: "#374151",
-  padding: "8px 12px",
-  borderRadius: 8,
-  cursor: "pointer",
-  fontSize: 14,
-  transition: "all 0.2s ease",
-},
+  paginationButtons: {
+    display: "flex",
+    gap: 8,
+    alignItems: "center",
+  },
+
+  paginationBtn: {
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    color: "#374151",
+    padding: "8px 12px",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 14,
+    transition: "all 0.2s ease",
+  },
   main: { padding: 24 },
 
   title: {
@@ -309,19 +304,19 @@ paginationBtn: {
     cursor: "pointer",
   },
   filterGroup: {
-  display: "flex",
-  gap: 10,
-  alignItems: "center",
-},
+    display: "flex",
+    gap: 10,
+    alignItems: "center",
+  },
 
-statusFilter: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  padding: "8px 12px",
-  borderRadius: 8,
-  color: "#374151",
-  cursor: "pointer",
-},
+  statusFilter: {
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    padding: "8px 12px",
+    borderRadius: 8,
+    color: "#374151",
+    cursor: "pointer",
+  },
 };
 
 const statusStyle = (status) => ({
@@ -334,20 +329,20 @@ const statusStyle = (status) => ({
     status === "On Going"
       ? "#dbeafe"      // blue
       : status === "Completed"
-      ? "#dcfce7"      // green
-      : status === "Scheduled"
-      ? "#e0f2fe"      // light blue
-      : status === "Cancelled"
-      ? "#fee2e2"      // red
-      : "#f3f4f6",
+        ? "#dcfce7"      // green
+        : status === "Scheduled"
+          ? "#e0f2fe"      // light blue
+          : status === "Cancelled"
+            ? "#fee2e2"      // red
+            : "#f3f4f6",
   color:
     status === "On Going"
       ? "#1d4ed8"
       : status === "Completed"
-      ? "#15803d"
-      : status === "Scheduled"
-      ? "#0369a1"
-      : status === "Cancelled"
-      ? "#b91c1c"
-      : "#374151",
+        ? "#15803d"
+        : status === "Scheduled"
+          ? "#0369a1"
+          : status === "Cancelled"
+            ? "#b91c1c"
+            : "#374151",
 });
