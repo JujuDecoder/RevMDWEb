@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import {
   Table,
@@ -14,55 +15,10 @@ export default function AdminReports() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [tempStatus, setTempStatus] = useState("");
+
   const itemsPerPage = 15;
 
-  // Added chat / status state
-  const [showUpdateStatus, setShowUpdateStatus] = useState(false);
-  const [newStatus, setNewStatus] = useState("");
-  const [showMessageUser, setShowMessageUser] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: "admin",
-      text:
-        "Hi, Mario. I've reviewed your report and appreciate you bringing this issue to our attention.",
-      time: "11:10 AM",
-    },
-    {
-      id: 2,
-      sender: "user",
-      text:
-        "Thank you for looking into this. I appreciate the quick response.",
-      time: "11:14 AM",
-    },
-    {
-      id: 3,
-      sender: "admin",
-      text:
-        "You're welcome. If you have any further questions, feel free to reach out anytime.",
-      time: "11:17 AM",
-    },
-  ]);
-
-  const [messageInput, setMessageInput] = useState("");
-  const handleSendMessage = () => {
-    if (!messageInput.trim()) return;
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        sender: "admin",
-        text: messageInput,
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      },
-    ]);
-
-    setMessageInput("");
-  };
 
   const [reports, setReports] = useState([
     {
@@ -90,7 +46,7 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
       id: "4003",
       mechanic: "Roberto Reyes",
       status: "To Review",
-      date: "2025-10-06 09:12:11 AM",
+      date: "2025-10-06 09:12:11 AM", 
       report: "The mechanic did not bring proper tools.",
     },
     {
@@ -164,28 +120,12 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
         <h1 style={styles.title}>User Reports </h1>
 
         <div style={styles.filterColumn}>
-          <div style={styles.searchWrapper}>
-            <input
-              placeholder="Search"
-              style={styles.search}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <div style={styles.searchIcon}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="20"
-                height="20"
-                fill="none"
-                stroke="#9ca3af"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="16" y1="16" x2="20" y2="20" />
-              </svg>
-            </div>
-          </div>
+          <input
+            placeholder="Search by Case ID or Mechanic"
+            style={styles.search}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
 
           <select
             style={styles.statusSelect}
@@ -213,7 +153,10 @@ He didn't bring the proper tools and ended up leaving the job unfinished.`,
               </TableHeader>
               <TableBody>
                 {paginatedReports.map((r) => (
-                  <TableRow key={r.id} onClick={() => setSelectedCase(r)}>
+                  <TableRow key={r.id} onClick={() => {
+  setSelectedCase(r);
+  setTempStatus(r.status);
+}}>
                     <TableCell>{r.id}</TableCell>
                     <TableCell>{r.mechanic}</TableCell>
                     <TableCell>
@@ -281,298 +224,165 @@ border: currentPage === page
       </main>
 
       {/* REPORT MODAL */}
-      {selectedCase && (
-        <div
-          style={styles.modalOverlay}
-          onClick={() => setSelectedCase(null)}
-        >
-          <div
-            style={styles.modalCard}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={styles.modalHeader}>
-              <span>CASE ID {selectedCase.id}</span>
-              <button
-                style={styles.closeBtn}
-                onClick={() => setSelectedCase(null)}
-              >
-                ✕
-              </button>
-            </div>
+{selectedCase && (
+  <div style={styles.modalOverlay} onClick={() => setSelectedCase(null)}>
+    <div style={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+      <div style={styles.modalHeader}>
+  <span style={styles.modalHeaderTitle}>
+    REPORT DETAILS - Case ID: {selectedCase.id}
+  </span>
 
-            <div style={styles.modalBody}>
-              <p style={styles.modalText}>{selectedCase.report}</p>
+  <div style={styles.modalHeaderRight}>
+    <select
+      
+  style={styles.modalStatusSelect}
+  value={tempStatus}
+  onChange={(e) => setTempStatus(e.target.value)}
+>
+  <option value="Investigating">Investigating</option>
+  <option value="To Review">To Review</option>
+  <option value="Resolved">Resolved</option>
+</select>
 
-              {selectedCase.files && (
-                <div style={styles.fileList}>
-                  {selectedCase.files.map((f, i) => (
-                    <div key={i} style={styles.fileRow}>
-                      <span>{f.name}</span>
-                      <span style={styles.fileSize}>{f.size}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+    <button
+      style={styles.closeBtnIcon}
+      onClick={() => setSelectedCase(null)}
+    >
+      ✕
+    </button>
+  </div>
+</div>
 
-            <div style={styles.modalFooter}>
-              <button
-                style={{
-                  ...styles.grayBtn,
-                  background: "linear-gradient(180deg, #3b82f6, #2563eb)",
-                  color: "#ffffff",
-                }}
-                onClick={() => setShowMessageUser(true)}
-              >
-                Message User
-              </button>
-
-              <button
-                style={{
-                  ...styles.grayBtn,
-                  background: "linear-gradient(180deg, #3b82f6, #2563eb)",
-                  color: "#ffffff",
-                }}
-                onClick={() => setShowUserProfile(true)}
-              >
-                View User
-              </button>
-
-              <button
-                style={{
-                  ...styles.grayBtn,
-                  background: "linear-gradient(180deg, #3b82f6, #2563eb)",
-                  color: "#ffffff",
-                }}
-                onClick={() => setShowUpdateStatus(true)}
-              >
-                Update Status
-              </button>
-            </div>
+      <div style={styles.modalBody}>
+        <div style={styles.sectionHeader}>User Information</div>
+        
+        <div style={styles.userInfoRow}>
+          <div style={styles.userAvatarCircle}>
+            {/* Simple User Icon SVG */}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+            </svg>
           </div>
+          <span style={styles.userNameLabel}>
+            <strong>USER:</strong> Emily R.
+          </span>
         </div>
-      )}
 
-      {/* MESSAGE USER CHAT MODAL */}
-      {showMessageUser && (
-        <div
-          style={styles.chatOverlay}
-          onClick={() => setShowMessageUser(false)}
-        >
-          <div
-            style={styles.chatCard}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={styles.chatHeader}>
-              <span>Chat with Mario Santos</span>
-              <button
-                style={styles.closeBtn}
-                onClick={() => setShowMessageUser(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <div style={styles.chatUserRow}>
-              <img
-                src="https://i.pravatar.cc/80?img=12"
-                alt="User"
-                style={styles.chatAvatar}
-              />
-              <div>
-                <strong>Mario Santos</strong>
-                <div style={styles.onlineStatus}>
-                  <span style={styles.onlineDot} /> Online
-                </div>
-              </div>
-            </div>
-
-            <div style={styles.chatBody}>
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  style={
-                    msg.sender === "admin"
-                      ? styles.chatBubbleRight
-                      : styles.chatBubbleLeft
-                  }
-                >
-                  {msg.text}
-                  <div style={styles.chatTime}>{msg.time}</div>
-                </div>
-              ))}
-            </div>
-
-            <div style={styles.chatInputRow}>
-              <input
-                placeholder="Type a message..."
-                style={styles.chatInput}
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                onKeyDown={(e) =>
-                  e.key === "Enter" && handleSendMessage()
-                }
-              />
-              <button
-                style={styles.sendBtn}
-                onClick={handleSendMessage}
-              >
-                ➤
-              </button>
-            </div>
-          </div>
+        <div style={styles.reportContentBox}>
+          <p style={styles.reportText}>
+            The mechanic, <strong>{selectedCase.mechanic}</strong> (Reported Mechanic: {selectedCase.mechanic}), {selectedCase.report}
+          </p>
         </div>
-      )}
 
+        <div style={styles.adminActionsSection}>
+          
+          <button style={styles.outlineActionBtn} onClick={() => setShowUserProfile(true)}>
+             <span style={{marginRight: 8}}>👤+</span> VIEW USER PROFILE
+          </button>
+          
+        </div>
+      </div>
+
+      <div style={styles.modalFooterBlue}>
+       <button
+  style={styles.primaryActionBtn}
+  onClick={() => {
+    if (!tempStatus) return;
+
+    setReports((prev) =>
+      prev.map((r) =>
+        r.id === selectedCase.id
+          ? { ...r, status: tempStatus }
+          : r
+      )
+    );
+
+    setSelectedCase(null);
+  }}
+>
+  UPDATE AND CLOSE
+</button>
+        <button style={styles.cancelBtn} onClick={() => setSelectedCase(null)}>
+          CANCEL
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+      
       {/* USER PROFILE MODAL */}
       {showUserProfile && (
-        <div
-          style={styles.modalOverlay}
+  <div
+    style={styles.profileOverlay}
+    onClick={() => setShowUserProfile(false)}
+  >
+    <div
+      style={styles.profileCard}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header */}
+      <div style={styles.profileHeader}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={styles.profileTitle}>USER PROFILE</span>
+          <span style={styles.infoIcon}>i</span>
+        </div>
+
+        <button
+          style={styles.profileClose}
           onClick={() => setShowUserProfile(false)}
         >
-          <div
-            style={styles.userProfileCard}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={styles.userProfileHeader}>
-              <span>User Profile</span>
-              <button
-                style={styles.closeBtn}
-                onClick={() => setShowUserProfile(false)}
-              >
-                ✕
-              </button>
+          ✕
+        </button>
+      </div>
+
+      {/* Body */}
+      <div style={styles.profileBody}>
+        <div style={styles.profileTopSection}>
+          <div style={styles.profileAvatarCircle}>
+            <svg
+              width="50"
+              height="50"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="1.8"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+
+          <div>
+            <h2 style={styles.profileName}>Emily R.</h2>
+
+            <div style={styles.profileLine}>
+              📞 +1 987 654 3210
             </div>
 
-            <div style={styles.userProfileBody}>
-              <div style={{ display: "flex", gap: 16 }}>
-                <img
-                  src="https://i.pravatar.cc/150?img=12"
-                  alt="User"
-                  style={styles.avatar}
-                />
-
-                <div>
-                  <h2 style={{ margin: 0 }}>Mario Santos</h2>
-                  <p style={styles.muted}>📞 +1 987 654 3210</p>
-                  <p style={styles.muted}>✉️ mario.santos@email.com</p>
-
-                  <span style={styles.activeBadge}>Active</span>
-                </div>
-              </div>
-
-              <div style={styles.profileMeta}>
-                ⭐ <strong>Account Status:</strong> Active <br />
-                📅 <strong>Signup Date:</strong> 2024-02-15
-              </div>
-
-              <div style={styles.reportedMechanic}>
-                <p>Reported Mechanic</p>
-
-                <div style={{ display: "flex", gap: 12 }}>
-                  <img
-                    src="https://i.pravatar.cc/100?img=32"
-                    alt="Mechanic"
-                    style={styles.mechanicAvatar}
-                  />
-                  <div>
-                    <strong>Mark Dela Cruz</strong>
-                    <div style={styles.muted}>
-                      ⭐ 4.2 • 129 Services
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div style={styles.userProfileFooter}>
-              <button style={styles.suspendBtn}>Suspend Account</button>
-              <button
-                style={styles.messageBtn}
-                onClick={() => setShowMessageUser(true)}
-              >
-                Message User
-              </button>
+            <div style={styles.profileLine}>
+              ✉️ emily.r@email.com
             </div>
           </div>
         </div>
-      )}
 
-      {/* UPDATE STATUS MODAL */}
-      {showUpdateStatus && selectedCase && (
-        <div
-          style={styles.modalOverlay}
-          onClick={() => setShowUpdateStatus(false)}
+        <div style={styles.signupRow}>
+          📅 <strong>Sign up Date:</strong> November 14, 2023
+        </div>
+      </div>
+
+      {/* Footer Button */}
+      <div style={styles.profileFooter}>
+        <button
+          style={styles.profileBackBtn}
+          onClick={() => setShowUserProfile(false)}
         >
-          <div
-            style={styles.updateStatusCard}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={styles.updateStatusHeader}>
-              <span>Update Status</span>
-              <button
-                style={styles.closeBtn}
-                onClick={() => setShowUpdateStatus(false)}
-              >
-                ✕
-              </button>
-            </div>
+          OK, GO BACK
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
-            <div style={styles.updateStatusBody}>
-              <p style={styles.muted}>Case ID: {selectedCase.id}</p>
-
-              <div style={styles.mechanicRow}>
-                <img
-                  src="https://i.pravatar.cc/100?img=32"
-                  alt="Mechanic"
-                  style={styles.mechanicAvatar}
-                />
-                <div>
-                  <div style={styles.muted}>Reported Mechanic:</div>
-                  <strong>{selectedCase.mechanic}</strong>
-                </div>
-              </div>
-
-              <select
-                style={styles.updateStatusSelect}
-                value={newStatus}
-                onChange={(e) => setNewStatus(e.target.value)}
-              >
-                <option value="">Select New Status</option>
-                <option value="Investigating">Investigating</option>
-                <option value="To Review">To Review</option>
-                <option value="Resolved">Resolved</option>
-              </select>
-            </div>
-
-            <div style={styles.updateStatusFooter}>
-              <button
-                style={styles.messageBtn}
-                onClick={() => {
-                  if (!newStatus) return;
-
-                  setReports((prev) =>
-                    prev.map((r) =>
-                      r.id === selectedCase.id
-                        ? { ...r, status: newStatus }
-                        : r
-                    )
-                  );
-
-                  setSelectedCase((prev) =>
-                    prev ? { ...prev, status: newStatus } : prev
-                  );
-
-                  setNewStatus("");
-                  setShowUpdateStatus(false);
-                }}
-              >
-                Update Status
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -583,11 +393,11 @@ const styles = {
 
   main: { padding: 24 },
   title: {
-    fontSize: 28,
-    marginBottom: 20,
-    fontWeight: 700,
-    color: "#111827",
-  },
+  fontSize: 28,
+  marginBottom: 20,
+  fontWeight: 700,
+  color: "#111827",
+},
 
   filterColumn: {
     display: "flex",
@@ -598,35 +408,23 @@ const styles = {
     marginBottom: 20,
   },
 
-  searchWrapper: {
-    display: "flex",
-    alignItems: "center",
-    position: "relative",
-    width: 260,
-  },
   search: {
-    background: "#ffffff",
-    border: "1px solid #e5e7eb",
-    padding: "10px 14px",
-    borderRadius: 20,
-    color: "#111827",
-    width: "100%",
-  },
-  searchIcon: {
-    position: "absolute",
-    right: 12,
-    top: "50%",
-    transform: "translateY(-50%)",
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  padding: "10px 14px",
+  borderRadius: 10,
+  color: "#111827",
+  width: 320,
+},
 
   statusSelect: {
-    background: "#ffffff",
-    border: "1px solid #e5e7eb",
-    padding: "10px 14px",
-    borderRadius: 10,
-    color: "#111827",
-    width: 200,
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  padding: "10px 14px",
+  borderRadius: 10,
+  color: "#111827",
+  width: 200,
+},
 
   tableContainer: {
     display: "flex",
@@ -635,28 +433,28 @@ const styles = {
   },
 
   tableWrap: {
-    border: "1px solid #e5e7eb",
-    borderRadius: "14px 14px 0 0",
-    overflow: "hidden",
-    background: "#ffffff",
-  },
+  border: "1px solid #e5e7eb",
+  borderRadius: "14px 14px 0 0",
+  overflow: "hidden",
+  background: "#ffffff",
+},
 
   paginationContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "16px 20px",
-    background: "#ffffff",
-    borderRadius: "0 0 14px 14px",
-    border: "1px solid #e5e7eb",
-    borderTop: "none",
-  },
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "16px 20px",
+  background: "#ffffff",
+  borderRadius: "0 0 14px 14px",
+  border: "1px solid #e5e7eb",
+  borderTop: "none",
+},
 
   paginationInfo: {
-    color: "#6b7280",
-    fontSize: 14,
-    fontWeight: 500,
-  },
+  color: "#6b7280",
+  fontSize: 14,
+  fontWeight: 500,
+},
 
   paginationButtons: {
     display: "flex",
@@ -665,151 +463,255 @@ const styles = {
   },
 
   paginationBtn: {
-    background: "#ffffff",
-    border: "1px solid #e5e7eb",
-    color: "#374151",
-    padding: "8px 12px",
-    borderRadius: 8,
-    cursor: "pointer",
-    fontSize: 14,
-    transition: "all 0.2s ease",
-  },
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  color: "#374151",
+  padding: "8px 12px",
+  borderRadius: 8,
+  cursor: "pointer",
+  fontSize: 14,
+  transition: "all 0.2s ease",
+},
 
-  modalOverlay: {
+ modalOverlay: {
     position: "fixed",
     inset: 0,
-    background: "rgba(0,0,0,0.35)",
+    background: "rgba(0,0,0,0.4)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 100,
+  },
+  modalCard: {
+    width: 450, // Matches the image aspect ratio
+    background: "#ffffff",
+    borderRadius: 12,
+    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+    overflow: "hidden",
+  },
+  modalHeader: {
+    padding: "12px 16px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderBottom: "1px solid #f3f4f6",
+  },
+  modalHeaderTitle: {
+    fontWeight: "700",
+    fontSize: "15px",
+    color: "#111827",
+  },
+  closeBtnIcon: {
+    background: "none",
+    border: "none",
+    fontSize: "18px",
+    color: "#9ca3af",
+    cursor: "pointer",
+  },
+  modalBody: {
+    padding: 20,
+  },
+  sectionHeader: {
+    fontWeight: "700",
+    fontSize: "16px",
+    marginBottom: 16,
+    color: "#111827",
+  },
+  userInfoRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 15,
+  },
+  userAvatarCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: "50%",
+    border: "2px solid #111827",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
-
-  modalCard: {
-    width: 720,
-    background: "#1e293b",
-    borderRadius: 24,
+  userNameLabel: {
+    fontSize: "14px",
   },
-
-  modalHeader: {
-    background: "#f3f4f6",
+ reportContentBox: {
+  background: "#f0f7ff",
+  border: "2px solid #3b82f6",   // thicker and stronger
+  borderRadius: 12,
+  padding: 16,
+  marginBottom: 20,
+},
+  reportText: {
+    fontSize: "13px",
+    lineHeight: "1.5",
+    color: "#374151",
+    margin: 0,
+  },
+  adminActionsSection: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+  },
+  adminActionsLabel: {
+    fontSize: "11px",
+    fontWeight: "700",
     color: "#111827",
-    padding: 14,
-    display: "flex",
-    justifyContent: "space-between",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    letterSpacing: "0.5px",
   },
-
-  modalBody: { padding: 24 },
-  modalText: { marginBottom: 20 },
-
-  fileList: { display: "flex", flexDirection: "column", gap: 10 },
-
-  fileRow: {
-    background: "#020617",
-    padding: "10px 14px",
-    borderRadius: 8,
-    display: "flex",
-    justifyContent: "space-between",
-  },
-
-  fileSize: { color: "#94a3b8" },
-
-  modalFooter: {
-    padding: 24,
-    display: "flex",
-    justifyContent: "space-between",
-  },
-
-  grayBtn: {
-    background: "#9ca3af",
-    border: "none",
-    borderRadius: 999,
-    padding: "10px 26px",
+  outlineActionBtn: {
+    width: "fit-content",
+    background: "#fff",
+    border: "1px solid #2563eb",
+    color: "#2563eb",
+    padding: "6px 14px",
+    borderRadius: 6,
+    fontSize: "12px",
+    fontWeight: "600",
     cursor: "pointer",
-  },
-
-  closeBtn: {
-    background: "transparent",
-    border: "none",
-    color: "#fff",
-    cursor: "pointer",
-  },
-
-  // USER PROFILE
-  userProfileCard: {
-    width: 560,
-    background: "linear-gradient(180deg,#1e293b,#020617)",
-    borderRadius: 20,
-  },
-
-  userProfileHeader: {
-    background: "#2b3a67",
-    padding: 14,
     display: "flex",
-    justifyContent: "space-between",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    alignItems: "center",
   },
-
-  userProfileBody: { padding: 24 },
-
-  avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: 12,
-    objectFit: "cover",
-  },
-
-  mechanicAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-  },
-
-  muted: { color: "#94a3b8", fontSize: 14 },
-
-  activeBadge: {
-    background: "#064e3b",
-    color: "#6ee7b7",
-    padding: "4px 12px",
-    borderRadius: 999,
-    fontSize: 12,
-  },
-
-  profileMeta: {
-    marginTop: 16,
-    borderTop: "1px solid #334155",
-    paddingTop: 12,
-  },
-
-  reportedMechanic: {
-    marginTop: 20,
-    borderTop: "1px solid #334155",
-    paddingTop: 16,
-  },
-
-  userProfileFooter: {
-    padding: 24,
+  modalFooterBlue: {
+    padding: "16px 20px",
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
+    gap: 12,
   },
-
-  suspendBtn: {
-    background: "#7f1d1d",
-    color: "#fff",
-    border: "none",
-    borderRadius: 999,
-    padding: "10px 22px",
-  },
-
-  messageBtn: {
+  primaryActionBtn: {
     background: "#2563eb",
     color: "#fff",
     border: "none",
-    borderRadius: 999,
-    padding: "10px 22px",
+    padding: "10px 18px",
+    borderRadius: 6,
+    fontSize: "13px",
+    fontWeight: "600",
+    cursor: "pointer",
   },
+  cancelBtn: {
+    background: "#9ca3af",
+    color: "#fff",
+    border: "none",
+    padding: "10px 18px",
+    borderRadius: 6,
+    fontSize: "13px",
+    fontWeight: "600",
+    cursor: "pointer",
+  },
+
+
+  /* ================= NEW USER PROFILE ================= */
+
+profileOverlay: {
+  position: "fixed",
+  inset: 0,
+  background: "rgba(0,0,0,0.35)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 200,
+},
+
+profileCard: {
+  width: 520,
+  background: "#ffffff",
+  borderRadius: 18,
+  boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
+  overflow: "hidden",
+},
+
+profileHeader: {
+  padding: "18px 22px",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  borderBottom: "1px solid #f1f5f9",
+},
+
+profileTitle: {
+  fontSize: 18,
+  fontWeight: 700,
+  letterSpacing: 0.5,
+  color: "#111827",
+},
+
+infoIcon: {
+  width: 20,
+  height: 20,
+  borderRadius: "50%",
+  background: "#e0f2fe",
+  color: "#0284c7",
+  fontSize: 12,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: 700,
+},
+
+profileClose: {
+  background: "none",
+  border: "none",
+  fontSize: 18,
+  cursor: "pointer",
+  color: "#6b7280",
+},
+
+profileBody: {
+  padding: "30px 28px",
+},
+
+profileTopSection: {
+  display: "flex",
+  gap: 20,
+  alignItems: "center",
+  marginBottom: 30,
+},
+
+profileAvatarCircle: {
+  width: 100,
+  height: 100,
+  borderRadius: "50%",
+  background: "#1e293b",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+},
+
+profileName: {
+  margin: 0,
+  fontSize: 26,
+  fontWeight: 700,
+  color: "#111827",
+},
+
+profileLine: {
+  marginTop: 6,
+  fontSize: 15,
+  color: "#374151",
+},
+
+signupRow: {
+  marginTop: 10,
+  fontSize: 15,
+  color: "#111827",
+},
+
+profileFooter: {
+  padding: 20,
+  borderTop: "1px solid #f1f5f9",
+},
+
+profileBackBtn: {
+  width: "100%",
+  padding: "14px",
+  borderRadius: 10,
+  border: "none",
+  background: "linear-gradient(90deg,#2563eb,#3b82f6)",
+  color: "#ffffff",
+  fontWeight: 700,
+  fontSize: 15,
+  cursor: "pointer",
+},
 
   // UPDATE STATUS
   updateStatusCard: {
@@ -854,125 +756,21 @@ const styles = {
     alignItems: "center",
   },
 
-  // CHAT UI
-  chatCard: {
-    width: 520,
-    height: 620,
-    background: "#ffffff",
-    boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-    borderRadius: 20,
-    display: "flex",
-    flexDirection: "column",
-  },
+  
+  modalHeaderRight: {
+  display: "flex",
+  alignItems: "center",
+  gap: 10,
+},
 
-  chatHeader: {
-    background: "#2b3a67",
-    padding: 14,
-    display: "flex",
-    justifyContent: "space-between",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-
-  chatUserRow: {
-    display: "flex",
-    gap: 12,
-    padding: 16,
-    alignItems: "center",
-    borderBottom: "1px solid #334155",
-  },
-
-  chatAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 10,
-  },
-
-  onlineStatus: {
-    fontSize: 12,
-    color: "#94a3b8",
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-  },
-
-  onlineDot: {
-    width: 8,
-    height: 8,
-    background: "#22c55e",
-    borderRadius: "50%",
-  },
-
-  chatBody: {
-    flex: 1,
-    padding: 16,
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    overflowY: "auto",
-  },
-
-  chatBubbleLeft: {
-    alignSelf: "flex-start",
-    background: "#f3f4f6",
-    color: "#111827",
-    padding: "10px 14px",
-    borderRadius: 14,
-    maxWidth: "75%",
-    fontSize: 14,
-  },
-
-  chatBubbleRight: {
-    alignSelf: "flex-end",
-    background: "#2563eb",
-    padding: "10px 14px",
-    borderRadius: 14,
-    maxWidth: "75%",
-    fontSize: 14,
-  },
-
-  chatTime: {
-    fontSize: 11,
-    color: "#94a3b8",
-    marginTop: 6,
-    textAlign: "right",
-  },
-
-  chatInputRow: {
-    padding: 14,
-    display: "flex",
-    gap: 10,
-    borderTop: "1px solid #334155",
-  },
-
-  chatInput: {
-    flex: 1,
-    background: "#020617",
-    border: "1px solid #334155",
-    color: "#fff",
-    padding: "10px 14px",
-    borderRadius: 999,
-  },
-
-  sendBtn: {
-    background: "#2563eb",
-    color: "#fff",
-    border: "none",
-    borderRadius: "50%",
-    width: 42,
-    height: 42,
-    cursor: "pointer",
-  },
-
-  chatOverlay: {
-    position: "fixed",
-    inset: 0,
-    background: "rgba(2,6,23,0.75)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 50,
-  },
+modalStatusSelect: {
+  padding: "6px 10px",
+  borderRadius: 6,
+  border: "1px solid #e5e7eb",
+  fontSize: 12,
+  fontWeight: 600,
+  cursor: "pointer",
+},
 };
 
 const statusStyle = (status) => ({
@@ -985,14 +783,12 @@ const statusStyle = (status) => ({
     status === "Investigating"
       ? "#dbeafe"
       : status === "Resolved"
-        ? "#dcfce7"
-        : "#fef9c3",
+      ? "#dcfce7"
+      : "#fef9c3",
   color:
     status === "Investigating"
       ? "#1d4ed8"
       : status === "Resolved"
-        ? "#15803d"
-        : "#ca8a04",
+      ? "#15803d"
+      : "#ca8a04",
 });
-
-

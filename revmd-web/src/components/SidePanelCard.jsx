@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { FiGrid, FiBarChart2, FiFileText, FiUsers } from "react-icons/fi";
 
 export default function SidePanelCard() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function SidePanelCard() {
             style={{
               marginBottom: 30,
               fontWeight: 700,
-              color: "#1d4ed8", // blue brand color
+              color: "#fffff", // blue brand color
             }}
           >
             RevMD
@@ -68,38 +69,39 @@ export default function SidePanelCard() {
 
 /* ---------- NAV ITEM ---------- */
 
-function NavItem({ to, children }) {
+function NavItem({ to, icon, children }) {
   return (
     <NavLink
       to={to}
       end
       style={({ isActive }) => ({
-        display: "block",
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
         padding: "12px 16px",
         marginBottom: 8,
-        borderRadius: 10,
+        borderRadius: 12,
         textDecoration: "none",
         fontWeight: 500,
         transition: "all 0.2s ease",
 
-        background: isActive ? "#eff6ff" : "transparent",
-        color: isActive ? "#1d4ed8" : "#6b7280",
-        border: isActive ? "1px solid #dbeafe" : "1px solid transparent",
+        background: isActive ? "#e5e7eb" : "transparent",
+        color: isActive ? "#1d4ed8" : "#d1d5db",
       })}
     >
+      <span style={{ fontSize: 20 }}>{icon}</span>
       {children}
     </NavLink>
   );
 }
-
 /* ---------- STYLES ---------- */
 
 const sidePanel = {
   width: 240,
   padding: 24,
-  background: "#ffffff", // white sidebar
-  borderRight: "1px solid #e5eaf2", // soft border
-  color: "#1f2937",
+  background: "#001529", // Deep Navy Sidebar
+  borderRight: "1px solid #000c17", // Subtle dark border
+  color: "#ffffff",
 
   display: "flex",
   flexDirection: "column",
