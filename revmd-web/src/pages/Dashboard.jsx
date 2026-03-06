@@ -28,16 +28,7 @@ export default function Dashboard() {
 
   return (
     <div
-  style={{
-    height: "90vh",
-    overflow: "hidden",
-    display: "flex",
-    flexDirection: "column",
-    padding: "24px",
-    color: "#1f2937",
-    fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto",
-    background: "#f3f6fb", // light grey background like image
-  }}
+  
 >
       <div
         style={{

@@ -580,12 +580,7 @@ border: currentPage === page
 /* ================= STYLES ================= */
 
 const styles = {
-  app: {
-    minHeight: "100vh",
-    background: "#f8fafc",
-    color: "#1f2937",
-    fontFamily: "Inter, sans-serif",
-  },
+
   main: { padding: 24 },
   title: {
     fontSize: 28,
