@@ -54,139 +54,134 @@ export default function Appointment() {
     }
   };
   useEffect(() => {
-  fetchAppointments();
-}, []);
+    fetchAppointments();
+  }, []);
   return (
     <div style={styles.app}>
       <main style={styles.main}>
         <h1 style={styles.title}>Appointments</h1>
 
         <div style={styles.searchRow}>
-  <div style={styles.searchWrapper}>
-    <input
-      placeholder="Search by ID, Customer, or Mechanic"
-      style={styles.search}
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-    />
-  </div>
+          <div style={styles.searchWrapper}>
+            <input
+              placeholder="Search by ID, Customer, or Mechanic"
+              style={styles.search}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
-  <div style={styles.filterGroup}>
-    <select
-  value={statusFilter}
-  onChange={(e) => setStatusFilter(e.target.value)}
-  style={styles.statusFilter}
->
-  <option value="All">All Status</option>
-  <option value="On Going">On Going</option>
-  <option value="Scheduled">Scheduled</option>
-  <option value="Completed">Completed</option>
-  <option value="Cancelled">Cancelled</option>
-</select>
+          <div style={styles.filterGroup}>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              style={styles.statusFilter}
+            >
+              <option value="All">All Status</option>
+              <option value="On Going">On Going</option>
+              <option value="Scheduled">Scheduled</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
 
-    <button style={styles.viewArchiveBtn}>Archive</button>
-  </div>
-</div>
+            <button style={styles.viewArchiveBtn}>Archive</button>
+          </div>
+        </div>
 
-<div style={styles.tableContainer}>
-  <div style={styles.tableWrap}>
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Appointment ID</TableHead>
-          <TableHead>Customer</TableHead>
-          <TableHead>Mechanic</TableHead>
-          <TableHead>Service</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Date & Time</TableHead>
-          <TableHead>Action</TableHead>
-        </TableRow>
-      </TableHeader>
+        <div style={styles.tableContainer}>
+          <div style={styles.tableWrap}>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Appointment ID</TableHead>
+                  <TableHead>Mechanic</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Date & Time</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginatedAppointments.map((a) => (
+                 <TableRow key={a.id}>
+  <TableCell>{a.id}</TableCell>
+  <TableCell>{a.mechanic}</TableCell>
+  <TableCell>
+    <span style={statusStyle(a.status)}>
+      {a.status}
+    </span>
+  </TableCell>
+  <TableCell>{a.date}</TableCell>
+  <TableCell>
+                      <div style={styles.actionRow}>
+                        <button style={styles.viewBtn}>
+                          <FiEye size={18} />
+                        </button>
 
-      <TableBody>
-        {paginatedAppointments.map((a) => (
-          <TableRow key={a.id}>
-            <TableCell>{a.id}</TableCell>
-            <TableCell>{a.customer}</TableCell>
-            <TableCell>{a.mechanic}</TableCell>
-            <TableCell>{a.service}</TableCell>
-            <TableCell>
-              <span style={statusStyle(a.status)}>
-                {a.status}
-              </span>
-            </TableCell>
-            <TableCell>{a.date}</TableCell>
-            <TableCell>
-             <div style={styles.actionRow}>
-  <button style={styles.viewBtn}>
-    <FiEye size={18} />
-  </button>
+                        <button style={styles.cancelBtn}>
+                          <FiX size={18} />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
-  <button style={styles.cancelBtn}>
-    <FiX size={18} />
-  </button>
-</div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </div>
+          {/* PAGINATION */}
+          <div style={styles.paginationContainer}>
+            <div style={styles.paginationButtons}>
+              <button
+                style={{
+                  ...styles.paginationBtn,
+                  opacity: currentPage === 1 ? 0.5 : 1,
+                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                }}
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+              >
+                ← Previous
+              </button>
 
-  {/* PAGINATION */}
-  <div style={styles.paginationContainer}>
-    <div style={styles.paginationButtons}>
-      <button
-        style={{
-          ...styles.paginationBtn,
-          opacity: currentPage === 1 ? 0.5 : 1,
-          cursor: currentPage === 1 ? "not-allowed" : "pointer",
-        }}
-        onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-        disabled={currentPage === 1}
-      >
-        ← Previous
-      </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  style={{
+                    ...styles.paginationBtn,
+                    background: currentPage === page ? "#dbeafe" : "#ffffff",
+                    color: "#111827",
+                    fontWeight: currentPage === page ? 600 : 500,
+                    border:
+                      currentPage === page
+                        ? "1px solid #93c5fd"
+                        : "1px solid #e5e7eb",
+                  }}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
+              ))}
 
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-        <button
-          key={page}
-          style={{
-            ...styles.paginationBtn,
-            background: currentPage === page ? "#dbeafe" : "#ffffff",
-            color: "#111827",
-            fontWeight: currentPage === page ? 600 : 500,
-            border:
-              currentPage === page
-                ? "1px solid #93c5fd"
-                : "1px solid #e5e7eb",
-          }}
-          onClick={() => setCurrentPage(page)}
-        >
-          {page}
-        </button>
-      ))}
+              <button
+                style={{
+                  ...styles.paginationBtn,
+                  opacity: currentPage === totalPages ? 0.5 : 1,
+                  cursor:
+                    currentPage === totalPages ? "not-allowed" : "pointer",
+                }}
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    Math.min(totalPages, prev + 1)
+                  )
+                }
+                disabled={currentPage === totalPages}
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+        </div>
 
-      <button
-        style={{
-          ...styles.paginationBtn,
-          opacity: currentPage === totalPages ? 0.5 : 1,
-          cursor:
-            currentPage === totalPages ? "not-allowed" : "pointer",
-        }}
-        onClick={() =>
-          setCurrentPage((prev) =>
-            Math.min(totalPages, prev + 1)
-          )
-        }
-        disabled={currentPage === totalPages}
-      >
-        Next →
-      </button>
-    </div>
-  </div>
-</div>
-       
       </main>
     </div>
   );
@@ -305,39 +300,39 @@ const styles = {
     cursor: "pointer",
   },
   filterGroup: {
-  display: "flex",
-  gap: 10,
-  alignItems: "center",
-},
+    display: "flex",
+    gap: 10,
+    alignItems: "center",
+  },
 
-statusFilter: {
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
-  padding: "8px 12px",
-  borderRadius: 8,
-  color: "#374151",
-  cursor: "pointer",
-},
-viewBtn: {
-  background: "transparent",
-  border: "none",
-  color: "#2563eb",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: 4,
-},
-cancelBtn: {
-  background: "transparent",
-  border: "none",
-  color: "#ef4444",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: 4,
-},
+  statusFilter: {
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    padding: "8px 12px",
+    borderRadius: 8,
+    color: "#374151",
+    cursor: "pointer",
+  },
+  viewBtn: {
+    background: "transparent",
+    border: "none",
+    color: "#2563eb",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 4,
+  },
+  cancelBtn: {
+    background: "transparent",
+    border: "none",
+    color: "#ef4444",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 4,
+  },
 };
 
 const statusStyle = (status) => ({
