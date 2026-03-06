@@ -1,6 +1,7 @@
+
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FiGrid, FiBarChart2, FiFileText, FiUsers } from "react-icons/fi";
+import { FiGrid, FiBarChart2, FiFileText, FiUsers,FiCalendar } from "react-icons/fi";
 
 export default function SidePanelCard() {
   const navigate = useNavigate();
@@ -31,12 +32,12 @@ export default function SidePanelCard() {
           </h2>
 
           <nav>
-            <NavItem to="/dashboard">Dashboard</NavItem>
-            <NavItem to="/dashboard/reports">Reports</NavItem>
-            <NavItem to="/dashboard/appeal">Appeal</NavItem>
-            <NavItem to="/dashboard/accounts">Accounts</NavItem>
-            <NavItem to="/dashboard/appointments">Appointments</NavItem>
-          </nav>
+  <NavItem to="/dashboard" icon={<FiGrid />}>Dashboard</NavItem>
+  <NavItem to="/dashboard/reports" icon={<FiBarChart2 />}>Reports</NavItem>
+  <NavItem to="/dashboard/appeal" icon={<FiFileText />}>Appeal</NavItem>
+  <NavItem to="/dashboard/accounts" icon={<FiUsers />}>Accounts</NavItem>
+  <NavItem to="/dashboard/appointments" icon={<FiCalendar />}>Appointments</NavItem>
+</nav>
         </div>
 
         {/* BOTTOM */}
